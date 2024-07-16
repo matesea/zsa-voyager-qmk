@@ -109,7 +109,47 @@ bool rgb_matrix_indicators_user(void) {
   return true;
 }
 
+#ifdef ACHORDION_ENABLE
+// https://getreuer.info/posts/keyboards/achordion/index.html
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+/*
+bool achordion_chord(uint16_t tap_hold_keycode,
+                     keyrecord_t* tap_hold_record,
+                     uint16_t other_keycode,
+                     keyrecord_t* other_record) {
+    switch (other_keycode) {
+    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+      case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+        other_keycode &= 0xff;  // Get base keycode.
+    }
+    // Allow same-hand holds with non-alpha keys.
+    if (other_keycode > KC_0) { return true; }
+
+    return achordion_opposite_hands(tap_hold_record, other_record);
+}
+*/
+
+uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+    tap_hold_keycode &= 0xff;
+    switch (tap_hold_keycode) {
+        // bypass achordion timeout for thumb keys
+        case KC_ENTER:
+        case KC_BSPC:
+        /* case MT(MOD_LGUI, KC_ENTER): */
+        /* case LT(1,KC_BSPC): */
+            return 0;
+    }
+    return 500; // default 1000, recommend 800
+}
+#endif
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef ACHORDION_ENABLE
+    if (!process_achordion(keycode, record)) return false;
+#endif
   switch (keycode) {
     case ST_MACRO_0:
     if (record->event.pressed) {
