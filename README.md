@@ -7,3 +7,4 @@ Personal ZSA voyager keyboard config
 * [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)
 * [Key Override](https://docs.qmk.fm/#/feature_key_overrides)
 * [Leader Key](https://docs.qmk.fm/features/leader_key)
+* [Grave Escape](https://docs.qmk.fm/features/grave_esc)

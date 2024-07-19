@@ -14,10 +14,10 @@ enum custom_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT_voyager(
-    KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,                                           KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_MINUS,
-    KC_GRV,         KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,                                           KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_BSLS,
+    QK_GESC,        KC_1,           KC_2,           KC_3,           KC_4,           KC_5,                                           KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_LBRC,
+    KC_MINS,        KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,                                           KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_BSLS,
     KC_TAB,         MT(MOD_LGUI, KC_A),MT(MOD_LALT, KC_S),MT(MOD_LCTL, KC_D),MT(MOD_LSFT, KC_F),KC_G,                               KC_H,           MT(MOD_RSFT, KC_J),MT(MOD_RCTL, KC_K),MT(MOD_LALT, KC_L),MT(MOD_RGUI, KC_SCLN),KC_QUOTE,
-    KC_CAPS,        KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_N,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       KC_EQUAL,
+    KC_EQL,         KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_N,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       KC_RBRC,
                                                     MT(MOD_LGUI, KC_ENTER),MT(MOD_LCTL, KC_TAB),                                LT(_NAVI,KC_BSPC),  KC_SPACE
   ),
   [_NAVI] = LAYOUT_voyager(
@@ -45,7 +45,7 @@ const uint16_t PROGMEM combo4[] = { KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM combo5[] = { KC_H, MT(MOD_RSFT, KC_J), COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    COMBO(combo0, LSFT(KC_LEFT_CTRL)),
+    COMBO(combo0, LSFT(KC_LCTL)),
     COMBO(combo1, TO(_NAVI)),
     COMBO(combo2, ST_MACRO_0),
     COMBO(combo3, TO(_SYS)),
@@ -194,11 +194,6 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     // SHIFT+BSPC -> DEL
     // &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL),
     &ko_make_basic(MOD_MASK_SHIFT, LT(_NAVI,KC_BSPC), KC_DEL),
-
-    // SHIFT+ESC -> ~
-    &ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRV)),
-    // ALT+ESC -> `
-    &ko_make_basic(MOD_MASK_ALT, KC_ESC, KC_GRV),
 
     // ALT+] ->[
     /* &ko_make_basic(MOD_MASK_ALT, KC_RBRC, KC_LBRC), */
