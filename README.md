@@ -5,14 +5,14 @@ Personal ZSA voyager keyboard config
 ## Configuration
 * Homerow mod
 * Grave escape
-    * GUI + ESC = \`
-    * Shift + ESC = ~
+    * gui + esc = \`
+    * shift + esc = ~
 * Combo
-    * CV = Ctrl+Shift, switch IME on windows
-    * XC = to navi layer
-    * ZX = CapsLock
-    * NM = C+a [, tmux copy mode
-    * M, = to navi layer
+    * cv = ctrl+shift, switch ime on windows
+    * xc = to navi layer
+    * zx = capslock
+    * nm = c+a [, tmux copy mode
+    * m, = to navi layer
     * ,. = esc
     * ./ = to sys layer
 
