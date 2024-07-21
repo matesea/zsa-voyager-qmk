@@ -5,16 +5,16 @@ Personal ZSA voyager keyboard config
 ## Configuration
 * Homerow mod
 * Grave escape
-    ** GUI + ESC = \`
-    ** Shift + ESC = ~
+    * GUI + ESC = \`
+    * Shift + ESC = ~
 * Combo
-    ** CV = Ctrl+Shift, switch IME on windows
-    ** XC = to navi layer
-    ** ZX = CapsLock
-    ** NM = C+a [, tmux copy mode
-    ** M, = to navi layer
-    ** ,. = esc
-    ** ./ = to sys layer
+    * CV = Ctrl+Shift, switch IME on windows
+    * XC = to navi layer
+    * ZX = CapsLock
+    * NM = C+a [, tmux copy mode
+    * M, = to navi layer
+    * ,. = esc
+    * ./ = to sys layer
 
 ## Additional features
 * [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)
