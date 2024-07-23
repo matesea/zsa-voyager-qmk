@@ -8,13 +8,11 @@ Personal ZSA voyager keyboard config
     * gui + esc = \`
     * shift + esc = ~
 * Combo
-    * cv = ctrl+shift, switch ime on windows
-    * xc = to navi layer
-    * zx = capslock
-    * nm = c+a [, tmux copy mode
+    * cv = navi layer
     * m, = to navi layer
-    * ,. = esc
-    * ./ = to sys layer
+* Leader Key
+    * Leader Leader = ESC
+    * Leader T = tmux copy mode
 
 ## Additional features
 * [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)
