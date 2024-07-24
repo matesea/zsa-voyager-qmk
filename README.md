@@ -4,15 +4,16 @@ Personal ZSA voyager keyboard config
 
 ## Configuration
 * Homerow mod
-* Grave escape
+* Key Override
+    * shift + backspace = delete
     * gui + esc = \`
     * shift + esc = ~
 * Combo
-    * cv = navi layer
-    * m, = to navi layer
+    * cv = TO(navi)
+    * m, = TO(navi)
 * Leader Key
-    * Leader Leader = ESC
-    * Leader T = tmux copy mode
+    * leader leader = esc
+    * leader t = tmux copy mode
 
 ## Additional features
 * [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)
