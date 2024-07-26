@@ -12,7 +12,9 @@ Personal ZSA voyager keyboard config
     * cv = TO(navi)
     * m, = TO(navi)
 * Leader Key
-    * leader leader = esc
+    * leader leader = ctrl+shift, swith IME on Windows
+    * leader c = caplock
+    * leader s = ctrl+space, swith IME on Mac
     * leader t = tmux copy mode
 
 ## Additional features
