@@ -3,7 +3,14 @@
 Personal ZSA voyager keyboard config
 
 ## Configuration
-* Homerow mod
+* [Oryx configuration](https://configure.zsa.io/voyager/layouts/LNQG6/latest)
+* Homerow mod: AGS
+* Thumb
+    * left: enter, ctrl
+    * right: backspace, space
+* Layers
+    * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
+    * SYS: Fn/Bright/Audio/animation/TappingTerm
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
