@@ -12,7 +12,8 @@
 #endif
 
 #ifdef COMBO_ENABLE
-#define COMBO_TERM 30
+#define COMBO_TERM 35
+#define COMBO_COUNT 4
 #endif
 
 #define USB_SUSPEND_WAKEUP_DELAY 0
@@ -20,13 +21,15 @@
 #define RAW_USAGE_PAGE 0xFF60
 #define RAW_USAGE_ID 0x61
 #define LAYER_STATE_8BIT
-#define COMBO_COUNT 3
 
 #define TAPPING_TERM_PER_KEY
 #define RGB_MATRIX_STARTUP_SPD 60
 
-#define ACHORDION_STREAK
-
 #ifdef LEADER_ENABLE
 #define LEADER_TIMEOUT 300
+#endif
+
+#ifdef CAPS_WORD_ENABLE
+#define CAPS_WORD_INVERT_ON_SHIFT
+#define CAPS_WORD_IDLE_TIMEOUT 5000
 #endif
