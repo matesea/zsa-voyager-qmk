@@ -16,16 +16,17 @@ Personal ZSA voyager keyboard config
     * gui + esc = \`
     * shift + esc = ~
 * Combo
-    * cv = ctrl+shift, switch IME on windows
+    * cv = win+space, switch IME on windows
     * xc = ctrl+space, switch IME on mac
     * fg = esc
     * hj = esc
 * Leader Key
     * leader leader = toggle vim direction, left/right braket
+    * leader a = ]a, next symbol with aerial.nvim
     * leader t = ]t, next tab in vim
     * leader b = ]b, next buffer in vim
     * leader q = ]q, next in vim quickfix
-    * leader c = ]c, next in vim quickfix
+    * leader c = ]c, next in vim diff hunk
 
 ## Additional features
 * [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)

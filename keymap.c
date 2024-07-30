@@ -12,8 +12,6 @@ enum custom_keycodes {
 #define NAVI 1
 #define SYS 2
 
-#define BASE_IME    S(KC_LCTL)
-
 #define BASE_A      KC_A
 #define BASE_S      MT(MOD_LALT, KC_S)
 #define BASE_D      MT(MOD_LGUI, KC_D)
@@ -72,8 +70,8 @@ const uint16_t PROGMEM fg_esc[] = { BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM hj_esc[] = { KC_H, BASE_J, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [CVIME] = COMBO(cv_ime, BASE_IME),
-    [XCIME] = COMBO(xc_ime, C(KC_SPC)),
+    [CVIME] = COMBO(cv_ime, G(KC_SPC)), // switch IME on windows
+    [XCIME] = COMBO(xc_ime, C(KC_SPC)), // switch IME on mac
     [FGESC] = COMBO(fg_esc, KC_ESC),
     [HJESC] = COMBO(hj_esc, KC_ESC),
 };
@@ -253,33 +251,33 @@ void leader_end_user(void) {
     } else if (leader_sequence_one_key(KC_T)) {
         // Leader -> t =
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_T));
+            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_T));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_T));
+            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_T));
     } else if (leader_sequence_one_key(KC_B)) {
         // Leader -> b = ]b, vim next buffer
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_B));
+            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_B));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_B));
+            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_B));
     } else if (leader_sequence_one_key(KC_Q)) {
         // Leader -> q = ]q, vim next quickfix
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_Q));
+            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_Q));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_Q));
+            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_Q));
     } else if (leader_sequence_one_key(KC_A)) {
         // Leader -> q = ]q, vim next function
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_A));
+            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_A));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_A));
+            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_A));
     } else if (leader_sequence_one_key(KC_C)) {
         // Leader -> q = ]q, vim next hunk
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_C));
+            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_C));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_C));
+            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_C));
     }
 }
 #endif
