@@ -41,18 +41,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                    KC_ENT,   KC_LCTL,       KC_BSPC,  KC_SPC
             ),
     [NAVI] = LAYOUT_voyager(
-            KC_TRNS,   KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,       QK_LLCK,  ST_TC,    KC_TRNS,  KC_TRNS,  KC_PSCR,    KC_SCRL,
-            KC_TRNS,   KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,     KC_DEL,
-            KC_TRNS,   KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,       KC_LEFT,  BASE_DOWN,BASE_UP,  BASE_RGHT,KC_ENT,     KC_TRNS,
-            KC_TRNS,   KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,       KC_LCBR,  KC_LBRC,  KC_RBRC,  KC_RCBR,  KC_APP,     KC_TRNS,
-                                                   KC_TRNS,  KC_TRNS,       KC_TRNS,  KC_TRNS
+            _______,   _______,  _______, _______, _______,  _______,       QK_LLCK,  ST_TC,    _______,  _______,  KC_PSCR,    KC_SCRL,
+            _______,   _______,  _______, _______, _______,  _______,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,     KC_DEL,
+            _______,   _______,  _______, _______, _______,  _______,       KC_LEFT,  BASE_DOWN,BASE_UP,  BASE_RGHT,KC_ENT,     _______,
+            _______,   _______,  _______, _______, _______,  _______,       KC_LCBR,  KC_LBRC,  KC_RBRC,  KC_RCBR,  KC_APP,     _______,
+                                                   _______,  _______,       _______,  _______
             ),
     [SYS] = LAYOUT_voyager(
-            QK_LLCK,  KC_F1,     KC_F2,   KC_F3,   KC_F4,    KC_F5,         KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,    KC_TRNS,
-            QK_BOOT,  KC_F6,     KC_F7,   KC_F8,   KC_F9,    KC_F10,        KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,    KC_TRNS,
-            KC_TAB,   KC_F11,    KC_F12,  KC_TRNS, RGB_MOD,  RGB_TOG,       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,    KC_TRNS,
-            DT_PRNT,  DT_DOWN,   DT_UP,   KC_VOLD, KC_VOLU,  KC_MUTE,       KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,    KC_TRNS,
-                                                   KC_TRNS,  KC_TRNS,       KC_TRNS,  KC_TRNS
+            QK_LLCK,  KC_F1,     KC_F2,   KC_F3,   KC_F4,    KC_F5,         _______,  _______,  _______,  _______,  _______,    _______,
+            QK_BOOT,  KC_F6,     KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______,  _______,  _______,  _______,  _______,    _______,
+            KC_TAB,   KC_F11,    KC_F12,  _______, RGB_MOD,  RGB_TOG,       _______,  _______,  _______,  _______,  _______,    _______,
+            DT_PRNT,  DT_DOWN,   DT_UP,   KC_VOLD, KC_VOLU,  KC_MUTE,       _______,  _______,  _______,  _______,  _______,    _______,
+                                                   _______,  _______,       _______,  _______
             ),
 };
 
@@ -188,15 +188,15 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
   if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-    return 120;  // shorter streak detection on layer-tap keys.
+    return 150;  // shorter streak detection on layer-tap keys.
   }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & MOD_LSFT) != 0) {
-    return 100;  // A shorter streak timeout for Shift mod-tap keys.
+    return 150;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
-    return 220;  // A longer timeout otherwise.
+    return 250;  // A longer timeout otherwise.
   }
 }
 #endif
