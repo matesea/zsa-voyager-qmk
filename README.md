@@ -33,4 +33,4 @@ Personal ZSA voyager keyboard config
 * [Key Override](https://docs.qmk.fm/#/feature_key_overrides)
 * [Leader Key](https://docs.qmk.fm/features/leader_key)
 * [Grave Escape](https://docs.qmk.fm/features/grave_esc)
-* [Caps word] (https://docs.qmk.fm/features/caps_word)
+* [Caps word](https://docs.qmk.fm/features/caps_word)
