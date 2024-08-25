@@ -15,7 +15,7 @@ Personal ZSA voyager keyboard config
     * shift + backspace = delete
     * gui + esc = \`
     * shift + esc = ~
-* Combo
+* Combo: disabled
     * cv = win+space, switch IME on windows
     * xc = ctrl+space, switch IME on mac
     * fg = esc

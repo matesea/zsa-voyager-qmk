@@ -37,7 +37,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,    KC_1,     KC_2,    KC_3,    KC_4,     KC_5,          KC_6,     KC_7,     KC_8,     KC_9,     KC_0,       KC_MINS,
             KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,          KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,       KC_BSLS,
             KC_TAB,    BASE_A,   BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,   BASE_L,   BASE_SCLN,  KC_QUOT,
-            CW_TOGG,   KC_Z,     KC_X,    BASE_C,  BASE_V,   KC_B,          KC_N,     BASE_M,   BASE_COMM,KC_DOT,   KC_SLSH,    QK_LEAD,
+            KC_UNDS,   KC_Z,     KC_X,    BASE_C,  BASE_V,   KC_B,          KC_N,     BASE_M,   BASE_COMM,KC_DOT,   KC_SLSH,    QK_LEAD,
                                                    KC_ENT,   KC_LCTL,       KC_BSPC,  KC_SPC
             ),
     [NAVI] = LAYOUT_voyager(
@@ -50,8 +50,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYS] = LAYOUT_voyager(
             QK_LLCK,  KC_F1,     KC_F2,   KC_F3,   KC_F4,    KC_F5,         _______,  _______,  _______,  _______,  _______,    _______,
             QK_BOOT,  KC_F6,     KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______,  _______,  _______,  _______,  _______,    _______,
-            KC_TAB,   KC_F11,    KC_F12,  _______, RGB_MOD,  RGB_TOG,       _______,  _______,  _______,  _______,  _______,    _______,
-            DT_PRNT,  DT_DOWN,   DT_UP,   KC_VOLD, KC_VOLU,  KC_MUTE,       _______,  _______,  _______,  _______,  _______,    _______,
+            KC_TAB,   KC_F11,    KC_F12,  RGB_MOD,  RGB_TOG, DT_PRNT,       _______,  _______,  _______,  _______,  _______,    _______,
+            CW_TOGG,  DT_DOWN,   DT_UP,   KC_VOLD, KC_VOLU,  KC_MUTE,       _______,  _______,  _______,  _______,  _______,    _______,
                                                    _______,  _______,       _______,  _______
             ),
 };
@@ -99,9 +99,34 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [NAVI] = { {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {184,218,204}, {0,0,0}, {0,0,0}, {0,0,0}, {127,234,222}, {127,234,222}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0}, {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0}, {0,0,0}, {0,0,0} },
+    [NAVI] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+                                            {0,0,0}, {0,0,0},
 
-    [SYS] = { {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {6,255,255}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {83,193,218}, {83,193,218}, {0,0,0}, {44,255,255}, {44,255,255}, {21,228,212}, {21,228,212}, {21,228,212}, {151,234,222}, {151,234,222}, {151,234,222}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0} },
+            {184,218,204}, {19,255,255}, {0,0,0}, {0,0,0}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
+            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
+    [SYS] = {
+        {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218},
+        {6,255,255}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218},
+        {0,0,0}, {83,193,218}, {83,193,218}, {44,255,255}, {44,255,255}, {21,228,212},
+        {221,218,204}, {21,228,212}, {21,228,212}, {151,234,222}, {151,234,222}, {151,234,222},
+                                                                            {0,0,0}, {0,0,0},
+
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
 };
 
 void set_layer_color(int layer) {
@@ -188,13 +213,13 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
   if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-    return 150;  // shorter streak detection on layer-tap keys.
+    return 200;  // shorter streak detection on layer-tap keys.
   }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & MOD_LSFT) != 0) {
-    return 150;  // A shorter streak timeout for Shift mod-tap keys.
+    return 200;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
     return 250;  // A longer timeout otherwise.
   }
@@ -226,13 +251,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef KEY_OVERRIDE_ENABLE
 // https://docs.qmk.fm/#/feature_key_overrides
 const key_override_t **key_overrides = (const key_override_t *[]){
-    // SHIFT+BSPC -> DEL
+    // SHIFT+BSPC = DEL
     &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL),
-    // SHIFT+ESC -> ~
+    // SHIFT+ESC = ~
     &ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRV)),
-    // GUI+ESC -> `
+    // GUI+ESC = `
     &ko_make_basic(MOD_MASK_GUI, KC_ESC, KC_GRV),
-    // Null terminator is required at the end.
     NULL
 };
 #endif
