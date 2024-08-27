@@ -12,47 +12,39 @@ enum custom_keycodes {
 #define NAVI 1
 #define SYS 2
 
-#define BASE_A      KC_A
 #define BASE_S      MT(MOD_LALT, KC_S)
 #define BASE_D      MT(MOD_LGUI, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
-
 #define BASE_V      LT(NAVI, KC_V)
-#define BASE_C      KC_C
 
 #define BASE_J      MT(MOD_RSFT, KC_J)
 #define BASE_K      MT(MOD_RGUI, KC_K)
 #define BASE_L      MT(MOD_LALT, KC_L)
-#define BASE_SCLN   KC_SCLN
-
-#define BASE_DOWN   MT(MOD_RSFT, KC_DOWN)
-#define BASE_UP     MT(MOD_RGUI, KC_UP)
-#define BASE_RGHT   MT(MOD_LALT, KC_RGHT)
 
 #define BASE_M      LT(SYS, KC_M)
-#define BASE_COMM   KC_COMM
+#define BASE_IME    G(KC_SPC)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_voyager(
             KC_ESC,    KC_1,     KC_2,    KC_3,    KC_4,     KC_5,          KC_6,     KC_7,     KC_8,     KC_9,     KC_0,       KC_MINS,
             KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,          KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,       KC_BSLS,
-            KC_TAB,    BASE_A,   BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,   BASE_L,   BASE_SCLN,  KC_QUOT,
-            KC_UNDS,   KC_Z,     KC_X,    BASE_C,  BASE_V,   KC_B,          KC_N,     BASE_M,   BASE_COMM,KC_DOT,   KC_SLSH,    QK_LEAD,
+            KC_TAB,    KC_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,   BASE_L,   KC_SCLN,    KC_QUOT,
+            BASE_IME,  KC_Z,     KC_X,    KC_C,    BASE_V,   KC_B,          KC_N,     BASE_M,   KC_COMM,  KC_DOT,   KC_SLSH,    QK_LEAD,
                                                    KC_ENT,   KC_LCTL,       KC_BSPC,  KC_SPC
             ),
     [NAVI] = LAYOUT_voyager(
-            _______,   _______,  _______, _______, _______,  _______,       QK_LLCK,  ST_TC,    _______,  _______,  KC_PSCR,    KC_SCRL,
-            _______,   _______,  _______, _______, _______,  _______,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,     KC_DEL,
-            _______,   _______,  _______, _______, _______,  _______,       KC_LEFT,  BASE_DOWN,BASE_UP,  BASE_RGHT,KC_ENT,     _______,
+            _______,   _______,  _______, _______, _______,  _______,       ST_TC,    _______,  _______,  _______,  KC_PSCR,    KC_SCRL,
+            _______,   _______,  _______, _______, _______,  _______,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,     _______,
+            _______,   _______,  _______, _______, _______,  _______,       KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  KC_DEL,     _______,
             _______,   _______,  _______, _______, _______,  _______,       KC_LCBR,  KC_LBRC,  KC_RBRC,  KC_RCBR,  KC_APP,     _______,
-                                                   _______,  _______,       _______,  _______
+                                                   _______,  _______,       _______,  QK_LLCK
             ),
     [SYS] = LAYOUT_voyager(
-            QK_LLCK,  KC_F1,     KC_F2,   KC_F3,   KC_F4,    KC_F5,         _______,  _______,  _______,  _______,  _______,    _______,
-            QK_BOOT,  KC_F6,     KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______,  _______,  _______,  _______,  _______,    _______,
-            KC_TAB,   KC_F11,    KC_F12,  RGB_MOD,  RGB_TOG, DT_PRNT,       _______,  _______,  _______,  _______,  _______,    _______,
+            QK_BOOT,  KC_F1,     KC_F2,   KC_F3,   KC_F4,    KC_F5,         _______,  _______,  _______,  _______,  _______,    _______,
+            _______,  KC_F6,     KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______,  _______,  _______,  _______,  _______,    _______,
+            KC_TAB,   KC_F11,    KC_F12,  RGB_MOD, RGB_TOG,  DT_PRNT,       _______,  _______,  _______,  _______,  _______,    _______,
             CW_TOGG,  DT_DOWN,   DT_UP,   KC_VOLD, KC_VOLU,  KC_MUTE,       _______,  _______,  _______,  _______,  _______,    _______,
-                                                   _______,  _______,       _______,  _______
+                                                   _______,  _______,       _______,  QK_LLCK
             ),
 };
 
@@ -84,8 +76,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return g_tapping_term - 20;
         case BASE_S:
         case BASE_L:
-        case BASE_C:
-        case BASE_COMM:
             return g_tapping_term + 20;
         default:
             return g_tapping_term;
@@ -106,25 +96,25 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204}, {19,255,255}, {0,0,0}, {0,0,0}, {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {19,255,255}, {0,0,0},      {0,0,0},      {0,0,0},      {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
-            {0,0,0}, {0,0,0}
+            {0,0,0},      {184,218,204}
     },
 
     [SYS] = {
-        {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218},
-        {6,255,255}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218},
-        {0,0,0}, {83,193,218}, {83,193,218}, {44,255,255}, {44,255,255}, {21,228,212},
-        {221,218,204}, {21,228,212}, {21,228,212}, {151,234,222}, {151,234,222}, {151,234,222},
-                                                                            {0,0,0}, {0,0,0},
+        {6,255,255},    {83,193,218}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
+        {0,0,0},        {83,193,218}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
+        {0,0,0},        {83,193,218}, {83,193,218}, {44,255,255},  {44,255,255},  {21,228,212},
+        {221,218,204},  {21,228,212}, {21,228,212}, {151,234,222}, {151,234,222}, {151,234,222},
+                                                                   {0,0,0},       {0,0,0},
 
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
+            {0,0,0}, {184,218,204}
     },
 
 };
@@ -191,16 +181,13 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     tap_hold_keycode &= 0xff;
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
-        case KC_A:
         case KC_S:
         case KC_D:
         case KC_F:
         case KC_J:
         case KC_K:
         case KC_L:
-        case KC_SCLN:
         case KC_V:
-        case KC_C:
         case KC_M:
         case KC_COMM:
             return 500;
