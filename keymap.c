@@ -10,47 +10,65 @@ enum custom_keycodes {
 
 enum {
     BASE = 0,
-    NAV,
+    SYM,
+    NUM,
     FN,
 };
 
+#define BASE_A      LT(SYM, KC_A)
 #define BASE_S      MT(MOD_LALT, KC_S)
 #define BASE_D      MT(MOD_LGUI, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
-#define BASE_V      LT(NAV, KC_V)
+
+#define BASE_Z      KC_Z
+#define BASE_X      KC_X
 #define BASE_C      KC_C
+#define BASE_V      LT(NUM, KC_V)
 
 #define BASE_J      MT(MOD_RSFT, KC_J)
 #define BASE_K      MT(MOD_RGUI, KC_K)
 #define BASE_L      MT(MOD_LALT, KC_L)
-#define BASE_M      LT(FN, KC_M)
-#define BASE_COMM   KC_COMM
+/* #define BASE_SCLN   LT(SYM, KC_SCLN) */
+#define BASE_SCLN   KC_SCLN
 
-#define BASE_IME    G(KC_SPC)
+#define BASE_M      KC_M
+#define BASE_COMM   KC_COMM
+#define BASE_DOT    KC_DOT
+#define BASE_SLSH   LT(FN, KC_SLSH)
+
+#define IME    G(KC_SPC)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_voyager(
-            KC_ESC,    KC_1,     KC_2,    KC_3,    KC_4,     KC_5,          KC_6,     KC_7,     KC_8,     KC_9,     KC_0,       KC_MINS,
-            KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,          KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,       KC_BSLS,
-            KC_TAB,    KC_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,   BASE_L,   KC_SCLN,    KC_QUOT,
-            BASE_IME,  KC_Z,     KC_X,    BASE_C,  BASE_V,   KC_B,          KC_N,     BASE_M,   KC_COMM,  KC_DOT,   KC_SLSH,    QK_LEAD,
+            KC_ESC,    KC_1,     KC_2,    KC_3,    KC_4,     KC_5,          KC_6,     KC_7,     KC_8,      KC_9,     KC_0,       KC_MINS,
+            KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,          KC_Y,     KC_U,     KC_I,      KC_O,     KC_P,       KC_BSLS,
+            KC_TAB,    BASE_A,   BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,    BASE_L,   BASE_SCLN,  KC_QUOT,
+            IME,       BASE_Z,   BASE_X,  BASE_C,  BASE_V,   KC_B,          KC_N,     BASE_M,   BASE_COMM, BASE_DOT, BASE_SLSH,  QK_LEAD,
                                                    KC_ENT,   KC_LCTL,       KC_BSPC,  KC_SPC
             ),
 
-    [NAV] = LAYOUT_voyager(
-            _______,   _______,  _______, _______, _______,  _______,       ST_TC,    _______,  _______,  _______,  KC_PSCR,    KC_SCRL,
-            _______,   _______,  _______, _______, _______,  _______,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,     _______,
-            _______,   _______,  _______, _______, _______,  _______,       KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  KC_DEL,     _______,
-            _______,   _______,  _______, _______, _______,  _______,       KC_LCBR,  KC_LBRC,  KC_RBRC,  KC_RCBR,  KC_APP,     _______,
-                                                   _______,  _______,       _______,  QK_LLCK
+    [SYM] = LAYOUT_voyager(
+            _______,   _______,  _______, _______, _______,  _______,       QK_LLCK,  ST_TC,    _______,  _______,  _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,       KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,   KC_INS,   KC_SCRL,
+            _______,   _______,  _______, _______, _______,  _______,       KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,  KC_DEL,   KC_PSCR,
+            _______,   _______,  _______, _______, _______,  _______,       KC_LCBR,  KC_LBRC,  KC_RBRC,  KC_RCBR,  KC_APP,   _______,
+                                                   _______,  _______,       _______,  _______
+            ),
+
+    [NUM] = LAYOUT_voyager(
+            _______,   _______,  _______, _______, _______,  _______,       QK_LLCK,  KC_TAB,   _______,  _______,  _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,       KC_COLN,  KC_7,     KC_8,     KC_9,     KC_PLUS,  KC_ASTR,
+            _______,   _______,  _______, _______, _______,  _______,       KC_COMM,  KC_4,     KC_5,     KC_6,     KC_MINS,  KC_SLSH,
+            _______,   _______,  _______, _______, _______,  _______,       KC_0,     KC_1,     KC_2,     KC_3,     KC_DOT,   KC_EQL,
+                                                   _______,  _______,       _______,  _______
             ),
 
     [FN] = LAYOUT_voyager(
-            QK_BOOT,  RGB_TOG,   RGB_MOD, KC_VOLD, KC_VOLU,  KC_MUTE,       _______, _______, _______, _______, _______, _______,
-            _______,  DT_PRNT,   KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______, _______, _______, _______, _______, _______,
+            QK_LLCK,  RGB_TOG,   RGB_MOD, KC_VOLD, KC_VOLU,  KC_MUTE,       _______, _______, _______, _______, _______, _______,
+            QK_BOOT,  DT_PRNT,   KC_F7,   KC_F8,   KC_F9,    KC_F10,        _______, _______, _______, _______, _______, _______,
             KC_TAB,   DT_UP,     KC_F4,   KC_F5,   KC_F6,    KC_F11,        _______, _______, _______, _______, _______, _______,
             CW_TOGG,  DT_DOWN,   KC_F1,   KC_F2,   KC_F3,    KC_F12,        _______, _______, _______, _______, _______, _______,
-                                                   _______, _______,        _______, QK_LLCK
+                                                   _______, _______,        _______, _______
             ),
 };
 
@@ -75,8 +93,15 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_J:
             return g_tapping_term - 20;
         case BASE_S:
+        case BASE_X:
         case BASE_L:
+        case BASE_DOT:
             return g_tapping_term + 20;
+        case BASE_SCLN:
+        case BASE_A:
+        case BASE_Z:
+        case BASE_SLSH:
+            return g_tapping_term + 40;
         default:
             return g_tapping_term;
     }
@@ -89,30 +114,45 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [NAV] = {
+    [SYM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {19,255,255}, {0,0,0},      {0,0,0},      {0,0,0},      {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
+            {184,218,204}, {19,255,255},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
-            {0,0,0},      {184,218,204}
+            {0,0,0},      {0,0,0}
     },
+
+    [NUM] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+
+            {184,218,204},{89,255,255}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {0,0,0}, {0,0,0}
+    },
+
     [FN] = {
-        {6,255,255},   {44,255,255}, {44,255,255}, {151,234,222}, {151,234,222}, {151,234,222},
-        {0,0,0},       {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
-        {0,0,0},       {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
-        {221,218,204}, {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
+        {184,218,204},   {44,255,255}, {44,255,255}, {151,234,222}, {151,234,222}, {151,234,222},
+        {6,255,255},     {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
+        {0,0,0},         {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
+        {221,218,204},   {21,228,212}, {83,193,218}, {83,193,218},  {83,193,218},  {83,193,218},
                                         {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {184,218,204}
+            {0,0,0}, {0,0,0}
     },
 
 
@@ -146,6 +186,9 @@ bool rgb_matrix_indicators_user(void) {
       break;
     case 2:
       set_layer_color(2);
+      break;
+    case 3:
+      set_layer_color(3);
       break;
    default:
     if (rgb_matrix_get_flags() == LED_FLAG_NONE)
@@ -261,33 +304,33 @@ void leader_end_user(void) {
     } else if (leader_sequence_one_key(KC_T)) {
         // Leader -> t =
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_T));
+            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_T));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_T));
+            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_T));
     } else if (leader_sequence_one_key(KC_B)) {
         // Leader -> b = ]b, vim next buffer
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_B));
+            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_B));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_B));
+            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_B));
     } else if (leader_sequence_one_key(KC_Q)) {
         // Leader -> q = ]q, vim next quickfix
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_Q));
+            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_Q));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_Q));
+            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_Q));
     } else if (leader_sequence_one_key(KC_A)) {
         // Leader -> a = ]a, vim next function
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_A));
+            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_A));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_A));
+            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_A));
     } else if (leader_sequence_one_key(KC_C)) {
         // Leader -> c = ]c, vim next hunk
         if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_TAP(X_C));
+            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_C));
         else
-            SEND_STRING(SS_TAP(X_LBRC) SS_TAP(X_C));
+            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_C));
     }
 }
 #endif
