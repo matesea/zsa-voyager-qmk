@@ -10,17 +10,18 @@ Personal ZSA voyager keyboard config
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
-    * SYS: Fn/Bright/Audio/animation/TappingTerm
+    * FN: Fn/Bright/Audio/animation/TappingTerm
+    * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
     * shift + esc = ~
-* Combo: disabled
-    * cv = win+space, switch IME on windows
-    * xc = ctrl+space, switch IME on mac
+
+## Disabled configuration
+* Combo:
     * fg = esc
     * hj = esc
-* Leader Key
+* Leader Key: replaced with prefix layers
     * leader leader = toggle vim direction, left/right braket
     * leader a = ]a, next symbol with aerial.nvim
     * leader t = ]t, next tab in vim
