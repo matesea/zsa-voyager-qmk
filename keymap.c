@@ -3,6 +3,24 @@
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
 
+#define LAYOUT_LR(                                     \
+    k00, k01, k02, k03, k04, k05,                      \
+    k10, k11, k12, k13, k14, k15,                      \
+    k20, k21, k22, k23, k24, k25,                      \
+    k30, k31, k32, k33, k34, k35,                      \
+                             k40, k41,                 \
+                                                       \
+                         k50, k51, k52, k53, k54, k55, \
+                         k60, k61, k62, k63, k64, k65, \
+                         k70, k71, k72, k73, k74, k75, \
+                         k80, k81, k82, k83, k84, k85, \
+                    k90, k91)                          \
+    LAYOUT_voyager(k00, k01, k02, k03, k04, k05,   k50, k51, k52, k53, k54, k55, \
+           k10, k11, k12, k13, k14, k15,   k60, k61, k62, k63, k64, k65, \
+           k20, k21, k22, k23, k24, k25,   k70, k71, k72, k73, k74, k75, \
+           k30, k31, k32, k33, k34, k35,   k80, k81, k82, k83, k84, k85, \
+                               k40, k41,   k90, k91)
+
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ST_TC, // tmux copy mode
@@ -50,67 +68,115 @@ enum {
 /* #define TO_NB       TO(NEWBASE) */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [BASE] = LAYOUT_voyager(
-            KC_ESC, KC_1,   KC_2,   KC_3,   KC_4,   KC_5,          KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
-            KC_EQL, KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,          KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-            KC_TAB, BASE_A, BASE_S, BASE_D, BASE_F, KC_G,          KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
-            IME,    BASE_Z, BASE_X, BASE_C, BASE_V, KC_B,          KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
-                                            KC_ENT, KC_LCTL,       KC_BSPC, KC_SPC
+    [BASE] = LAYOUT_LR(
+            KC_ESC, KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
+            KC_EQL, KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
+            KC_TAB, BASE_A, BASE_S, BASE_D, BASE_F, KC_G,
+            IME,    BASE_Z, BASE_X, BASE_C, BASE_V, KC_B,
+                                            KC_ENT, KC_LCTL,
+
+                            KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
+                            KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
+                            KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
+                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
+                            KC_BSPC, KC_SPC
             ),
 
-    [NAVI] = LAYOUT_voyager(
-            _______, _______, _______, _______, _______, _______,       QK_LLCK, ST_TC,   _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,       KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_SCRL,
-            _______, _______, _______, _______, _______, _______,       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-            _______, _______, _______, _______, _______, _______,       KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  KC_SYRQ,
-                                                _______, _______,       _______, _______
+    [NAVI] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              QK_LLCK, ST_TC,   _______, _______, _______, _______,
+                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_SCRL,
+                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
+                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  KC_SYRQ,
+                              _______, _______
             ),
 
-    [FN] = LAYOUT_voyager(
-            _______, _______, _______, _______, _______, _______,       XXXXXXX, KC_VOLD, KC_VOLU, KC_MUTE, KC_MPLY, QK_BOOT,
-            _______, _______, _______, _______, _______, _______,       XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-            _______, _______, _______, _______, _______, _______,       CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_TOG,
-            _______, _______, _______, _______, _______, _______,       XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_MOD,
-                                                _______, _______,       _______, _______
+    [FN] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, KC_LALT, KC_LGUI, KC_LSFT, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              XXXXXXX, KC_VOLD, KC_VOLU, KC_MUTE, KC_MPLY, QK_BOOT,
+                              XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
+                              CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_TOG,
+                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_MOD,
+                              _______, _______
             ),
 
-    [PREFIX_LBRC] = LAYOUT_voyager(
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-                                                _______, _______,       _______, _______
+    [PREFIX_LBRC] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______
             ),
 
-    [PREFIX_RBRC] = LAYOUT_voyager(
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-            _______, _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______,  _______,
-                                                _______, _______,       _______, _______
+    [PREFIX_RBRC] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______
             ),
     /*
-    [NEWBASE] = LAYOUT_voyager(
-            KC_ESC,    KC_COLN,  KC_HOME, KC_PGDN, KC_PGUP,  KC_END,        KC_LEFT,  KC_DOWN,  KC_UP,     KC_RGHT,  KC_UNDS,    KC_MINS,
-            KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,          KC_Y,     KC_U,     KC_I,      KC_O,     KC_P,       KC_BSLS,
-            KC_TAB,    NB_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,          KC_H,     BASE_J,   BASE_K,    BASE_L,   NB_SCLN,    KC_QUOT,
-            IME,       BASE_Z,   BASE_X,  BASE_C,  NB_V,     KC_B,          KC_N,     BASE_M,   BASE_COMM, BASE_DOT, BASE_SLSH,  KC_UNDS,
-                                                   KC_ENT,   KC_LCTL,       KC_BSPC,  KC_SPC
+    [NEWBASE] = LAYOUT_LR(
+            KC_ESC,    KC_COLN,  KC_HOME, KC_PGDN, KC_PGUP,  KC_END,
+            KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,
+            KC_TAB,    NB_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,
+            IME,       BASE_Z,   BASE_X,  BASE_C,  NB_V,     KC_B,
+                                                   KC_ENT,   KC_LCTL,
+
+                                 KC_LEFT,  KC_DOWN,  KC_UP,     KC_RGHT,  KC_UNDS,    KC_MINS,
+                                 KC_Y,     KC_U,     KC_I,      KC_O,     KC_P,       KC_BSLS,
+                                 KC_H,     BASE_J,   BASE_K,    BASE_L,   NB_SCLN,    KC_QUOT,
+                                 KC_N,     BASE_M,   BASE_COMM, BASE_DOT, BASE_SLSH,  KC_UNDS,
+                                 KC_BSPC,  KC_SPC
             ),
-    [NUM] = LAYOUT_voyager(
-            _______,   _______,  _______, _______, _______,  _______,       QK_LLCK,  KC_TAB,   _______,  _______,  _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,       KC_COLN,  KC_7,     KC_8,     KC_9,     KC_PLUS,  KC_ASTR,
-            _______,   _______,  _______, _______, _______,  _______,       KC_COMM,  KC_4,     KC_5,     KC_6,     KC_MINS,  KC_SLSH,
-            _______,   _______,  _______, _______, _______,  _______,       KC_0,     KC_1,     KC_2,     KC_3,     KC_DOT,   KC_EQL,
-                                                   _______,  _______,       _______,  _______
+    [NUM] = LAYOUT_LR(
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+                                                   _______,  _______,
+
+                                 QK_LLCK,  KC_TAB,   _______,  _______,  _______,  _______,
+                                 KC_COLN,  KC_7,     KC_8,     KC_9,     KC_PLUS,  KC_ASTR,
+                                 KC_COMM,  KC_4,     KC_5,     KC_6,     KC_MINS,  KC_SLSH,
+                                 KC_0,     KC_1,     KC_2,     KC_3,     KC_DOT,   KC_EQL,
+                                 _______,  _______
             ),
 
-    [SYM] = LAYOUT_voyager(
-            QK_LLCK, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,           KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,  KC_UNDS,
-            _______, _______, _______, _______, _______, _______,           KC_EXLM, KC_AT,   KC_LCBR, KC_RCBR, KC_PLUS,  KC_PIPE,
-            _______, _______, _______, _______, _______, _______,           KC_HASH, KC_DLR,  KC_LBRC, KC_RBRC, KC_COLN,  KC_DQUO,
-            _______, _______, _______, _______, _______, _______,           KC_PERC, KC_CIRC, KC_LABK, KC_RABK, KC_QUES,  _______,
-                                                _______, _______,           _______, _______
+    [SYM] = LAYOUT_LR(
+            QK_LLCK, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,  KC_UNDS,
+                              KC_EXLM, KC_AT,   KC_LCBR, KC_RCBR, KC_PLUS,  KC_PIPE,
+                              KC_HASH, KC_DLR,  KC_LBRC, KC_RBRC, KC_COLN,  KC_DQUO,
+                              KC_PERC, KC_CIRC, KC_LABK, KC_RABK, KC_QUES,  _______,
+                              _______, _______
             ),
     */
 
@@ -357,6 +423,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     break;
 
+    /* when both shift are held => shift + del
+       when one shift is held => del
+     */
+    case KC_BSPC: {
+      static uint16_t registered_key = KC_NO;
+      if (record->event.pressed) {  // On key press.
+        const uint8_t mods = get_mods();
+#ifndef NO_ACTION_ONESHOT
+        uint8_t shift_mods = (mods | get_oneshot_mods()) & MOD_MASK_SHIFT;
+#else
+        uint8_t shift_mods = mods & MOD_MASK_SHIFT;
+#endif  // NO_ACTION_ONESHOT
+        if (shift_mods) {  // At least one shift key is held.
+          registered_key = KC_DEL;
+          // If one shift is held, clear it from the mods. But if both
+          // shifts are held, leave as is to send Shift + Del.
+          if (shift_mods != MOD_MASK_SHIFT) {
+#ifndef NO_ACTION_ONESHOT
+            del_oneshot_mods(MOD_MASK_SHIFT);
+#endif  // NO_ACTION_ONESHOT
+            unregister_mods(MOD_MASK_SHIFT);
+          }
+        } else {
+          registered_key = KC_BSPC;
+        }
+
+        register_code(registered_key);
+        set_mods(mods);
+      } else {  // On key release.
+        unregister_code(registered_key);
+      }
+    } return false;
+
+
     case RGB_SLD:
       if (record->event.pressed) {
         rgblight_mode(1);
@@ -371,7 +471,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // https://docs.qmk.fm/#/feature_key_overrides
 const key_override_t **key_overrides = (const key_override_t *[]){
     // SHIFT+BSPC = DEL
-    &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL),
+    /* &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL), */
     // SHIFT+ESC = ~
     &ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRV)),
     // GUI+ESC = `
