@@ -23,7 +23,8 @@
 
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
-  ST_TC, // tmux copy mode
+  TMUXCOPY, // tmux copy mode
+  ARROW,
 };
 
 enum {
@@ -89,10 +90,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              QK_LLCK, ST_TC,   _______, _______, _______, _______,
-                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_SCRL,
-                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  KC_SYRQ,
+                              QK_LLCK, TMUXCOPY, ARROW,   _______, _______, _______,
+                              KC_HOME, KC_PGDN,  KC_PGUP, KC_END,  KC_INS,  KC_SCRL,
+                              KC_LEFT, KC_DOWN,  KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
+                              KC_LCBR, KC_LBRC,  KC_RBRC, KC_RCBR, KC_APP,  KC_SYRQ,
                               _______, _______
             ),
 
@@ -103,8 +104,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              XXXXXXX, KC_VOLD, KC_VOLU, KC_MUTE, KC_MPLY, QK_BOOT,
-                              XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
+                              KC_MPLY, KC_VOLD, KC_VOLU, KC_MUTE, XXXXXXX, QK_BOOT,
+                              KC_MNXT, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_TOG,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_MOD,
                               _______, _______
@@ -233,7 +234,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204},{19,255,255}, {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},
+            {184,218,204},{19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
@@ -246,8 +247,8 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                              {0,0,0}, {0,0,0},
-            {0,0,0},       {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {6,255,255},
-            {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
+            {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {0,0,0},       {6,255,255},
+            {151,234,222}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
             {221,218,204}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
             {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
             {0,0,0},       {0,0,0}
@@ -410,6 +411,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_achordion(keycode, record)) return false;
 #endif
 
+  const uint8_t mods = get_mods();
+  const uint8_t all_mods = (mods | get_weak_mods()
+#ifndef NO_ACTION_ONESHOT
+                        | get_oneshot_mods()
+#endif  // NO_ACTION_ONESHOT
+  );
+  const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
+  const bool alt = all_mods & MOD_BIT(KC_LALT);
+
   if (IS_LAYER_ON(PREFIX_LBRC) && record->event.pressed) {
       tap_code16(KC_LBRC);  // Tap [
   } else if (IS_LAYER_ON(PREFIX_RBRC) && record->event.pressed) {
@@ -417,11 +427,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case ST_TC:
-    if (record->event.pressed) {
-      SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC));
-    }
-    break;
+    case TMUXCOPY:
+        if (record->event.pressed) {
+          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC));
+        }
+        break;
+
+    case ARROW:
+        if (record->event.pressed) {
+#ifndef NO_ACTION_ONESHOT
+            del_oneshot_mods(MOD_MASK_SHIFT);
+#endif  // NO_ACTION_ONESHOT
+            unregister_mods(MOD_MASK_SA);
+            if (shift_mods)
+                SEND_STRING(alt ? "<=>" : "=>");
+            else
+                SEND_STRING(alt ? "<->" : "->");
+            set_mods(mods);
+            return false;
+        }
 
     /* when both shift are held => shift + del
        when one shift is held => del
@@ -429,12 +453,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_BSPC: {
       static uint16_t registered_key = KC_NO;
       if (record->event.pressed) {  // On key press.
-        const uint8_t mods = get_mods();
-#ifndef NO_ACTION_ONESHOT
-        uint8_t shift_mods = (mods | get_oneshot_mods()) & MOD_MASK_SHIFT;
-#else
-        uint8_t shift_mods = mods & MOD_MASK_SHIFT;
-#endif  // NO_ACTION_ONESHOT
         if (shift_mods) {  // At least one shift key is held.
           registered_key = KC_DEL;
           // If one shift is held, clear it from the mods. But if both
