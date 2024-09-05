@@ -23,8 +23,9 @@
 
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
-  TMUXCOPY, // tmux copy mode
-  ARROW,
+  TMUXCPY,  // tmux copy mode
+  ARROW,    // -> => <-> <=>
+  SRCHSEL,  // Searches the current selection in a new tab.
 };
 
 enum {
@@ -34,6 +35,7 @@ enum {
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
+    /* PREFIX_TMUX */
     /* NEWBASE, */
     /* NUM, */
     /* SYM, */
@@ -90,18 +92,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              QK_LLCK, TMUXCOPY, ARROW,   _______, _______, _______,
-                              KC_HOME, KC_PGDN,  KC_PGUP, KC_END,  KC_INS,  KC_SCRL,
-                              KC_LEFT, KC_DOWN,  KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              KC_LCBR, KC_LBRC,  KC_RBRC, KC_RCBR, KC_APP,  KC_SYRQ,
-                              _______, _______
+                              TMUXCPY, ARROW,   SRCHSEL, XXXXXXX, XXXXXXX, XXXXXXX,
+                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_DEL,  KC_INS,
+                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSPC, KC_PSCR,
+                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
+                              QK_LLCK, _______
             ),
 
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, KC_LALT, KC_LGUI, KC_LSFT, _______,
-            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, KC_LALT, KC_LGUI, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                               KC_MPLY, KC_VOLD, KC_VOLU, KC_MUTE, XXXXXXX, QK_BOOT,
@@ -138,7 +140,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______
             ),
+
     /*
+    [PREFIX_TMUX] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______
+            ),
     [NEWBASE] = LAYOUT_LR(
             KC_ESC,    KC_COLN,  KC_HOME, KC_PGDN, KC_PGUP,  KC_END,
             KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,
@@ -234,11 +250,11 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204},{19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {0,0,0},
+            {19,255,255}, {19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
-            {0,0,0},      {0,0,0}
+            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
+            {184,218,204},      {0,0,0}
     },
 
     [FN] = {
@@ -263,7 +279,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {184,218,204}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
 
@@ -276,11 +292,24 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {184,218,204}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
 
     /*
+    [PREFIX_TMUX] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
     [NUM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -424,14 +453,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       tap_code16(KC_LBRC);  // Tap [
   } else if (IS_LAYER_ON(PREFIX_RBRC) && record->event.pressed) {
       tap_code16(KC_RBRC);  // Tap ]
+  /* } else if (IS_LAYER_ON(PREFIX_TMUX) && record->event.pressed) {
+       tap_code16(G(KC_A));  // Tap ctrl+a */
   }
 
   switch (keycode) {
-    case TMUXCOPY:
+    case TMUXCPY:
         if (record->event.pressed) {
           SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC));
         }
-        break;
+        return false;
 
     case ARROW:
         if (record->event.pressed) {
@@ -444,8 +475,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             else
                 SEND_STRING(alt ? "<->" : "->");
             set_mods(mods);
-            return false;
         }
+        return false;
+
+    case SRCHSEL:  // Searches the current selection in a new tab.
+        // Mac users, change LCTL to LGUI.
+        if (record->event.pressed) {
+            SEND_STRING_DELAY(
+                    SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER),
+                    TAP_CODE_DELAY);
+        }
+        return false;
 
     /* when both shift are held => shift + del
        when one shift is held => del
