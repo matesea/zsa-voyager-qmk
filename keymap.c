@@ -398,19 +398,25 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     return achordion_opposite_hands(tap_hold_record, other_record);
 }
 
+bool achordion_eager_mod(uint8_t mod) {
+  switch (mod) {
+    case MOD_LSFT:
+    case MOD_RSFT:
+      return true;  // Eagerly apply Shift mod.
+
+    default:
+      return false;
+  }
+}
+
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     tap_hold_keycode &= 0xff;
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
-        case KC_S:
-        case KC_D:
-        case KC_F:
-        case KC_J:
-        case KC_K:
-        case KC_L:
+        case KC_A: case KC_S: case KC_D: case KC_F:
         case KC_V:
-        case KC_M:
-        case KC_COMM:
+        case KC_J: case KC_K: case KC_L:
+        case KC_M: case KC_COMM:
             return 500;
     }
     // bypass achordion timeout
@@ -421,13 +427,13 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
   if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-    return 200;  // shorter streak detection on layer-tap keys.
+    return 100;  // shorter streak detection on layer-tap keys.
   }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & MOD_LSFT) != 0) {
-    return 200;  // A shorter streak timeout for Shift mod-tap keys.
+    return 100;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
     return 250;  // A longer timeout otherwise.
   }
