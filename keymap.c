@@ -42,22 +42,22 @@ enum {
 };
 
 
-#define BASE_A      LT(FN, KC_A)
+#define BASE_A      MT(MOD_LGUI, KC_A)
 /* #define NB_A        LT(SYM, KC_A) */
 #define BASE_S      MT(MOD_LALT, KC_S)
-#define BASE_D      MT(MOD_LGUI, KC_D)
+#define BASE_D      MT(MOD_LCTL, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
 #define BASE_Z      KC_Z
 #define BASE_X      KC_X
-#define BASE_C      KC_C
+#define BASE_C      LT(FN, KC_C)
 #define BASE_V      LT(NAVI, KC_V)
 /* #define NB_V        LT(NUM, KC_V) */
 
 #define BASE_J      MT(MOD_RSFT, KC_J)
-#define BASE_K      MT(MOD_RGUI, KC_K)
+#define BASE_K      MT(MOD_RCTL, KC_K)
 #define BASE_L      MT(MOD_LALT, KC_L)
-#define BASE_SCLN   KC_SCLN
+#define BASE_SCLN   MT(MOD_RGUI, KC_SCLN)
 /* #define NB_SCLN     LT(SYM, KC_SCLN) */
 
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
@@ -66,6 +66,7 @@ enum {
 #define BASE_SLSH   KC_SLSH
 
 #define IME         G(KC_SPC)
+#define OSM_SFT     OSM(MOD_LSFT)
 
 /* #define TO_BASE     TO(BASE) */
 /* #define TO_NB       TO(NEWBASE) */
@@ -76,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_EQL, KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             KC_TAB, BASE_A, BASE_S, BASE_D, BASE_F, KC_G,
             IME,    BASE_Z, BASE_X, BASE_C, BASE_V, KC_B,
-                                            KC_ENT, KC_LCTL,
+                                            KC_ENT, OSM_SFT,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -102,7 +103,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, KC_LALT, KC_LGUI, KC_LSFT, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
@@ -110,7 +111,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_MNXT, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_TOG,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_MOD,
-                              _______, _______
+                              QK_LLCK, _______
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
@@ -254,7 +255,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
-            {184,218,204},      {0,0,0}
+            {184,218,204},{0,0,0}
     },
 
     [FN] = {
@@ -267,7 +268,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {151,234,222}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
             {221,218,204}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
             {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
-            {0,0,0},       {0,0,0}
+            {184,218,204}, {0,0,0}
     },
 
     [PREFIX_LBRC] = {
@@ -398,24 +399,13 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     return achordion_opposite_hands(tap_hold_record, other_record);
 }
 
-bool achordion_eager_mod(uint8_t mod) {
-  switch (mod) {
-    case MOD_LSFT:
-    case MOD_RSFT:
-      return true;  // Eagerly apply Shift mod.
-
-    default:
-      return false;
-  }
-}
-
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     tap_hold_keycode &= 0xff;
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
         case KC_A: case KC_S: case KC_D: case KC_F:
-        case KC_V:
-        case KC_J: case KC_K: case KC_L:
+        case KC_C: case KC_V:
+        case KC_J: case KC_K: case KC_L: case KC_SCLN:
         case KC_M: case KC_COMM:
             return 500;
     }
@@ -427,13 +417,13 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
   if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-    return 100;  // shorter streak detection on layer-tap keys.
+    return 150;  // shorter streak detection on layer-tap keys.
   }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & MOD_LSFT) != 0) {
-    return 100;  // A shorter streak timeout for Shift mod-tap keys.
+    return 150;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
     return 250;  // A longer timeout otherwise.
   }

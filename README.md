@@ -6,7 +6,7 @@ Personal ZSA voyager keyboard config
 * [Oryx configuration](https://configure.zsa.io/voyager/layouts/LNQG6/latest)
 * Homerow mod: AGS
 * Thumb
-    * left: enter, ctrl
+    * left: enter, OSM(MOD_LSFT)
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
