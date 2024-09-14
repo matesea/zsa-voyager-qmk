@@ -1,25 +1,8 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
+#include "layout.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
-
-#define LAYOUT_LR(                                     \
-    k00, k01, k02, k03, k04, k05,                      \
-    k10, k11, k12, k13, k14, k15,                      \
-    k20, k21, k22, k23, k24, k25,                      \
-    k30, k31, k32, k33, k34, k35,                      \
-                             k40, k41,                 \
-                                                       \
-                         k50, k51, k52, k53, k54, k55, \
-                         k60, k61, k62, k63, k64, k65, \
-                         k70, k71, k72, k73, k74, k75, \
-                         k80, k81, k82, k83, k84, k85, \
-                    k90, k91)                          \
-    LAYOUT_voyager(k00, k01, k02, k03, k04, k05,   k50, k51, k52, k53, k54, k55, \
-           k10, k11, k12, k13, k14, k15,   k60, k61, k62, k63, k64, k65, \
-           k20, k21, k22, k23, k24, k25,   k70, k71, k72, k73, k74, k75, \
-           k30, k31, k32, k33, k34, k35,   k80, k81, k82, k83, k84, k85, \
-                               k40, k41,   k90, k91)
 
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
@@ -66,7 +49,6 @@ enum {
 #define BASE_SLSH   KC_SLSH
 
 #define IME         G(KC_SPC)
-#define OSM_SFT     OSM(MOD_LSFT)
 
 /* #define TO_BASE     TO(BASE) */
 /* #define TO_NB       TO(NEWBASE) */
@@ -77,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_EQL, KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             KC_TAB, BASE_A, BASE_S, BASE_D, BASE_F, KC_G,
             IME,    BASE_Z, BASE_X, BASE_C, BASE_V, KC_B,
-                                            KC_ENT, OSM_SFT,
+                                            KC_ENT, KC_LCTL,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -91,13 +73,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
+                                                _______, QK_LLCK,
 
                               TMUXCPY, ARROW,   SRCHSEL, XXXXXXX, XXXXXXX, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_DEL,  KC_INS,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSPC, KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
-                              QK_LLCK, _______
+                              _______, _______
             ),
 
     [FN] = LAYOUT_LR(
@@ -108,10 +90,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                               KC_MPLY, KC_VOLD, KC_VOLU, KC_MUTE, XXXXXXX, QK_BOOT,
-                              KC_MNXT, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                              CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_TOG,
-                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_MOD,
-                              QK_LLCK, _______
+                              KC_MNXT, KC_F7,   KC_F8,   KC_F9,   KC_F10,  RGB_TOG,
+                              CW_TOGG, KC_F4,   KC_F5,   KC_F6,   KC_F11,  RGB_MOD,
+                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  RGB_RMOD,
+                              _______, _______
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
@@ -204,16 +186,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 enum combos {
-    FGESC,
-    HJESC,
+    FG_ESC,
+    CV_IME,
+    VB_CW,
+
+    HJ_ESC,
+    MC_NAVI,
+    LD_BASE,
 };
 
 const uint16_t PROGMEM fg_esc[] = { BASE_F, KC_G, COMBO_END};
-const uint16_t PROGMEM hj_esc[] = { KC_H, BASE_J, COMBO_END};
+const uint16_t PROGMEM cv_ime[] = { BASE_C, BASE_V, COMBO_END};
+const uint16_t PROGMEM vb_cw[] = { BASE_V, KC_B, COMBO_END};
+
+const uint16_t PROGMEM hj_esc[] = { BASE_J, KC_H, COMBO_END};
+const uint16_t PROGMEM mc_navi[] = { BASE_M, BASE_COMM, COMBO_END};
+const uint16_t PROGMEM ld_base[] = { KC_LEFT, KC_DOWN, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FGESC] = COMBO(fg_esc, KC_ESC),
-    [HJESC] = COMBO(hj_esc, KC_ESC),
+    [FG_ESC] = COMBO(fg_esc, KC_ESC),
+    [CV_IME] = COMBO(cv_ime, IME),
+    [VB_CW] = COMBO(vb_cw, CW_TOGG),
+
+    [HJ_ESC] = COMBO(hj_esc, KC_ESC),
+    [MC_NAVI] = COMBO(mc_navi, TO(NAVI)),
+    [LD_BASE] = COMBO(ld_base, TO(BASE)),
 };
 #endif
 
@@ -227,10 +224,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_L:
         case BASE_DOT:
             return g_tapping_term + 20;
-        case BASE_SCLN:
         case BASE_A:
         case BASE_Z:
         case BASE_SLSH:
+        case BASE_SCLN:
             return g_tapping_term + 40;
         default:
             return g_tapping_term;
@@ -249,13 +246,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
+                                            {0,0,0}, {184,218,204},
 
             {19,255,255}, {19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
-            {184,218,204},{0,0,0}
+            {0,0,0},      {0,0,0}
     },
 
     [FN] = {
@@ -264,11 +261,12 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                              {0,0,0}, {0,0,0},
+
             {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {0,0,0},       {6,255,255},
-            {151,234,222}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
+            {151,234,222}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
             {221,218,204}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
             {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
-            {184,218,204}, {0,0,0}
+            {0,0,0},       {0,0,0}
     },
 
     [PREFIX_LBRC] = {
@@ -277,6 +275,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0},
+
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -290,6 +289,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0},
+
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -407,7 +407,7 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
         case KC_C: case KC_V:
         case KC_J: case KC_K: case KC_L: case KC_SCLN:
         case KC_M: case KC_COMM:
-            return 500;
+            return 650;
     }
     // bypass achordion timeout
     return 0;
@@ -519,7 +519,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
   return true;
 }
-
 
 #ifdef KEY_OVERRIDE_ENABLE
 // https://docs.qmk.fm/#/feature_key_overrides

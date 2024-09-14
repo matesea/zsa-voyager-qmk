@@ -4,23 +4,25 @@ Personal ZSA voyager keyboard config
 
 ## Configuration
 * [Oryx configuration](https://configure.zsa.io/voyager/layouts/LNQG6/latest)
-* Homerow mod: AGS
+* Homerow mod: GACS
 * Thumb
-    * left: enter, OSM(MOD_LSFT)
+    * left: enter, ctl
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * FN: Fn/Bright/Audio/animation/TappingTerm
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
+* Combo:
+    * fg / hj = esc
+    * cv = caps word
+    * m,comma = TO(NAVI)
+    * arrow left,down = TO(BASE)
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
     * shift + esc = ~
 
 ## Disabled configuration
-* Combo:
-    * fg = esc
-    * hj = esc
 * Leader Key: replaced with prefix layers
     * leader leader = toggle vim direction, left/right braket
     * leader a = ]a, next symbol with aerial.nvim
