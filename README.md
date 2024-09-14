@@ -14,7 +14,8 @@ Personal ZSA voyager keyboard config
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Combo:
     * fg / hj = esc
-    * cv = caps word
+    * cv = IME
+    * vb = caps word
     * m,comma = TO(NAVI)
     * arrow left,down = TO(BASE)
 * Key Override
