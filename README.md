@@ -10,14 +10,13 @@ Personal ZSA voyager keyboard config
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
-    * FN: Fn/Bright/Audio/animation/TappingTerm
+    * FN: Fn/Bright/animation
+    * Shortcut: Shortcut/Audio/Macro
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Combo:
     * fg / hj = esc
     * cv = IME
     * vb = caps word
-    * m,comma = TO(NAVI)
-    * arrow left,down = TO(BASE)
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
