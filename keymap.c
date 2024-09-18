@@ -9,13 +9,13 @@ enum custom_keycodes {
   TMUXCPY,  // tmux copy mode
   ARROW,    // -> => <-> <=>
   SELLINE,
+  UPDIR,
 };
 
 enum {
     BASE = 0,
     NAVI,
     FN,
-    SHORTCUT,
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
@@ -34,7 +34,7 @@ enum {
 
 #define BASE_Z      LT(FN, KC_Z)
 #define BASE_X      KC_X
-#define BASE_C      LT(SHORTCUT, KC_C)
+#define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
 /* #define NB_V        LT(NUM, KC_V) */
 
@@ -49,7 +49,7 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   KC_SLSH
 
-#define BASE_ENT    MT(MOD_LCTL, KC_ENT)
+#define BASE_ENT    KC_ENT
 #define OSM_SFT     OSM(MOD_LSFT)
 
 #define IME         G(KC_SPC)
@@ -59,11 +59,11 @@ enum {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
-            KC_ESC, KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_EQL, KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            KC_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            IME,    BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                            BASE_ENT,   OSM_SFT,
+            KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
+            KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+                                              BASE_ENT, OSM_SFT,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -79,7 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, QK_LLCK,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                              TMUXCPY, UPDIR,   SELLINE, ARROW,   XXXXXXX, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_DEL,  KC_INS,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSPC, KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
@@ -93,24 +93,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, QK_LLCK,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                              KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT, QK_BOOT,
                               RGB_TOG, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               RGB_MOD, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               RGB_RMOD,KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
-                              _______, _______
-            ),
-
-    [SHORTCUT] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
-
-                              TMUXCPY, ARROW,   SELLINE, XXXXXXX, XXXXXXX, XXXXXXX,
-                              C(KC_Q), C(KC_W), C(KC_R), C(KC_T), C(KC_A), XXXXXXX,
-                              C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_F), XXXXXXX,
-                              KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT, XXXXXXX,
                               _______, _______
             ),
 
@@ -207,42 +193,39 @@ enum combos {
     /* left hand */
     FG_ESC,
     CV_IME,
-    XC_CW,
+    VB_CW,
+    XC_CTRL,
 
     /* right hand */
     HJ_ESC,
     MC_NAVI,
-    CD_SHORTCUT,
 
     /* return BASE from other layers */
     NAVI_BASE,
-    SHORTCUT_BASE,
     FN_BASE,
 };
 
 const uint16_t PROGMEM fg_esc[] = { BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv_ime[] = { BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xc_cw[] = {  BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM vb_cw[] = {  BASE_D, BASE_V, COMBO_END};
+const uint16_t PROGMEM xc_ctrl[] = {  BASE_X, BASE_C, COMBO_END};
 
 const uint16_t PROGMEM hj_esc[] = { BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM mc_navi[] = { BASE_M, BASE_COMM, COMBO_END};
-const uint16_t PROGMEM cd_shortcut[] = { BASE_COMM, BASE_DOT, COMBO_END};
 
 const uint16_t PROGMEM navi_base[] = { KC_LEFT, KC_DOWN, COMBO_END};
-const uint16_t PROGMEM shortcut_base[] = { C(KC_Z), C(KC_X), COMBO_END};
 const uint16_t PROGMEM fn_base[] = { RGB_MOD, KC_F4, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [FG_ESC] = COMBO(fg_esc, KC_ESC),
     [CV_IME] = COMBO(cv_ime, IME),
-    [XC_CW] = COMBO(xc_cw, CW_TOGG),
+    [VB_CW] = COMBO(vb_cw, CW_TOGG),
+    [XC_CTRL] = COMBO(xc_ctrl, OSM(MOD_LCTL)),
 
     [HJ_ESC] = COMBO(hj_esc, KC_ESC),
     [MC_NAVI] = COMBO(mc_navi, TO(NAVI)),
-    [CD_SHORTCUT] = COMBO(cd_shortcut, TO(SHORTCUT)),
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
-    [SHORTCUT_BASE] = COMBO(shortcut_base, TO(BASE)),
     [FN_BASE] = COMBO(fn_base, TO(BASE)),
 };
 #endif
@@ -282,7 +265,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {184,218,204},
 
-            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},
+            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {0,0,0},       {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
@@ -296,27 +279,12 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                              {0,0,0}, {184,218,204},
 
-            {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {6,255,255},
+            {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {6,255,255},
             {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
             {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
             {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
             {0,0,0},       {0,0,0}
     },
-
-    [SHORTCUT] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {19,255,255},  {19,255,255},  {19,255,255},  {0,0,0},       {0,0,0},       {0,0,0},
-            {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
-            {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
-            {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
 
     [PREFIX_LBRC] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -453,9 +421,9 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
         case KC_A: case KC_S: case KC_D: case KC_F:
-        case KC_C: case KC_V:
+        case KC_C: case KC_V: case KC_X: case KC_Z:
         case KC_J: case KC_K: case KC_L: case KC_SCLN:
-        case KC_M: case KC_COMM:
+        case KC_M: case KC_COMM: case KC_DOT: case KC_SLSH:
             return 650;
     }
     // bypass achordion timeout
@@ -528,6 +496,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (record->event.pressed) {
             SEND_STRING_DELAY(
                     SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY);
+        }
+        return false;
+
+    case UPDIR:
+        if (record->event.pressed) {
+            SEND_STRING_DELAY("../", TAP_CODE_DELAY);
         }
         return false;
 

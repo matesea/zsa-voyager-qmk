@@ -6,7 +6,7 @@ Personal ZSA voyager keyboard config
 * [Oryx configuration](https://configure.zsa.io/voyager/layouts/LNQG6/latest)
 * Homerow mod: GACS
 * Thumb
-    * left: enter, ctl
+    * left: enter, osm(lsft)
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
@@ -16,7 +16,9 @@ Personal ZSA voyager keyboard config
 * Combo:
     * fg / hj = esc
     * cv = IME
+    * xc = OSM(LCTL)
     * vb = caps word
+    * m, = TO(NAVI)
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
