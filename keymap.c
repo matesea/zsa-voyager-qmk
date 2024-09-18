@@ -191,39 +191,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 enum combos {
     /* left hand */
-    FG_ESC,
-    CV_IME,
-    VB_CW,
-    XC_CTRL,
+    FG,
+    CV,
+    XC,
 
     /* right hand */
-    HJ_ESC,
-    MC_NAVI,
+    HJ,
+    MC,
 
     /* return BASE from other layers */
     NAVI_BASE,
     FN_BASE,
 };
 
-const uint16_t PROGMEM fg_esc[] = { BASE_F, KC_G, COMBO_END};
-const uint16_t PROGMEM cv_ime[] = { BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM vb_cw[] = {  BASE_D, BASE_V, COMBO_END};
-const uint16_t PROGMEM xc_ctrl[] = {  BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
+const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
+const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
-const uint16_t PROGMEM hj_esc[] = { BASE_J, KC_H, COMBO_END};
-const uint16_t PROGMEM mc_navi[] = { BASE_M, BASE_COMM, COMBO_END};
+const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
+const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 
-const uint16_t PROGMEM navi_base[] = { KC_LEFT, KC_DOWN, COMBO_END};
-const uint16_t PROGMEM fn_base[] = { RGB_MOD, KC_F4, COMBO_END};
+const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
+const uint16_t PROGMEM fn_base[] = {RGB_MOD, KC_F4, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FG_ESC] = COMBO(fg_esc, KC_ESC),
-    [CV_IME] = COMBO(cv_ime, IME),
-    [VB_CW] = COMBO(vb_cw, CW_TOGG),
-    [XC_CTRL] = COMBO(xc_ctrl, OSM(MOD_LCTL)),
+    [FG] = COMBO(fg, CW_TOGG),
+    [CV] = COMBO(cv, IME),
+    [XC] = COMBO(xc, OSM(MOD_LCTL)),
 
-    [HJ_ESC] = COMBO(hj_esc, KC_ESC),
-    [MC_NAVI] = COMBO(mc_navi, TO(NAVI)),
+    [HJ] = COMBO(hj, KC_ESC),
+    [MC] = COMBO(mc, TO(NAVI)),
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
     [FN_BASE] = COMBO(fn_base, TO(BASE)),

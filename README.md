@@ -14,10 +14,10 @@ Personal ZSA voyager keyboard config
     * Shortcut: Shortcut/Audio/Macro
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Combo:
-    * fg / hj = esc
+    * hj = esc
     * cv = IME
     * xc = OSM(LCTL)
-    * vb = caps word
+    * fg = caps word
     * m, = TO(NAVI)
 * Key Override
     * shift + backspace = delete
