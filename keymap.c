@@ -52,7 +52,7 @@ enum {
 #define BASE_ENT    KC_ENT
 #define OSM_SFT     OSM(MOD_LSFT)
 
-#define IME         G(KC_SPC)
+#define LCTL_IME    MT(MOD_LCTL, KC_SPC)
 
 /* #define TO_BASE     TO(BASE) */
 /* #define TO_NB       TO(NEWBASE) */
@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            LCTL_IME, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               BASE_ENT, OSM_SFT,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -94,9 +94,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, QK_LLCK,
 
                               KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT, QK_BOOT,
-                              RGB_TOG, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                              RGB_MOD, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
-                              RGB_RMOD,KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
+                              RGB_TOG, KC_F7,   KC_F8,   KC_F9,   KC_F10,  DT_PRNT,
+                              RGB_MOD, KC_F4,   KC_F5,   KC_F6,   KC_F11,  DT_UP,
+                              RGB_RMOD,KC_F1,   KC_F2,   KC_F3,   KC_F12,  DT_DOWN,
                               _______, _______
             ),
 
@@ -146,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,    KC_COLN,  KC_HOME, KC_PGDN, KC_PGUP,  KC_END,
             KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,
             KC_TAB,    NB_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,
-            IME,       BASE_Z,   BASE_X,  BASE_C,  NB_V,     KC_B,
+            LCTL_IME,  BASE_Z,   BASE_X,  BASE_C,  NB_V,     KC_B,
                                                    KC_ENT,   KC_LCTL,
 
                                  KC_LEFT,  KC_DOWN,  KC_UP,     KC_RGHT,  KC_UNDS,    KC_MINS,
@@ -215,9 +215,9 @@ const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 const uint16_t PROGMEM fn_base[] = {RGB_MOD, KC_F4, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FG] = COMBO(fg, CW_TOGG),
-    [CV] = COMBO(cv, IME),
-    [XC] = COMBO(xc, OSM(MOD_LCTL)),
+    [FG] = COMBO(fg, KC_ESC),
+    [CV] = COMBO(cv, G(KC_SPC)),
+    [XC] = COMBO(xc, CW_TOGG),
 
     [HJ] = COMBO(hj, KC_ESC),
     [MC] = COMBO(mc, TO(NAVI)),
@@ -231,21 +231,21 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case BASE_F:
         case BASE_J:
-            return g_tapping_term - 20;
+            return g_tapping_term;
+        case BASE_D:
+        case BASE_C:
+        case BASE_V:
+        case BASE_K:
+        case BASE_M:
+        case BASE_COMM:
+            return g_tapping_term + 20;
         case BASE_S:
         case BASE_X:
         case BASE_L:
         case BASE_DOT:
-            return g_tapping_term + 20;
-        case BASE_A:
-        case BASE_Z:
-        case BASE_SLSH:
-        case BASE_SCLN:
-        case BASE_ENT:
             return g_tapping_term + 40;
-        default:
-            return g_tapping_term;
     }
+    return g_tapping_term + 60;
 }
 
 extern rgb_config_t rgb_matrix_config;
@@ -277,9 +277,9 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                              {0,0,0}, {184,218,204},
 
             {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {6,255,255},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
+            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
+            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
+            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
             {0,0,0},       {0,0,0}
     },
 
@@ -501,6 +501,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING_DELAY("../", TAP_CODE_DELAY);
         }
         return false;
+
+    case LCTL_IME:
+        // send gui+space when tap, to switch IME
+        if (record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code16(G(KC_SPC));
+                set_mods(mods);
+                return false;
+        }
+        return true;
 
     /* when both shift are held => shift + del
        when one shift is held => del
