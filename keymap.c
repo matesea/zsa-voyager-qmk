@@ -16,6 +16,7 @@ enum {
     BASE = 0,
     NAVI,
     FN,
+    SYS,
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
@@ -53,6 +54,7 @@ enum {
 #define OSM_SFT     OSM(MOD_LSFT)
 
 #define LCTL_IME    MT(MOD_LCTL, KC_SPC)
+#define SYS_UNDS    LT(SYS, KC_MINS)
 
 /* #define TO_BASE     TO(BASE) */
 /* #define TO_NB       TO(NEWBASE) */
@@ -68,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
-                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
+                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, SYS_UNDS,
                             KC_BSPC, KC_SPC
             ),
 
@@ -80,8 +82,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, QK_LLCK,
 
                               TMUXCPY, UPDIR,   SELLINE, ARROW,   XXXXXXX, XXXXXXX,
-                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_DEL,  KC_INS,
-                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_BSPC, KC_PSCR,
+                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
+                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
                               _______, _______
             ),
@@ -93,10 +95,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, QK_LLCK,
 
-                              KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT, QK_BOOT,
-                              RGB_TOG, KC_F7,   KC_F8,   KC_F9,   KC_F10,  DT_PRNT,
-                              RGB_MOD, KC_F4,   KC_F5,   KC_F6,   KC_F11,  DT_UP,
-                              RGB_RMOD,KC_F1,   KC_F2,   KC_F3,   KC_F12,  DT_DOWN,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                              XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
+                              KC_TAB,  KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
+                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
+                              _______, _______
+            ),
+
+    [SYS] = LAYOUT_LR(
+            XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
+            XXXXXXX, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
+            XXXXXXX, XXXXXXX, DT_DOWN,  DT_UP,   DT_PRNT, XXXXXXX,
+                                                _______, QK_LLCK,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
                               _______, _______
             ),
 
@@ -201,7 +217,6 @@ enum combos {
 
     /* return BASE from other layers */
     NAVI_BASE,
-    FN_BASE,
 };
 
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
@@ -212,7 +227,6 @@ const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 
 const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
-const uint16_t PROGMEM fn_base[] = {RGB_MOD, KC_F4, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, KC_ESC),
@@ -223,7 +237,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [MC] = COMBO(mc, TO(NAVI)),
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
-    [FN_BASE] = COMBO(fn_base, TO(BASE)),
 };
 #endif
 
@@ -263,7 +276,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                             {0,0,0}, {184,218,204},
 
             {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {0,0,0},       {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
             {0,0,0},      {0,0,0}
@@ -276,11 +289,25 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                              {0,0,0}, {184,218,204},
 
-            {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {6,255,255},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
-            {44,255,255}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {29,239,251},
-            {0,0,0},       {0,0,0}
+            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {44,255,255}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0},      {0,0,0}
+    },
+
+    [SYS] = {
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {0,0,0},       {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0}, {0,0,0},       {29,239,251},  {29,239,251},  {29,239,251},  {0,0,0},
+                                                              {0,0,0},       {184,218,204},
+
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
     },
 
     [PREFIX_LBRC] = {
@@ -507,6 +534,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (record->tap.count && record->event.pressed) {
                 clear_mods();
                 tap_code16(G(KC_SPC));
+                set_mods(mods);
+                return false;
+        }
+        return true;
+
+    case SYS_UNDS:
+        // send _ when tap
+        if (record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_UNDS);
                 set_mods(mods);
                 return false;
         }
