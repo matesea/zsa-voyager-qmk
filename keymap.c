@@ -10,6 +10,7 @@ enum custom_keycodes {
   ARROW,    // -> => <-> <=>
   SELLINE,
   UPDIR,
+  USRNAME,
 };
 
 enum {
@@ -28,7 +29,6 @@ enum {
 
 
 #define BASE_A      MT(MOD_LGUI, KC_A)
-/* #define NB_A        LT(SYM, KC_A) */
 #define BASE_S      MT(MOD_LALT, KC_S)
 #define BASE_D      MT(MOD_LCTL, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
@@ -37,13 +37,11 @@ enum {
 #define BASE_X      KC_X
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
-/* #define NB_V        LT(NUM, KC_V) */
 
 #define BASE_J      MT(MOD_RSFT, KC_J)
 #define BASE_K      MT(MOD_RCTL, KC_K)
 #define BASE_L      MT(MOD_LALT, KC_L)
 #define BASE_SCLN   MT(MOD_RGUI, KC_SCLN)
-/* #define NB_SCLN     LT(SYM, KC_SCLN) */
 
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
 #define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
@@ -55,9 +53,6 @@ enum {
 
 #define LCTL_IME    MT(MOD_LCTL, KC_SPC)
 #define SYS_UNDS    LT(SYS, KC_MINS)
-
-/* #define TO_BASE     TO(BASE) */
-/* #define TO_NB       TO(NEWBASE) */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -81,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, QK_LLCK,
 
-                              TMUXCPY, UPDIR,   SELLINE, ARROW,   XXXXXXX, XXXXXXX,
+                              TMUXCPY, UPDIR,   SELLINE, ARROW,   USRNAME, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
@@ -158,19 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______
             ),
-    [NEWBASE] = LAYOUT_LR(
-            KC_ESC,    KC_COLN,  KC_HOME, KC_PGDN, KC_PGUP,  KC_END,
-            KC_EQL,    KC_Q,     KC_W,    KC_E,    KC_R,     KC_T,
-            KC_TAB,    NB_A,     BASE_S,  BASE_D,  BASE_F,   KC_G,
-            LCTL_IME,  BASE_Z,   BASE_X,  BASE_C,  NB_V,     KC_B,
-                                                   KC_ENT,   KC_LCTL,
 
-                                 KC_LEFT,  KC_DOWN,  KC_UP,     KC_RGHT,  KC_UNDS,    KC_MINS,
-                                 KC_Y,     KC_U,     KC_I,      KC_O,     KC_P,       KC_BSLS,
-                                 KC_H,     BASE_J,   BASE_K,    BASE_L,   NB_SCLN,    KC_QUOT,
-                                 KC_N,     BASE_M,   BASE_COMM, BASE_DOT, BASE_SLSH,  KC_UNDS,
-                                 KC_BSPC,  KC_SPC
-            ),
     [NUM] = LAYOUT_LR(
             _______,   _______,  _______, _______, _______,  _______,
             _______,   _______,  _______, _______, _______,  _______,
@@ -185,18 +168,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _______,  _______
             ),
 
-    [SYM] = LAYOUT_LR(
-            QK_LLCK, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
+    [SYM] = LAYOUT_LR(  // Symbol layer.
+              _______, _______, _______, _______, _______, _______,
+              _______, _______, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
+              _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
+              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, _______,
+                                                           _______, _______,
 
-                              KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN,  KC_UNDS,
-                              KC_EXLM, KC_AT,   KC_LCBR, KC_RCBR, KC_PLUS,  KC_PIPE,
-                              KC_HASH, KC_DLR,  KC_LBRC, KC_RBRC, KC_COLN,  KC_DQUO,
-                              KC_PERC, KC_CIRC, KC_LABK, KC_RABK, KC_QUES,  _______,
-                              _______, _______
+                                _______, _______, _______, _______, _______, _______,
+                                KC_AMPR, _______, KC_LBRC, KC_RBRC, _______, _______,
+                                KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
+                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, _______, _______,
+                       _______, _______
             ),
     */
 
@@ -261,6 +244,19 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     return g_tapping_term + 60;
 }
 
+#ifdef PERMISSIVE_HOLD_PER_KEY
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case BASE_S:
+        case BASE_L:
+            // disable permissive hold for ALT
+            return false;
+        default:
+            return true;
+    }
+}
+#endif
+
 extern rgb_config_t rgb_matrix_config;
 
 void keyboard_post_init_user(void) {
@@ -275,7 +271,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {184,218,204},
 
-            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {0,0,0},       {0,0,0},
+            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
@@ -366,22 +362,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [SYM] = {
-        {184,218,204}, {216,248,240}, {216,248,240}, {216,248,240}, {216,248,240}, {216,248,240},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {216,248,240}, {216,248,240}, {216,248,240}, {216,248,240}, {216,248,240}, {216,248,240},
-            {46,255,255}, {46,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {216,248,240},
-            {46,255,255}, {46,255,255}, {19,255,255}, {19,255,255}, {216,248,240}, {216,248,240},
-            {46,255,255}, {46,255,255}, {216,248,240}, {216,248,240}, {216,248,240}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
     */
-
-
 };
 
 void set_layer_color(int layer) {
@@ -464,7 +445,7 @@ uint16_t achordion_streak_chord_timeout(
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-  if ((mod & MOD_LSFT) != 0) {
+  if ((mod & (MOD_LSFT | MOD_RSFT)) != 0) {
     return 150;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
     return 250;  // A longer timeout otherwise.
@@ -526,6 +507,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case UPDIR:
         if (record->event.pressed) {
             SEND_STRING_DELAY("../", TAP_CODE_DELAY);
+        }
+        return false;
+
+    case USRNAME:
+        if (record->event.pressed) {
+            SEND_STRING_DELAY("wenlongy", TAP_CODE_DELAY);
         }
         return false;
 
