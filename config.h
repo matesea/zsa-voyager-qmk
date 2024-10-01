@@ -4,13 +4,19 @@
 */
 
 #define ORYX_CONFIGURATOR
+
 #undef TAPPING_TERM
-#define TAPPING_TERM 180
+#define TAPPING_TERM 170
 #define TAPPING_TERM_PER_KEY
+
+#define QUICK_TAP_TERM_PER_KEY
+#define QUICK_TAP_TERM 120
 
 #ifdef ACHORDION_ENABLE
 #define ACHORDION_STREAK
+#if !defined(PERMISSIVE_HOLD)
 #define PERMISSIVE_HOLD
+#endif
 #define PERMISSIVE_HOLD_PER_KEY
 #endif
 
