@@ -46,9 +46,10 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
-#define BASE_ENT    MT(MOD_LGUI, KC_ENT)
+#define BASE_ENT    KC_ENT
 
 #define IME         G(KC_SPC)
+#define BASE_IME    MT(MOD_LGUI, KC_SPC)
 #define BASE_UNDS   MT(MOD_LCTL, (KC_UNDS & 0xff))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -56,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            BASE_IME, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               BASE_ENT, BASE_UNDS,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -527,6 +528,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             set_mods(mods);
         }
         return false;
+
+    case BASE_IME:
+        // send gui+space when tap
+        if (record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code16(IME);
+                set_mods(mods);
+                return false;
+        }
+        return true;
 
     case BASE_UNDS:
         // send _ when tap
