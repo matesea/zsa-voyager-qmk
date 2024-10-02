@@ -46,10 +46,10 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
-#define BASE_ENT    KC_ENT
+#define BASE_ENT    MT(MOD_LGUI, KC_ENT)
 
 #define IME         G(KC_SPC)
-#define CTL_UNDS    MT(MOD_LCTL, KC_MINS)
+#define BASE_UNDS   MT(MOD_LCTL, (KC_UNDS & 0xff))
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -57,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              BASE_ENT, CTL_UNDS,
+                                              BASE_ENT, BASE_UNDS,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -214,7 +214,7 @@ const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, KC_ESC),
-    [CV] = COMBO(cv, G(KC_SPC)),
+    [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, CW_TOGG),
 
     [HJ] = COMBO(hj, KC_ESC),
@@ -254,6 +254,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
+    case BASE_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -262,10 +263,16 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    uint16_t layer;
+
+    // only enable permissive hold for specific layer
+    if (IS_QK_LAYER_TAP(keycode)) {
+        layer = QK_LAYER_TAP_GET_LAYER(keycode);
+        return layer == NAVI || layer == FN;
+    }
+    // disable permissive hold for ALT
     switch (keycode) {
-        case BASE_S:
-        case BASE_L:
-            // disable permissive hold for ALT
+        case BASE_S: case BASE_L:
             return false;
         default:
             return true;
@@ -507,12 +514,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case TMUXCPY:
-        if (record->event.pressed) {
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC));
-        }
-        return false;
-
     case ARROW:
         if (record->event.pressed) {
 #ifndef NO_ACTION_ONESHOT
@@ -527,26 +528,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
 
-    case SELLINE:  // Selects the current line.
-        if (record->event.pressed) {
-            SEND_STRING_DELAY(
-                    SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY);
-        }
-        return false;
-
-    case UPDIR:
-        if (record->event.pressed) {
-            SEND_STRING_DELAY("../", TAP_CODE_DELAY);
-        }
-        return false;
-
-    case USRNAME:
-        if (record->event.pressed) {
-            SEND_STRING_DELAY("wenlongy", TAP_CODE_DELAY);
-        }
-        return false;
-
-    case CTL_UNDS:
+    case BASE_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
                 clear_mods();
@@ -583,12 +565,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     } return false;
 
+  }
 
-    case RGB_SLD:
-      if (record->event.pressed) {
-        rgblight_mode(1);
-      }
-      return false;
+  if (record->event.pressed) {
+    switch (keycode) {
+        case TMUXCPY:
+            SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC));
+            return false;
+
+        case SELLINE:  // Selects the current line.
+            SEND_STRING_DELAY(
+                    SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY);
+            return false;
+
+        case UPDIR:
+            SEND_STRING_DELAY("../", TAP_CODE_DELAY);
+            return false;
+
+        case USRNAME:
+            SEND_STRING_DELAY("wenlongy", TAP_CODE_DELAY);
+            return false;
+        case RGB_SLD:
+            rgblight_mode(1);
+            return false;
+    }
   }
   return true;
 }
@@ -596,8 +596,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef KEY_OVERRIDE_ENABLE
 // https://docs.qmk.fm/#/feature_key_overrides
 const key_override_t **key_overrides = (const key_override_t *[]){
-    // SHIFT+BSPC = DEL
-    /* &ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL), */
     // SHIFT+ESC = ~
     &ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRV)),
     // GUI+ESC = `
