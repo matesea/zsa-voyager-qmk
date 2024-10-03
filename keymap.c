@@ -49,15 +49,15 @@ enum {
 #define BASE_ENT    KC_ENT
 
 #define IME         G(KC_SPC)
-#define BASE_IME    MT(MOD_LGUI, KC_SPC)
-#define BASE_UNDS   MT(MOD_LCTL, (KC_UNDS & 0xff))
+#define BASE_TAB    MT(MOD_LGUI, KC_TAB)
+#define BASE_UNDS   MT(MOD_LCTL, KC_UNDS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            BASE_IME, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               BASE_ENT, BASE_UNDS,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -273,12 +273,9 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         return layer == NAVI || layer == FN;
     }
     // disable permissive hold for ALT
-    switch (keycode) {
-        case BASE_S: case BASE_L:
+    if (keycode & MOD_BIT(KC_LALT))
             return false;
-        default:
-            return true;
-    }
+    return true;
 }
 #endif
 
@@ -466,6 +463,7 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     tap_hold_keycode &= 0xff;
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
+        // homerow and bottom row
         case KC_A: case KC_S: case KC_D: case KC_F:
         case KC_C: case KC_V: case KC_X: case KC_Z:
         case KC_J: case KC_K: case KC_L: case KC_SCLN:
@@ -532,23 +530,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
 
-    case BASE_IME:
-        // send gui+space when tap
-        if (record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code16(IME);
-                set_mods(mods);
-                return false;
-        }
-        return true;
-
     case BASE_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code16(KC_UNDS);
-                set_mods(mods);
-                return false;
+            clear_mods();
+            tap_code16(KC_UNDS);
+            set_mods(mods);
+            return false;
         }
         return true;
 
