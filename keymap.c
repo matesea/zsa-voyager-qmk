@@ -246,6 +246,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     return g_tapping_term + 60;
 }
 
+#ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
   // If you quickly hold a tap-hold key after tapping it, the tap action is
   // repeated. Key repeating is useful e.g. for Vim navigation keys, but can
@@ -255,12 +256,12 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
-    case BASE_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
   }
 }
+#endif
 
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
@@ -281,6 +282,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 }
 #endif
 
+#ifdef RGB_MATRIX_CUSTOM_KB
 extern rgb_config_t rgb_matrix_config;
 
 void keyboard_post_init_user(void) {
@@ -437,6 +439,7 @@ bool rgb_matrix_indicators_user(void) {
   }
   return true;
 }
+#endif
 
 #ifdef ACHORDION_ENABLE
 // https://getreuer.info/posts/keyboards/achordion/index.html
@@ -613,51 +616,6 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &ko_make_basic(MOD_MASK_GUI, KC_ESC, KC_GRV),
     NULL
 };
-#endif
-
-#ifdef LEADER_ENABLE
-// https://docs.qmk.fm/features/leader_key
-void leader_start_user(void) {
-}
-
-void leader_end_user(void) {
-    static bool _right_bracket = true;
-
-    if (leader_sequence_one_key(QK_LEAD)) {
-        // Leader -> leader = toggle [] for vim usecase
-        _right_bracket = !_right_bracket;
-    } else if (leader_sequence_one_key(KC_T)) {
-        // Leader -> t =
-        if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_T));
-        else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_T));
-    } else if (leader_sequence_one_key(KC_B)) {
-        // Leader -> b = ]b, vim next buffer
-        if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_B));
-        else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_B));
-    } else if (leader_sequence_one_key(KC_Q)) {
-        // Leader -> q = ]q, vim next quickfix
-        if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_Q));
-        else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_Q));
-    } else if (leader_sequence_one_key(KC_A)) {
-        // Leader -> a = ]a, vim next function
-        if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_A));
-        else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_A));
-    } else if (leader_sequence_one_key(KC_C)) {
-        // Leader -> c = ]c, vim next hunk
-        if (_right_bracket)
-            SEND_STRING(SS_TAP(X_RBRC) SS_DELAY(50) SS_TAP(X_C));
-        else
-            SEND_STRING(SS_TAP(X_LBRC) SS_DELAY(50) SS_TAP(X_C));
-    }
-}
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
