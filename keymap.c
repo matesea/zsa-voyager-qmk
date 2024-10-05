@@ -46,10 +46,10 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
-#define BASE_ENT    KC_ENT
+#define BASE_ENT    LGUI_T(KC_ENT)
 
 #define IME         G(KC_SPC)
-#define BASE_TAB    MT(MOD_LGUI, KC_TAB)
+#define BASE_TAB    KC_TAB
 #define BASE_UNDS   MT(MOD_LCTL, KC_UNDS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -448,13 +448,19 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                      keyrecord_t* tap_hold_record,
                      uint16_t other_keycode,
                      keyrecord_t* other_record) {
-    switch (other_keycode) {
-    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-      case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-        other_keycode &= 0xff;  // Get base keycode.
-    }
-    // Allow same-hand holds with non-alpha keys.
-    if (other_keycode > KC_0) { return true; }
+    uint8_t tap_hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
+    uint8_t other_row = other_record->event.key.row % (MATRIX_ROWS / 2);
+
+    // allow either hold key or other key in thumb
+    if (tap_hold_row > 4 ||
+            other_row > 4)
+        return true;
+
+    // allow hold key at first column and last column
+    if ((tap_hold_record->event.key.row <= 3 && tap_hold_record->event.key.col == 1) ||
+            (6 <= tap_hold_record->event.key.row && tap_hold_record->event.key.row <= 9 &&
+            tap_hold_record->event.key.col == 5))
+        return true;
 
     return achordion_opposite_hands(tap_hold_record, other_record);
 }
@@ -468,6 +474,9 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
         case KC_C: case KC_V: case KC_X: case KC_Z:
         case KC_J: case KC_K: case KC_L: case KC_SCLN:
         case KC_M: case KC_COMM: case KC_DOT: case KC_SLSH:
+
+        // thumb keys or edge columns
+        case KC_ENT: case KC_MINS: case KC_TAB:
             return 650;
     }
     // bypass achordion timeout
