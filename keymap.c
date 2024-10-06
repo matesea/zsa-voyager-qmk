@@ -48,8 +48,10 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
-#define BASE_ENT    LGUI_T(KC_ENT)
 #define BASE_UNDS   LCTL_T(KC_UNDS)
+
+#define MAC_ENT     LCTL_T(KC_ENT)
+#define MAC_UNDS    LGUI_T(KC_UNDS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -57,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             KC_COLN,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              BASE_ENT, BASE_UNDS,
+                                              KC_ENT, BASE_UNDS,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -71,7 +73,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
+                                                MAC_ENT, MAC_UNDS,
 
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______, _______, _______, _______,  _______,
@@ -269,7 +271,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
-    case BASE_ENT:
+    case MAC_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -553,7 +555,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case BASE_UNDS:
+      case BASE_UNDS: case MAC_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
             clear_mods();
