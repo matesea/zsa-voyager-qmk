@@ -11,10 +11,12 @@ enum custom_keycodes {
   SELLINE,
   UPDIR,
   USRNAME,
+  IME,
 };
 
 enum {
     BASE = 0,
+    MAC,
     NAVI,
     FN,
     SYS,
@@ -47,16 +49,13 @@ enum {
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
 #define BASE_ENT    LGUI_T(KC_ENT)
-
-#define IME         G(KC_SPC)
-#define BASE_TAB    KC_TAB
-#define BASE_UNDS   MT(MOD_LCTL, KC_UNDS)
+#define BASE_UNDS   LCTL_T(KC_UNDS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             IME,      BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               BASE_ENT, BASE_UNDS,
 
@@ -65,6 +64,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
                             KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_COLN,
                             KC_BSPC, KC_SPC
+            ),
+
+    [MAC] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            IME,     _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -96,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [SYS] = LAYOUT_LR(
-            _______, _______, _______,  _______, _______, _______,
+            TO(BASE),TO(MAC), _______,  _______, _______, _______,
             _______, XXXXXXX, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
             _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
             _______, XXXXXXX, DT_DOWN,  DT_UP,   DT_PRNT, XXXXXXX,
@@ -256,6 +269,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
+    case BASE_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -287,6 +301,20 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
+    [MAC] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
     [NAVI] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -316,10 +344,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYS] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {0,0,0},       {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
-        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
-        {0,0,0}, {0,0,0},       {29,239,251},  {29,239,251},  {29,239,251},  {0,0,0},
+        {6,255,255}, {184,218,204}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0},     {0,0,0},       {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0},     {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0},     {0,0,0},       {29,239,251},  {29,239,251},  {29,239,251},  {0,0,0},
                                                               {0,0,0},       {184,218,204},
 
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -525,20 +553,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case ARROW:
-        if (record->event.pressed) {
-#ifndef NO_ACTION_ONESHOT
-            del_oneshot_mods(MOD_MASK_SHIFT);
-#endif  // NO_ACTION_ONESHOT
-            unregister_mods(MOD_MASK_SA);
-            if (shift_mods)
-                SEND_STRING(alt ? "<=>" : "=>");
-            else
-                SEND_STRING(alt ? "<->" : "->");
-            set_mods(mods);
-        }
-        return false;
-
     case BASE_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
@@ -598,6 +612,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         case RGB_SLD:
             rgblight_mode(1);
+            return false;
+        case ARROW:
+#ifndef NO_ACTION_ONESHOT
+            del_oneshot_mods(MOD_MASK_SHIFT);
+#endif  // NO_ACTION_ONESHOT
+            unregister_mods(MOD_MASK_SA);
+            if (shift_mods)
+                SEND_STRING(alt ? "<=>" : "=>");
+            else
+                SEND_STRING(alt ? "<->" : "->");
+            set_mods(mods);
+            return false;
+
+        /* switch IME based on layer */
+        case IME:
+            clear_mods();
+            tap_code16(IS_LAYER_ON(MAC) ? C(KC_SPC) : G(KC_SPC));
+            set_mods(mods);
             return false;
     }
   }
