@@ -12,6 +12,7 @@ enum custom_keycodes {
   UPDIR,
   USRNAME,
   IME,
+  RGB_DEF,
 };
 
 enum {
@@ -111,10 +112,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [SYS] = LAYOUT_LR(
-            TO(BASE),TO(MAC), _______,  _______, _______, _______,
-            _______, XXXXXXX, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
-            _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
             _______, XXXXXXX, DT_DOWN,  DT_UP,   DT_PRNT, XXXXXXX,
+            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
+            _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
+            _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
                                                 _______, QK_LLCK,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -346,10 +347,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYS] = {
-        {6,255,255}, {184,218,204}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0},     {0,0,0},       {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
-        {0,0,0},     {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
-        {0,0,0},     {0,0,0},       {29,239,251},  {29,239,251},  {29,239,251},  {0,0,0},
+        {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
+        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
                                                               {0,0,0},       {184,218,204},
 
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -633,6 +634,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code16(IS_LAYER_ON(MAC) ? C(KC_SPC) : G(KC_SPC));
             set_mods(mods);
             return false;
+#ifdef RGB_MATRIX_ENABLE
+        case RGB_DEF:  // Set RGB matrix to some nice defaults.
+          rgb_matrix_enable_noeeprom();
+          rgb_matrix_mode_noeeprom(RGB_MATRIX_ALPHAS_MODS);
+          rgb_matrix_sethsv_noeeprom(17, 255, 255);  // Amber color.
+          return false;
+#endif  // RGB_MATRIX_ENABLE
     }
   }
   return true;
