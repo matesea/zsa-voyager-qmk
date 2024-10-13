@@ -9,15 +9,12 @@ Personal ZSA voyager keyboard config
     * left: enter, MT(LCTL, underscore)
     * right: backspace, space
 * Layers
-    * MAC: layout dedicated for MAC
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * FN: Fn/flash
     * SYS: Audio/Bright/animation/Dynamic tapping term
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Combo:
-    * hj = esc
-    * fg = swap app, alt+tab on win/gui+tab on mac
-    * vb = swap tab in browser
+    * hj/fg = esc
     * cv = IME
     * xc = Caps Word
     * m, = TO(NAVI)

@@ -13,8 +13,6 @@ enum custom_keycodes {
   USRNAME,
   IME,
   RGB_DEF,
-  SWAPAPP,
-  SWAPTAB,
 };
 
 enum {
@@ -26,6 +24,7 @@ enum {
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
+    /* PREFIX_TMUX */
     /* SYM, */
     /* NUM, */
 };
@@ -176,6 +175,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        _______, _______
             ),
 
+    [PREFIX_TMUX] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
+
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______, _______, _______, _______,  _______,
+                              _______, _______
+            ),
+
     [NUM] = LAYOUT_LR(
             _______,   _______,  _______, _______, _______,  _______,
             _______,   _______,  _______, _______, _______,  _______,
@@ -196,7 +209,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 enum combos {
     /* left hand */
     FG,
-    VB,
     CV,
     XC,
 
@@ -209,7 +221,6 @@ enum combos {
 };
 
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
-const uint16_t PROGMEM vb[] = {BASE_V, KC_B, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
@@ -219,8 +230,7 @@ const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FG] = COMBO(fg, SWAPAPP),
-    [VB] = COMBO(vb, SWAPTAB),
+    [FG] = COMBO(fg, KC_ESC),
     [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, CW_TOGG),
 
@@ -236,7 +246,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_F:
         case BASE_J:
             return g_tapping_term;
-            /*
         case BASE_D:
         case BASE_C:
         case BASE_V:
@@ -249,9 +258,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_L:
         case BASE_DOT:
             return g_tapping_term + 40;
-            */
     }
-    return g_tapping_term + 30;
+    return g_tapping_term + 60;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
@@ -395,6 +403,19 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},       {0,0,0}
     },
 
+    [PREFIX_TMUX] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
     [NUM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -512,31 +533,6 @@ uint16_t achordion_streak_chord_timeout(
 #endif
 #endif
 
-void update_swapper(
-    bool *active,
-    uint16_t cmdish,
-    uint16_t tabish,
-    uint16_t trigger,
-    uint16_t keycode,
-    keyrecord_t *record
-) {
-    if (keycode == trigger) {
-        if (record->event.pressed) {
-            if (!*active) {
-                *active = true;
-                register_code(cmdish);
-            }
-            register_code(tabish);
-        } else {
-            unregister_code(tabish);
-            // Don't unregister cmdish until some other key is hit or released.
-        }
-    } else if (*active) {
-        unregister_code(cmdish);
-        *active = false;
-    }
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) return false;
@@ -555,15 +551,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       tap_code16(KC_LBRC);  // Tap [
   } else if (IS_LAYER_ON(PREFIX_RBRC) && record->event.pressed) {
       tap_code16(KC_RBRC);  // Tap ]
+  /* } else if (IS_LAYER_ON(PREFIX_TMUX) && record->event.pressed) {
+       tap_code16(G(KC_A));  // Tap ctrl+a */
   }
-
-  static bool sw_win_active = false;
-  static bool sw_tab_active = false;
-  update_swapper(&sw_win_active,
-          IS_LAYER_ON(MAC) ? KC_LGUI : KC_LALT,
-          KC_TAB, SWAPAPP, keycode, record);
-  update_swapper(&sw_tab_active,
-          KC_LCTL, KC_TAB, SWAPTAB, keycode, record);
 
   switch (keycode) {
       case BASE_UNDS: case MAC_UNDS:
