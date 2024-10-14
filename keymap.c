@@ -59,13 +59,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            KC_COLN,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT, BASE_UNDS,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
-                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_DQUO,
+                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_COLN,
                             KC_BSPC, KC_SPC
             ),
 
@@ -246,6 +246,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_F:
         case BASE_J:
             return g_tapping_term;
+            /*
         case BASE_D:
         case BASE_C:
         case BASE_V:
@@ -258,8 +259,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_L:
         case BASE_DOT:
             return g_tapping_term + 40;
+            */
     }
-    return g_tapping_term + 60;
+    return g_tapping_term + 15;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
