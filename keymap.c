@@ -24,7 +24,6 @@ enum {
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
-    /* PREFIX_TMUX */
     /* SYM, */
     /* NUM, */
 };
@@ -50,8 +49,6 @@ enum {
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
 #define BASE_UNDS   LCTL_T(KC_UNDS)
-
-#define MAC_ENT     LCTL_T(KC_ENT)
 #define MAC_UNDS    LGUI_T(KC_UNDS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -74,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                MAC_ENT, MAC_UNDS,
+                                                _______, MAC_UNDS,
 
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______, _______, _______, _______,  _______,
@@ -175,20 +172,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        _______, _______
             ),
 
-    [PREFIX_TMUX] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
-
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______
-            ),
-
     [NUM] = LAYOUT_LR(
             _______,   _______,  _______, _______, _______,  _______,
             _______,   _______,  _______, _______, _______,  _______,
@@ -260,8 +243,12 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_DOT:
             return g_tapping_term + 40;
             */
+        // longer tapping term for ALT
+        case BASE_S:
+        case BASE_L:
+            return g_tapping_term + 50;
     }
-    return g_tapping_term + 15;
+    return g_tapping_term + 30;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
@@ -274,7 +261,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
-    case MAC_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -405,19 +391,6 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},       {0,0,0}
     },
 
-    [PREFIX_TMUX] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
     [NUM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -489,11 +462,37 @@ bool achordion_chord(uint16_t tap_hold_keycode,
             other_row > 4)
         return true;
 
+    switch (tap_hold_keycode) {
+        /* same hand exceptions for CTRL shortcut */
+        case BASE_D:
+            if (other_keycode == BASE_A) // for tmux, ctrl-a ctrl-<letter>
+                    /*
+                // for cut/copy/paste/new tab
+                    other_keycode == BASE_X ||
+                    other_keycode == BASE_C ||
+                    other_keycode == BASE_V ||
+                    other_keycode == KC_T)
+                    */
+                return true;
+        /* same hand exceptions for GUI shortcut */
+            /*
+        case BASE_A:
+            // for cut/copy/paste/new tab on MAC OS
+            if (other_keycode == BASE_X ||
+                    other_keycode == BASE_C ||
+                    other_keycode == BASE_V ||
+                    other_keycode == KC_T)
+                return true;
+                */
+    }
+
     // allow hold key at first column and last column
+    /*
     if ((tap_hold_record->event.key.row <= 3 && tap_hold_record->event.key.col == 1) ||
             (6 <= tap_hold_record->event.key.row && tap_hold_record->event.key.row <= 9 &&
             tap_hold_record->event.key.col == 5))
         return true;
+    */
 
     return achordion_opposite_hands(tap_hold_record, other_record);
 }
