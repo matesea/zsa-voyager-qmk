@@ -13,6 +13,7 @@ enum custom_keycodes {
   USRNAME,
   IME,
   RGB_DEF,
+  SWAPP,
 };
 
 enum {
@@ -213,7 +214,7 @@ const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FG] = COMBO(fg, KC_ESC),
+    [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, CW_TOGG),
 
@@ -534,7 +535,39 @@ uint16_t achordion_streak_chord_timeout(
 #endif
 #endif
 
+void static update_swapper(
+    uint16_t *active,
+    uint16_t cmdish,
+    uint16_t tabish,
+    uint16_t trigger,
+    uint16_t keycode,
+    keyrecord_t *record
+) {
+    if (keycode == trigger) {
+        if (record->event.pressed) {
+            if (*active == KC_NO) {
+                register_code(cmdish);
+                *active = cmdish;
+            }
+            register_code(tabish);
+        } else {
+            unregister_code(tabish);
+            // Don't unregister cmdish until some other key is hit or released.
+        }
+    } else if (*active != KC_NO) {
+        unregister_code(*active);
+        *active = KC_NO;
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static uint16_t swapp_active = KC_NO;
+
+    update_swapper(
+        &swapp_active,
+        IS_LAYER_ON(MAC) ? KC_LGUI : KC_LALT,
+        KC_TAB, SWAPP, keycode, record);
+
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) return false;
 #endif
