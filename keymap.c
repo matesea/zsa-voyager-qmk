@@ -64,8 +64,8 @@ enum {
 #define BASE_DOT    KC_DOT
 #define BASE_SLSH   LT(SYS, KC_SLSH)
 
-#define BASE_UNDS   LCTL_T(KC_UNDS)
-#define MAC_UNDS    LGUI_T(KC_UNDS)
+/* #define BASE_UNDS   LCTL_T(KC_UNDS) */
+/* #define MAC_UNDS    LGUI_T(KC_UNDS) */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -101,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                               TMUXCPY, UPDIR,   SELLINE, ARROW,   USRNAME, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
@@ -115,7 +115,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
             _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
             _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______, _______, _______, _______,  _______,
@@ -294,8 +294,9 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         return layer == NAVI || layer == FN;
     }
     // disable permissive hold for ALT
-    if (keycode & MOD_BIT(KC_LALT))
-            return false;
+    // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
+    if (keycode & (QK_LALT | QK_RGUI))
+        return false;
     return true;
 }
 #endif
@@ -327,7 +328,8 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
+                                            // {0,0,0}, {184,218,204},
 
             {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
@@ -341,7 +343,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                             {0,0,0}, {184,218,204},
+                                             {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -355,7 +357,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
         {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
         {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
-                                                              {0,0,0},       {184,218,204},
+                                                              {0,0,0},       {0,0,0},
 
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -539,6 +541,7 @@ uint16_t achordion_streak_chord_timeout(
     return 150;  // shorter streak detection on NAVI layer-tap key.
   }
 
+  // shortcut not blocked by streak detection
   switch (tap_hold_keycode) {
       case BASE_D:
           if (next_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
