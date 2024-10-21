@@ -41,7 +41,3 @@
 #define CAPS_WORD_INVERT_ON_SHIFT
 #define CAPS_WORD_IDLE_TIMEOUT 5000
 #endif
-
-#ifdef REPEAT_KEY_ENABLE
-#define NO_ALT_REPEAT_KEY
-#endif

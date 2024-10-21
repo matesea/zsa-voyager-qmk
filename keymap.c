@@ -14,6 +14,21 @@ enum custom_keycodes {
   IME,
   RGB_DEF,
   SWAPP,
+
+  /* vim navigation */
+  LBRC_A,
+  LBRC_B,
+  LBRC_C,
+  LBRC_D,
+  LBRC_Q,
+  LBRC_T,
+
+  RBRC_A,
+  RBRC_B,
+  RBRC_C,
+  RBRC_D,
+  RBRC_Q,
+  RBRC_T,
 };
 
 enum {
@@ -57,13 +72,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              KC_ENT, BASE_UNDS,
+            KC_COLN,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+                                              KC_ENT,   QK_REP,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
-                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_COLN,
+                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
                             KC_BSPC, KC_SPC
             ),
 
@@ -72,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, MAC_UNDS,
+                                                _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
                               _______, _______, _______, _______, _______,  _______,
@@ -125,9 +140,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [PREFIX_LBRC] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
+            _______, LBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, LBRC_T,
+            _______, LBRC_A,  XXXXXXX, LBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, LBRC_C,  XXXXXXX, LBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -139,9 +154,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [PREFIX_RBRC] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
+            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
+            _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, RBRC_C,  XXXXXXX, RBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -218,8 +233,8 @@ combo_t key_combos[COMBO_COUNT] = {
     [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, CW_TOGG),
 
-    [HJ] = COMBO(hj, KC_ESC),
-    [MC] = COMBO(mc, TO(NAVI)),
+    [HJ] = COMBO(hj, TO(NAVI)),
+    [MC] = COMBO(mc, QK_AREP),
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
 };
@@ -466,25 +481,25 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     switch (tap_hold_keycode) {
         /* same hand exceptions for CTRL shortcut */
         case BASE_D:
-            if (other_keycode == BASE_A) // for tmux, ctrl-a ctrl-<letter>
-                    /*
+            if (other_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
                 // for cut/copy/paste/new tab
                     other_keycode == BASE_X ||
                     other_keycode == BASE_C ||
                     other_keycode == BASE_V ||
-                    other_keycode == KC_T)
-                    */
+                    other_keycode == KC_T ||
+                    other_keycode == KC_W)
                 return true;
+            break;
         /* same hand exceptions for GUI shortcut */
-            /*
         case BASE_A:
             // for cut/copy/paste/new tab on MAC OS
             if (other_keycode == BASE_X ||
                     other_keycode == BASE_C ||
                     other_keycode == BASE_V ||
-                    other_keycode == KC_T)
+                    other_keycode == KC_T ||
+                    other_keycode == KC_W)
                 return true;
-                */
+            break;
     }
 
     // allow hold key at first column and last column
@@ -522,6 +537,28 @@ uint16_t achordion_streak_chord_timeout(
 
   if (QK_LAYER_TAP_GET_LAYER(tap_hold_keycode) == NAVI) {
     return 150;  // shorter streak detection on NAVI layer-tap key.
+  }
+
+  switch (tap_hold_keycode) {
+      case BASE_D:
+          if (next_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
+                  next_keycode == BASE_X ||
+                  next_keycode == BASE_C ||
+                  next_keycode == BASE_V ||
+                  next_keycode == KC_T ||
+                  next_keycode == KC_W)
+              return 0;
+          break;
+
+      case BASE_A:
+          // for cut/copy/paste/new tab on MAC OS
+          if (next_keycode == BASE_X ||
+                  next_keycode == BASE_C ||
+                  next_keycode == BASE_V ||
+                  next_keycode == KC_T ||
+                  next_keycode == KC_W)
+              return 0;
+          break;
   }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
@@ -581,15 +618,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
 
-  if (IS_LAYER_ON(PREFIX_LBRC) && record->event.pressed) {
-      tap_code16(KC_LBRC);  // Tap [
-  } else if (IS_LAYER_ON(PREFIX_RBRC) && record->event.pressed) {
-      tap_code16(KC_RBRC);  // Tap ]
-  /* } else if (IS_LAYER_ON(PREFIX_TMUX) && record->event.pressed) {
-       tap_code16(G(KC_A));  // Tap ctrl+a */
-  }
-
   switch (keycode) {
+      /*
       case BASE_UNDS: case MAC_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
@@ -599,6 +629,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
         return true;
+        */
 
     /* when both shift are held => shift + del
        when one shift is held => del
@@ -675,6 +706,43 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           rgb_matrix_sethsv_noeeprom(17, 255, 255);  // Amber color.
           return false;
 #endif  // RGB_MATRIX_ENABLE
+
+        case LBRC_A:
+          SEND_STRING_DELAY("[a", TAP_CODE_DELAY);
+          return false;
+        case LBRC_B:
+          SEND_STRING_DELAY("[b", TAP_CODE_DELAY);
+          return false;
+        case LBRC_C:
+          SEND_STRING_DELAY("[c", TAP_CODE_DELAY);
+          return false;
+        case LBRC_D:
+          SEND_STRING_DELAY("[d", TAP_CODE_DELAY);
+          return false;
+        case LBRC_Q:
+          SEND_STRING_DELAY("[q", TAP_CODE_DELAY);
+          return false;
+        case LBRC_T:
+          SEND_STRING_DELAY("[t", TAP_CODE_DELAY);
+          return false;
+        case RBRC_A:
+          SEND_STRING_DELAY("]a", TAP_CODE_DELAY);
+          return false;
+        case RBRC_B:
+          SEND_STRING_DELAY("]b", TAP_CODE_DELAY);
+          return false;
+        case RBRC_C:
+          SEND_STRING_DELAY("]c", TAP_CODE_DELAY);
+          return false;
+        case RBRC_D:
+          SEND_STRING_DELAY("]d", TAP_CODE_DELAY);
+          return false;
+        case RBRC_Q:
+          SEND_STRING_DELAY("]q", TAP_CODE_DELAY);
+          return false;
+        case RBRC_T:
+          SEND_STRING_DELAY("]t", TAP_CODE_DELAY);
+          return false;
     }
   }
   return true;
@@ -715,3 +783,37 @@ bool caps_word_press_user(uint16_t keycode) {
   }
 }
 #endif  // CAPS_WORD_ENABLE
+
+#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    if (keycode == KC_TAB) {
+        if ((mods & MOD_MASK_CTRL)) return C(S(KC_TAB));
+        if ((mods & MOD_MASK_ALT)) return A(S(KC_TAB));
+        if (mods & MOD_MASK_GUI) return G(S(KC_TAB));
+    } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
+        switch (keycode) {
+            case KC_N:
+                if ((mods & MOD_MASK_SHIFT) == 0)
+                    return S(KC_N);
+                else
+                    return KC_N;
+                break;
+
+            /* reverse vim navigation */
+            case LBRC_A: return RBRC_A;
+            case LBRC_B: return RBRC_B;
+            case LBRC_C: return RBRC_C;
+            case LBRC_D: return RBRC_D;
+            case LBRC_Q: return RBRC_Q;
+            case LBRC_T: return RBRC_T;
+            case RBRC_A: return LBRC_A;
+            case RBRC_B: return LBRC_B;
+            case RBRC_C: return LBRC_C;
+            case RBRC_D: return LBRC_D;
+            case RBRC_Q: return LBRC_Q;
+            case RBRC_T: return LBRC_T;
+        }
+    }
+    return KC_TRNS;
+}
+#endif

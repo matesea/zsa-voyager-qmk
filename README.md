@@ -3,10 +3,9 @@
 Personal ZSA voyager keyboard config
 
 ## Configuration
-* [Oryx configuration](https://configure.zsa.io/voyager/layouts/LNQG6/latest)
 * Homerow mod: GACS
 * Thumb
-    * left: enter, MT(LCTL, underscore)
+    * left: enter, repeat key
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
@@ -14,10 +13,11 @@ Personal ZSA voyager keyboard config
     * SYS: Audio/Bright/animation/Dynamic tapping term
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
 * Combo:
-    * hj/fg = esc
+    * fg = swapp
+    * hj = TO(NAVI)
     * cv = IME
     * xc = Caps Word
-    * m, = TO(NAVI)
+    * m, = QK_AREP
 * Key Override
     * shift + backspace = delete
     * gui + esc = \`
