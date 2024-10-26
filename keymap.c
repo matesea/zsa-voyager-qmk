@@ -17,6 +17,7 @@ enum custom_keycodes {
 
   /* vim navigation */
   LBRC_A,
+  KEYSTR_MIN = LBRC_A,
   LBRC_B,
   LBRC_C,
   LBRC_D,
@@ -37,7 +38,7 @@ enum custom_keycodes {
   TMUX_V,    // C-A v, vsplit
   TMUX_G,    // C-A g, split
   TMUX_ESC,  // C-A ESC, copy mode
-  TMUX_P,    // C-A p, paste
+  TMUX_P,    // C-A p, prev window
   TMUX_QUES, // C-A ?, search backward with tmux plugin tmux-fuzzback
   TMUX_W,    // C-A w, window preview
   TMUX_N,    // C-A n, next window
@@ -45,6 +46,8 @@ enum custom_keycodes {
   TMUX_D,    // C-A d, deattach
   TMUX_F,    // C-A f, select pane with fzf
   TMUX_Z,    // C-A z, zoom in current pane
+  TMUX_LBRC, // C-A [, enter copy mode
+  TMUX_RBRC, // C-A ], paste
 
   TMUX_1,    // C-A 1, select pane 1
   TMUX_2,    // C-A 2, select pane 2
@@ -61,14 +64,19 @@ enum custom_keycodes {
   TMUX_CK,   // C-A C-k, resize
   TMUX_CJ,   // C-A C-j, resize
   TMUX_CL,   // C-A C-l, resize
+  KEYSTR_MAX = TMUX_CL,
+};
+
+struct keystring_t {
+    const char *str;
+    uint8_t delay;
 };
 
 enum {
     BASE = 0,
     MAC,
     NAVI,
-    FN,
-    SYS,
+    FNSYS,
     TMUX,
     PREFIX_LBRC,
     PREFIX_RBRC,
@@ -82,7 +90,7 @@ enum {
 #define BASE_D      MT(MOD_LCTL, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
-#define BASE_Z      LT(FN, KC_Z)
+#define BASE_Z      LT(FNSYS, KC_Z)
 #define BASE_X      KC_X
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
@@ -95,7 +103,7 @@ enum {
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
 #define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
 #define BASE_DOT    KC_DOT
-#define BASE_SLSH   LT(SYS, KC_SLSH)
+#define BASE_SLSH   LT(FNSYS, KC_SLSH)
 
 #define BASE_UNDS   LT(TMUX, KC_UNDS)
 #define BASE_COLN   LT(TMUX, KC_COLN)
@@ -143,31 +151,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______
             ),
 
-    [FN] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    [FNSYS] = LAYOUT_LR(
+            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
+            _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
+            _______, KC_LGUI, KC_LALT,  KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
                                                 _______, _______,
 
                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               KC_TAB,  KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
-                              _______, _______
-            ),
-
-    [SYS] = LAYOUT_LR(
-            _______, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
-            _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
-            _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
-                                                _______, _______,
-
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
                               _______, _______
             ),
 
@@ -178,10 +172,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX,  TMUX_Z,  TMUX_X, TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
-                              TMUX_6,  TMUX_7,  TMUX_8,  TMUX_9,  TMUX_0,    TMUX_G,
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TMUX_P,    TMUX_V,
-                              TMUX_CH, TMUX_CJ, TMUX_CK, TMUX_CL, XXXXXXX,   XXXXXXX,
-                              TMUX_N,  XXXXXXX, XXXXXXX, XXXXXXX, TMUX_QUES, XXXXXXX,
+                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
+                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    XXXXXXX,
+                              TMUX_CH, TMUX_CJ,   TMUX_CK,   TMUX_CL, XXXXXXX,   XXXXXXX,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUES, XXXXXXX,
                               _______, _______
             ),
 
@@ -295,20 +289,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BASE_F:
         case BASE_J:
             return TAPPING_TERM;
-            /*
-        case BASE_D:
-        case BASE_C:
-        case BASE_V:
-        case BASE_K:
-        case BASE_M:
-        case BASE_COMM:
-            return g_tapping_term + 20;
-        case BASE_S:
-        case BASE_X:
-        case BASE_L:
-        case BASE_DOT:
-            return g_tapping_term + 40;
-            */
         // longer tapping term for ALT
         case BASE_S:
         case BASE_L:
@@ -341,7 +321,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     // only enable permissive hold for specific layer
     if (IS_QK_LAYER_TAP(keycode)) {
         layer = QK_LAYER_TAP_GET_LAYER(keycode);
-        return layer == NAVI || layer == FN;
+        return layer == NAVI || layer == FNSYS;
     }
     // disable permissive hold for ALT
     // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
@@ -388,32 +368,18 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {0,0,0}
     },
 
-    [FN] = {
-        {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0},  {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                             {0,0,0}, {0,0,0},
+    [FNSYS] = {
+        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
+                                                              {0,0,0},       {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {44,255,255}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0},      {0,0,0}
-    },
-
-    [SYS] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
-        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
-        {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
-                                                              {0,0,0},       {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
     },
 
     [TMUX] = {
@@ -662,6 +628,54 @@ void static update_swapper(
     }
 }
 
+static const struct keystring_t keystrings[] = {
+    [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
+    [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
+    [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
+    [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
+    [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
+    [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
+    [RBRC_A - KEYSTR_MIN]   = {"]a", TAP_CODE_DELAY},
+    [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
+    [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
+    [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
+    [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
+    [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
+
+    [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), 0},
+    [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), 0},
+    [TMUX_X - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_X), 0},
+    [TMUX_V - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_V), 0},
+    [TMUX_G - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_G), 0},
+    [TMUX_ESC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_ESC), 0},
+    [TMUX_P - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_P), 0},
+    [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)), 0},
+    [TMUX_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_W), 0},
+    [TMUX_N - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_N), 0},
+    [TMUX_S - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_S), 0},
+    [TMUX_D - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_D), 0},
+    [TMUX_F - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_F), 0},
+    [TMUX_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_Z), 0},
+    [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC), 0},
+    [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_RBRC), 0},
+
+    [TMUX_1- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1), 0},
+    [TMUX_2- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2), 0},
+    [TMUX_3- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3), 0},
+    [TMUX_4- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4), 0},
+    [TMUX_5- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5), 0},
+    [TMUX_6- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6), 0},
+    [TMUX_7- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7), 0},
+    [TMUX_8- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8), 0},
+    [TMUX_9- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), 0},
+    [TMUX_0- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), 0},
+
+    [TMUX_CH- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_H)), 0},
+    [TMUX_CK- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_K)), 0},
+    [TMUX_CJ- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)), 0},
+    [TMUX_CL- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)), 0},
+};
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint16_t swapp_active = KC_NO;
 
@@ -783,125 +797,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
 #endif  // RGB_MATRIX_ENABLE
 
-        case LBRC_A:
-          SEND_STRING_DELAY("[a", TAP_CODE_DELAY);
-          return false;
-        case LBRC_B:
-          SEND_STRING_DELAY("[b", TAP_CODE_DELAY);
-          return false;
-        case LBRC_C:
-          SEND_STRING_DELAY("[c", TAP_CODE_DELAY);
-          return false;
-        case LBRC_D:
-          SEND_STRING_DELAY("[d", TAP_CODE_DELAY);
-          return false;
-        case LBRC_Q:
-          SEND_STRING_DELAY("[q", TAP_CODE_DELAY);
-          return false;
-        case LBRC_T:
-          SEND_STRING_DELAY("[t", TAP_CODE_DELAY);
-          return false;
-        case RBRC_A:
-          SEND_STRING_DELAY("]a", TAP_CODE_DELAY);
-          return false;
-        case RBRC_B:
-          SEND_STRING_DELAY("]b", TAP_CODE_DELAY);
-          return false;
-        case RBRC_C:
-          SEND_STRING_DELAY("]c", TAP_CODE_DELAY);
-          return false;
-        case RBRC_D:
-          SEND_STRING_DELAY("]d", TAP_CODE_DELAY);
-          return false;
-        case RBRC_Q:
-          SEND_STRING_DELAY("]q", TAP_CODE_DELAY);
-          return false;
-        case RBRC_T:
-          SEND_STRING_DELAY("]t", TAP_CODE_DELAY);
-          return false;
-        case TMUX_A:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)));
-          return false;
-        case TMUX_C:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)));
-          return false;
-        case TMUX_X:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_X));
-          return false;
-        case TMUX_V:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_V));
-          return false;
-        case TMUX_G:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_G));
-          return false;
-        case TMUX_ESC:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_ESC));
-          return false;
-        case TMUX_P:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_P));
-          return false;
-        case TMUX_QUES:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)));
-          return false;
-        case TMUX_W:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_W));
-          return false;
-        case TMUX_N:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_N));
-          return false;
-        case TMUX_S:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_S));
-          return false;
-        case TMUX_D:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_D));
-          return false;
-        case TMUX_F:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_F));
-          return false;
-        case TMUX_Z:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_Z));
-          return false;
-        case TMUX_1:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1));
-          return false;
-        case TMUX_2:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2));
-          return false;
-        case TMUX_3:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3));
-          return false;
-        case TMUX_4:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4));
-          return false;
-        case TMUX_5:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5));
-          return false;
-        case TMUX_6:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6));
-          return false;
-        case TMUX_7:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7));
-          return false;
-        case TMUX_8:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8));
-          return false;
-        case TMUX_9:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9));
-          return false;
-        case TMUX_0:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0));
-          return false;
-        case TMUX_CH:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_H)));
-          return false;
-        case TMUX_CJ:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)));
-          return false;
-        case TMUX_CK:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_K)));
-          return false;
-        case TMUX_CL:
-          SEND_STRING(SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)));
+        case KEYSTR_MIN ... KEYSTR_MAX:
+          const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
+          SEND_STRING_DELAY(p->str, p->delay);
           return false;
     }
   }
@@ -978,6 +876,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case TMUX_CK: return TMUX_CJ;
             case TMUX_CJ: return TMUX_CK;
             case TMUX_CL: return TMUX_CH;
+            case TMUX_N: return TMUX_P;
+            case TMUX_P: return TMUX_N;
         }
     }
     return KC_TRNS;
