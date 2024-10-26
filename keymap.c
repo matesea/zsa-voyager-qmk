@@ -8,6 +8,7 @@ enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ARROW,    // -> => <-> <=>
   SELLINE,
+  SELWORD,
   UPDIR,
   USRNAME,
   IME,
@@ -135,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              XXXXXXX, UPDIR,   SELLINE, ARROW,   USRNAME, XXXXXXX,
+                              USRNAME, ARROW,   UPDIR,   SELLINE, SELWORD, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
@@ -157,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [SYS] = LAYOUT_LR(
-            _______, XXXXXXX, DT_DOWN,  DT_UP,   DT_PRNT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
             _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
             _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
             _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
@@ -255,7 +256,7 @@ enum combos {
     /* left hand */
     FG,
     CV,
-    XC,
+    XCV,
 
     /* right hand */
     HJ,
@@ -268,7 +269,7 @@ enum combos {
 
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
@@ -279,7 +280,7 @@ const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
-    [XC] = COMBO(xc, CW_TOGG),
+    [XCV] = COMBO(xcv, CW_TOGG),
 
     [HJ] = COMBO(hj, TO(NAVI)),
     [MC] = COMBO(mc, QK_AREP),
@@ -293,7 +294,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case BASE_F:
         case BASE_J:
-            return g_tapping_term;
+            return TAPPING_TERM;
             /*
         case BASE_D:
         case BASE_C:
@@ -311,9 +312,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         // longer tapping term for ALT
         case BASE_S:
         case BASE_L:
-            return g_tapping_term + 50;
+            return TAPPING_TERM + 50;
     }
-    return g_tapping_term + 30;
+    return TAPPING_TERM + 30;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
@@ -402,7 +403,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYS] = {
-        {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {83,193,218},  {0,0,0},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
         {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
         {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
@@ -734,6 +735,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   if (record->event.pressed) {
     switch (keycode) {
+        case SELWORD:
+            if (IS_LAYER_ON(MAC))
+                SEND_STRING_DELAY(SS_LALT(SS_TAP(X_LEFT)) SS_LSFT(SS_LALT(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
+            else
+                SEND_STRING_DELAY(SS_LCTL(SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
+            return false;
+
         case SELLINE:  // Selects the current line.
             SEND_STRING_DELAY(
                     SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY);
@@ -964,6 +972,12 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case RBRC_D: return LBRC_D;
             case RBRC_Q: return LBRC_Q;
             case RBRC_T: return LBRC_T;
+
+            /* reverse tmux resize */
+            case TMUX_CH: return TMUX_CL;
+            case TMUX_CK: return TMUX_CJ;
+            case TMUX_CJ: return TMUX_CK;
+            case TMUX_CL: return TMUX_CH;
         }
     }
     return KC_TRNS;
