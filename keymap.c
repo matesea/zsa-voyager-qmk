@@ -113,6 +113,7 @@ enum {
 #define OSM_GUI     OSM(MOD_LGUI)
 #define OSM_ALT     OSM(MOD_LALT)
 
+static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
@@ -486,27 +487,32 @@ bool achordion_chord(uint16_t tap_hold_keycode,
             other_row > 4)
         return true;
 
-    switch (tap_hold_keycode) {
-        /* same hand exceptions for CTRL shortcut */
-        case BASE_D:
-            if (other_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
-                // for cut/copy/paste/new tab
-                    other_keycode == BASE_X ||
-                    other_keycode == BASE_C ||
-                    other_keycode == BASE_V ||
-                    other_keycode == KC_T)
-                return true;
-            break;
-        /* same hand exceptions for GUI shortcut */
-        case BASE_A:
-            // for cut/copy/paste/new tab on MAC OS
-            if (other_keycode == BASE_X ||
-                    other_keycode == BASE_C ||
-                    other_keycode == BASE_V ||
-                    other_keycode == KC_T ||
-                    other_keycode == KC_W)
-                return true;
-            break;
+    if (isMacOS) {
+        switch (tap_hold_keycode) {
+            /* same hand exceptions for GUI shortcut */
+            case BASE_A:
+                // for cut/copy/paste/new tab on MAC OS
+                if (other_keycode == BASE_X ||
+                        other_keycode == BASE_C ||
+                        other_keycode == BASE_V ||
+                        other_keycode == KC_T ||
+                        other_keycode == KC_W)
+                    return true;
+                break;
+        }
+    } else {
+        switch (tap_hold_keycode) {
+            /* same hand exceptions for CTRL shortcut */
+            case BASE_D:
+                if (other_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
+                    // for cut/copy/paste/new tab
+                        other_keycode == BASE_X ||
+                        other_keycode == BASE_C ||
+                        other_keycode == BASE_V ||
+                        other_keycode == KC_T)
+                    return true;
+                break;
+        }
     }
 
     // allow hold key at first column and last column
@@ -549,26 +555,28 @@ uint16_t achordion_streak_chord_timeout(
   }
 
   // shortcut not blocked by streak detection
-  switch (tap_hold_keycode) {
-      case BASE_D:
-          if (next_keycode == BASE_A ||
-                  next_keycode == BASE_X ||
-                  next_keycode == BASE_C ||
-                  next_keycode == BASE_V ||
-                  next_keycode == KC_T)
-              return 0;
-          break;
-
-      case BASE_A:
-          // for cut/copy/paste/new tab on MAC OS
-          if (next_keycode == BASE_X ||
-                  next_keycode == BASE_C ||
-                  next_keycode == BASE_V ||
-                  next_keycode == KC_T ||
-                  next_keycode == KC_W)
-              return 0;
-          break;
-  }
+    if (isMacOS) {
+        switch (tap_hold_keycode) {
+            case BASE_A:
+                // for cut/copy/paste/new tab on MAC OS
+                if (next_keycode == BASE_X ||
+                        next_keycode == BASE_C ||
+                        next_keycode == BASE_V ||
+                        next_keycode == KC_T ||
+                        next_keycode == KC_W)
+                    return 0;
+        }
+    } else {
+        switch (tap_hold_keycode) {
+            case BASE_D:
+                if (next_keycode == BASE_A ||
+                        next_keycode == BASE_X ||
+                        next_keycode == BASE_C ||
+                        next_keycode == BASE_V ||
+                        next_keycode == KC_T)
+                    return 0;
+        }
+    }
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
@@ -653,8 +661,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_CJ - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)), 0},
     [TMUX_CL - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)), 0},
 };
-
-static bool isMacOS = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint16_t swapp_active = KC_NO;
