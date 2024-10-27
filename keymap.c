@@ -7,13 +7,14 @@
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ARROW,    // -> => <-> <=>
-  SELLINE,
-  SELWORD,
-  UPDIR,
-  USRNAME,
-  IME,
-  RGB_DEF,
-  SWAPP,
+  SELLINE,  // select entire line
+  SELWORD,  // select word
+  UPDIR,    // input ../ per press
+  USRNAME,  // input username
+  IME,      // switch ime
+  RGB_DEF,  // set rgb to some nice default
+  SWAPP,    // alt-tab or gui-tab to switch foreground app
+  MAC_TOG,  // toggle mac os
 
   /* vim navigation */
   LBRC_A,
@@ -74,7 +75,6 @@ struct keystring_t {
 
 enum {
     BASE = 0,
-    MAC,
     NAVI,
     FNSYS,
     TMUX,
@@ -108,6 +108,11 @@ enum {
 #define BASE_UNDS   LT(TMUX, KC_UNDS)
 #define BASE_COLN   LT(TMUX, KC_COLN)
 
+#define OSM_SFT     OSM(MOD_LSFT)
+#define OSM_CTL     OSM(MOD_LCTL)
+#define OSM_GUI     OSM(MOD_LGUI)
+#define OSM_ALT     OSM(MOD_LALT)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
@@ -121,20 +126,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
                             KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, BASE_UNDS,
                             KC_BSPC, KC_SPC
-            ),
-
-    [MAC] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
-
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -152,15 +143,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [FNSYS] = LAYOUT_LR(
-            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
-            _______, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
-            _______, KC_LGUI, KC_LALT,  KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX,  TO(MAC), TO(BASE),XXXXXXX,
+            XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
+            XXXXXXX, OSM_GUI, OSM_ALT,  OSM_CTL, OSM_SFT, MAC_TOG,
+            XXXXXXX, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
                                                 _______, _______,
 
                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                              KC_TAB,  KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
+                              XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
                               _______, _______
             ),
@@ -172,8 +163,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX,  TMUX_Z,  TMUX_X, TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
-                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
-                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    XXXXXXX,
+                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    TMUX_G,
+                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    TMUX_V,
                               TMUX_CH, TMUX_CJ,   TMUX_CK,   TMUX_CL, XXXXXXX,   XXXXXXX,
                               TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUES, XXXXXXX,
                               _______, _______
@@ -236,7 +227,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______,   _______,  _______, _______, _______,  _______,
                                                    _______,  _______,
 
-                                 QK_LLCK,  KC_TAB,   _______,  _______,  _______,  _______,
+                                 _______,  _______,  _______,  _______,  _______,  _______,
                                  KC_COLN,  KC_7,     KC_8,     KC_9,     KC_PLUS,  KC_ASTR,
                                  KC_COMM,  KC_4,     KC_5,     KC_6,     KC_MINS,  KC_SLSH,
                                  KC_0,     KC_1,     KC_2,     KC_3,     KC_DOT,   KC_EQL,
@@ -339,27 +330,12 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [MAC] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
     [NAVI] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
-                                            // {0,0,0}, {184,218,204},
 
             {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
@@ -369,17 +345,17 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [FNSYS] = {
-        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
-        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {0,0,0},       {0,0,0},       {184,218,204}, {6,255,255},   {0,0,0},
+        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0}, {184,218,204}, {184,218,204}, {184,218,204}, {184,218,204}, {6,255,255},
+        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
                                                               {0,0,0},       {0,0,0},
 
-            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
-            {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {44,255,255}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0},      {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0},      {0,0,0}
+            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0}, {0,0,0}
     },
 
     [TMUX] = {
@@ -545,6 +521,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
 }
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+    /*
     tap_hold_keycode &= 0xff;
     // only enable achordion for homerow
     switch (tap_hold_keycode) {
@@ -559,7 +536,8 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
             return 650;
     }
     // bypass achordion timeout
-    return 0;
+    */
+    return 650;
 }
 
 #ifdef ACHORDION_STREAK
@@ -659,29 +637,31 @@ static const struct keystring_t keystrings[] = {
     [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC), 0},
     [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_RBRC), 0},
 
-    [TMUX_1- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1), 0},
-    [TMUX_2- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2), 0},
-    [TMUX_3- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3), 0},
-    [TMUX_4- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4), 0},
-    [TMUX_5- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5), 0},
-    [TMUX_6- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6), 0},
-    [TMUX_7- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7), 0},
-    [TMUX_8- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8), 0},
-    [TMUX_9- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), 0},
-    [TMUX_0- KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), 0},
+    [TMUX_1 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1), 0},
+    [TMUX_2 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2), 0},
+    [TMUX_3 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3), 0},
+    [TMUX_4 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4), 0},
+    [TMUX_5 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5), 0},
+    [TMUX_6 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6), 0},
+    [TMUX_7 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7), 0},
+    [TMUX_8 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8), 0},
+    [TMUX_9 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), 0},
+    [TMUX_0 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), 0},
 
-    [TMUX_CH- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_H)), 0},
-    [TMUX_CK- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_K)), 0},
-    [TMUX_CJ- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)), 0},
-    [TMUX_CL- KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)), 0},
+    [TMUX_CH - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_H)), 0},
+    [TMUX_CK - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_K)), 0},
+    [TMUX_CJ - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)), 0},
+    [TMUX_CL - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)), 0},
 };
+
+static bool isMacOS = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint16_t swapp_active = KC_NO;
 
     update_swapper(
         &swapp_active,
-        IS_LAYER_ON(MAC) ? KC_LGUI : KC_LALT,
+        isMacOS ? KC_LGUI : KC_LALT,
         KC_TAB, SWAPP, keycode, record);
 
 #ifdef ACHORDION_ENABLE
@@ -749,8 +729,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   if (record->event.pressed) {
     switch (keycode) {
+        case MAC_TOG:
+            isMacOS = !isMacOS;
+            return false;
+
         case SELWORD:
-            if (IS_LAYER_ON(MAC))
+            if (isMacOS)
                 SEND_STRING_DELAY(SS_LALT(SS_TAP(X_LEFT)) SS_LSFT(SS_LALT(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
             else
                 SEND_STRING_DELAY(SS_LCTL(SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
@@ -786,7 +770,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         /* switch IME based on layer */
         case IME:
             clear_mods();
-            tap_code16(IS_LAYER_ON(MAC) ? C(KC_SPC) : G(KC_SPC));
+            tap_code16(isMacOS ? C(KC_SPC) : G(KC_SPC));
             set_mods(mods);
             return false;
 #ifdef RGB_MATRIX_ENABLE
@@ -876,6 +860,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case TMUX_CK: return TMUX_CJ;
             case TMUX_CJ: return TMUX_CK;
             case TMUX_CL: return TMUX_CH;
+            /* tmux previous/next window */
             case TMUX_N: return TMUX_P;
             case TMUX_P: return TMUX_N;
         }
