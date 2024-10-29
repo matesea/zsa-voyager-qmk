@@ -3,7 +3,9 @@
   See config.h options at https://docs.qmk.fm/#/config_options?id=the-configh-file
 */
 
+#ifndef ORYX_CONFIGURATOR
 #define ORYX_CONFIGURATOR
+#endif
 
 #undef TAPPING_TERM
 #define TAPPING_TERM 170
