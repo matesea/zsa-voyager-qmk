@@ -79,11 +79,19 @@ enum custom_keycodes {
   TMUX_9,    // C-A 9, select pane 9
   TMUX_0,    // C-A 0, select pane 0
 
-  TMUX_CH,   // C-A C-h, resize
-  TMUX_CK,   // C-A C-k, resize
-  TMUX_CJ,   // C-A C-j, resize
-  TMUX_CL,   // C-A C-l, resize
-  KEYSTR_MAX = TMUX_CL,
+  TMUX_H,   // C-A h, select left pane
+  TMUX_K,   // C-A k, select down pane
+  TMUX_J,   // C-A j, select up pane
+  TMUX_L,   // C-A l, select right pane
+
+  TMUX_LCBR,   // C-A {, swap pane
+  TMUX_RCBR,   // C-A }, swap pane
+
+  TMUX_ML,   // C-A M-left, resize
+  TMUX_MD,   // C-A M-down, resize
+  TMUX_MU,   // C-A M-up, resize
+  TMUX_MR,   // C-A M-right, resize
+  KEYSTR_MAX = TMUX_MR,
 };
 
 struct keystring_t {
@@ -183,9 +191,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                               TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    TMUX_G,
-                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    TMUX_V,
-                              TMUX_CH, TMUX_CJ,   TMUX_CK,   TMUX_CL, XXXXXXX,   XXXXXXX,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUES, XXXXXXX,
+                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_V,
+                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  XXXXXXX,   TMUX_LCBR,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUES, TMUX_RCBR,
                               _______, _______
             ),
 
@@ -601,7 +609,7 @@ uint16_t achordion_streak_chord_timeout(
   if ((mod & (MOD_LSFT | MOD_RSFT)) != 0) {
     return 100;  // A shorter streak timeout for Shift mod-tap keys.
   } else {
-    return 200;  // A longer timeout otherwise.
+    return 240;  // A longer timeout otherwise.
   }
 }
 #endif
@@ -693,10 +701,18 @@ static const struct keystring_t keystrings[] = {
     [TMUX_9 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), 0},
     [TMUX_0 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), 0},
 
-    [TMUX_CH - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_H)), 0},
-    [TMUX_CK - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_K)), 0},
-    [TMUX_CJ - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_J)), 0},
-    [TMUX_CL - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_L)), 0},
+    [TMUX_H - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_H), 0},
+    [TMUX_K - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_K), 0},
+    [TMUX_J - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_J), 0},
+    [TMUX_L - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_L), 0},
+
+    [TMUX_LCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_LBRC)), 0},
+    [TMUX_RCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_RBRC)), 0},
+
+    [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_LEFT)), 0},
+    [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_DOWN)), 0},
+    [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_UP)), 0},
+    [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_RIGHT)), 0},
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -917,11 +933,19 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case RBRC_X: return LBRC_X;
             case RBRC_Z: return LBRC_Z;
 
+            case TMUX_J: return TMUX_K;
+            case TMUX_K: return TMUX_J;
+            case TMUX_H: return TMUX_L;
+            case TMUX_L: return TMUX_H;
+
             /* reverse tmux resize */
-            case TMUX_CH: return TMUX_CL;
-            case TMUX_CK: return TMUX_CJ;
-            case TMUX_CJ: return TMUX_CK;
-            case TMUX_CL: return TMUX_CH;
+            case TMUX_ML: return TMUX_MR;
+            case TMUX_MR: return TMUX_ML;
+            case TMUX_MU: return TMUX_MD;
+            case TMUX_MD: return TMUX_MU;
+
+            case TMUX_LCBR: return TMUX_RCBR;
+            case TMUX_RCBR: return TMUX_LCBR;
             /* tmux previous/next window */
             case TMUX_N: return TMUX_P;
             case TMUX_P: return TMUX_N;
