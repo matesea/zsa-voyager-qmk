@@ -10,8 +10,11 @@ CAPS_WORD_ENABLE = yes
 COMBO_ENABLE = yes
 DYNAMIC_TAPPING_TERM_ENABLE = no
 KEY_OVERRIDE_ENABLE = yes
-ACHORDION_ENABLE = yes
 LEADER_ENABLE = no
 LAYER_LOCK_ENABLE = no
 REPEAT_KEY_ENABLE = yes
 LTO_ENABLE = yes
+
+# use userspace version achordion
+OPT_DEFS += -DACHORDION_ENABLE
+SRC += features/achordion.c

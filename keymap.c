@@ -1,6 +1,9 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 #include "layout.h"
+#ifdef ACHORDION_ENABLE
+#include "features/achordion.h"
+#endif
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
 
@@ -716,13 +719,6 @@ static const struct keystring_t keystrings[] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    static uint16_t swapp_active = KC_NO;
-
-    update_swapper(
-        &swapp_active,
-        isMacOS ? KC_LGUI : KC_LALT,
-        KC_TAB, SWAPP, keycode, record);
-
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) return false;
 #endif
@@ -735,6 +731,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
+
+  static uint16_t swapp_active = KC_NO;
+
+  update_swapper(
+          &swapp_active,
+          isMacOS ? KC_LGUI : KC_LALT,
+          KC_TAB, SWAPP, keycode, record);
 
   switch (keycode) {
       case BASE_UNDS:
