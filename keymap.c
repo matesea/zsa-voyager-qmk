@@ -54,14 +54,15 @@ enum custom_keycodes {
   RBRC_Z,
 
   /* tmux navigation */
-  TMUX_ESC,  // C-A ESC, copy mode
-  TMUX_A,    // C-a C-a, last
+  TMUX_A,    // C-a C-a, last window
   TMUX_C,    // C-a C-c, create
   TMUX_X,    // C-A x, kill
   TMUX_V,    // C-A v, vsplit
   TMUX_G,    // C-A g, split
   TMUX_P,    // C-A p, prev window
-  TMUX_QUE,  // C-A ?, search backward with tmux plugin tmux-fuzzback
+  TMUX_SLSH, // C-A /, search backward
+  TMUX_SCLN, // C-A ;, last pane
+  TMUX_QUES,  // C-A ?, search backward with tmux plugin tmux-fuzzback
   TMUX_W,    // C-A w, window preview
   TMUX_N,    // C-A n, next window
   TMUX_S,    // C-A s, show all sessions
@@ -176,16 +177,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            TMUX_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
                               XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX,   XXXXXXX,
-                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    XXXXXXX,
-                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  XXXXXXX,   TMUX_LCBR,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUE,  TMUX_RCBR,
+                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_LCBR,
+                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, TMUX_RCBR,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, TMUX_QUES,
                               _______, _______
             ),
 
@@ -665,14 +666,15 @@ static const struct keystring_t keystrings[] = {
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
 
-    [TMUX_ESC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_ESC), TAP_CODE_DELAY},
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
     [TMUX_X - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_X), TAP_CODE_DELAY},
     [TMUX_V - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_V), TAP_CODE_DELAY},
     [TMUX_G - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_G), TAP_CODE_DELAY},
     [TMUX_P - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_P), TAP_CODE_DELAY},
-    [TMUX_QUE - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
+    [TMUX_SCLN - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_SCLN), TAP_CODE_DELAY},
+    [TMUX_SLSH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_SLSH), TAP_CODE_DELAY},
+    [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
     [TMUX_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_W), TAP_CODE_DELAY},
     [TMUX_N - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_N), TAP_CODE_DELAY},
     [TMUX_S - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_S), TAP_CODE_DELAY},
