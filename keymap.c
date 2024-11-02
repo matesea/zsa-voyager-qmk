@@ -54,47 +54,36 @@ enum custom_keycodes {
   RBRC_Z,
 
   /* tmux navigation */
+  TMUX_ESC,  // C-A ESC, copy mode
   TMUX_A,    // C-a C-a, last
   TMUX_C,    // C-a C-c, create
   TMUX_X,    // C-A x, kill
   TMUX_V,    // C-A v, vsplit
   TMUX_G,    // C-A g, split
-  TMUX_ESC,  // C-A ESC, copy mode
   TMUX_P,    // C-A p, prev window
-  TMUX_QUES, // C-A ?, search backward with tmux plugin tmux-fuzzback
+  TMUX_QUE,  // C-A ?, search backward with tmux plugin tmux-fuzzback
   TMUX_W,    // C-A w, window preview
   TMUX_N,    // C-A n, next window
   TMUX_S,    // C-A s, show all sessions
-  TMUX_D,    // C-A d, deattach
   TMUX_F,    // C-A f, select pane with fzf
   TMUX_Z,    // C-A z, zoom in current pane
-  TMUX_LBRC, // C-A [, enter copy mode
-  TMUX_RBRC, // C-A ], paste
-
-  TMUX_1,    // C-A 1, select pane 1
-  TMUX_2,    // C-A 2, select pane 2
-  TMUX_3,    // C-A 3, select pane 3
-  TMUX_4,    // C-A 4, select pane 4
-  TMUX_5,    // C-A 5, select pane 5
-  TMUX_6,    // C-A 6, select pane 6
-  TMUX_7,    // C-A 7, select pane 7
-  TMUX_8,    // C-A 8, select pane 8
-  TMUX_9,    // C-A 9, select pane 9
-  TMUX_0,    // C-A 0, select pane 0
 
   TMUX_H,   // C-A h, select left pane
   TMUX_K,   // C-A k, select down pane
   TMUX_J,   // C-A j, select up pane
   TMUX_L,   // C-A l, select right pane
 
-  TMUX_LCBR,   // C-A {, swap pane
-  TMUX_RCBR,   // C-A }, swap pane
-
   TMUX_ML,   // C-A M-left, resize
   TMUX_MD,   // C-A M-down, resize
   TMUX_MU,   // C-A M-up, resize
   TMUX_MR,   // C-A M-right, resize
-  KEYSTR_MAX = TMUX_MR,
+
+  TMUX_LBRC, // C-A [, enter copy mode
+  TMUX_RBRC, // C-A ], paste
+  TMUX_LCBR,   // C-A {, swap pane
+  TMUX_RCBR,   // C-A }, swap pane
+
+  KEYSTR_MAX = TMUX_RCBR,
 };
 
 struct keystring_t {
@@ -120,7 +109,7 @@ enum {
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
 #define BASE_Z      LT(FNSYS, KC_Z)
-#define BASE_X      KC_X
+#define BASE_X      LT(TMUX, KC_X)
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
 
@@ -131,11 +120,11 @@ enum {
 
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
 #define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
-#define BASE_DOT    KC_DOT
+#define BASE_DOT    LT(TMUX, KC_DOT)
 #define BASE_SLSH   LT(FNSYS, KC_SLSH)
 
-#define BASE_UNDS   LT(TMUX, KC_UNDS)
-#define BASE_COLN   LT(TMUX, KC_COLN)
+#define BASE_UNDS   KC_UNDS
+#define BASE_COLN   KC_COLN
 
 #define OSM_SFT     OSM(MOD_LSFT)
 #define OSM_CTL     OSM(MOD_LCTL)
@@ -187,16 +176,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            TMUX_ESC, TMUX_1,  TMUX_2, TMUX_3,  TMUX_4,  TMUX_5,
-            XXXXXXX,  XXXXXXX, TMUX_W, XXXXXXX, XXXXXXX, XXXXXXX,
-            XXXXXXX,  TMUX_A,  TMUX_S, TMUX_D,  TMUX_F,  TMUX_G,
-            XXXXXXX,  TMUX_Z,  TMUX_X, TMUX_C,  TMUX_V,  XXXXXXX,
+            TMUX_ESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
+            XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
-                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    TMUX_G,
-                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_V,
+                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX,   XXXXXXX,
+                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    XXXXXXX,
                               TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  XXXXXXX,   TMUX_LCBR,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUES, TMUX_RCBR,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_QUE,  TMUX_RCBR,
                               _______, _______
             ),
 
@@ -676,46 +665,34 @@ static const struct keystring_t keystrings[] = {
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
 
-    [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), 0},
-    [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), 0},
-    [TMUX_X - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_X), 0},
-    [TMUX_V - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_V), 0},
-    [TMUX_G - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_G), 0},
-    [TMUX_ESC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_ESC), 0},
-    [TMUX_P - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_P), 0},
-    [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)), 0},
-    [TMUX_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_W), 0},
-    [TMUX_N - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_N), 0},
-    [TMUX_S - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_S), 0},
-    [TMUX_D - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_D), 0},
-    [TMUX_F - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_F), 0},
-    [TMUX_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_Z), 0},
-    [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC), 0},
-    [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_RBRC), 0},
+    [TMUX_ESC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_ESC), TAP_CODE_DELAY},
+    [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
+    [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
+    [TMUX_X - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_X), TAP_CODE_DELAY},
+    [TMUX_V - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_V), TAP_CODE_DELAY},
+    [TMUX_G - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_G), TAP_CODE_DELAY},
+    [TMUX_P - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_P), TAP_CODE_DELAY},
+    [TMUX_QUE - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
+    [TMUX_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_W), TAP_CODE_DELAY},
+    [TMUX_N - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_N), TAP_CODE_DELAY},
+    [TMUX_S - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_S), TAP_CODE_DELAY},
+    [TMUX_F - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_F), TAP_CODE_DELAY},
+    [TMUX_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_Z), TAP_CODE_DELAY},
+    [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_LBRC), TAP_CODE_DELAY},
+    [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_RBRC), TAP_CODE_DELAY},
 
-    [TMUX_1 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1), 0},
-    [TMUX_2 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2), 0},
-    [TMUX_3 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3), 0},
-    [TMUX_4 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4), 0},
-    [TMUX_5 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5), 0},
-    [TMUX_6 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6), 0},
-    [TMUX_7 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7), 0},
-    [TMUX_8 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8), 0},
-    [TMUX_9 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), 0},
-    [TMUX_0 - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), 0},
+    [TMUX_H - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_H), TAP_CODE_DELAY},
+    [TMUX_K - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_K), TAP_CODE_DELAY},
+    [TMUX_J - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_J), TAP_CODE_DELAY},
+    [TMUX_L - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_L), TAP_CODE_DELAY},
 
-    [TMUX_H - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_H), 0},
-    [TMUX_K - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_K), 0},
-    [TMUX_J - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_J), 0},
-    [TMUX_L - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_L), 0},
+    [TMUX_LCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_LBRC)), TAP_CODE_DELAY},
+    [TMUX_RCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_RBRC)), TAP_CODE_DELAY},
 
-    [TMUX_LCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_LBRC)), 0},
-    [TMUX_RCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_RBRC)), 0},
-
-    [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_LEFT)), 0},
-    [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_DOWN)), 0},
-    [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_UP)), 0},
-    [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_RIGHT)), 0},
+    [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
+    [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
+    [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_UP)), TAP_CODE_DELAY},
+    [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -740,6 +717,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           KC_TAB, SWAPP, keycode, record);
 
   switch (keycode) {
+      /*
       case BASE_UNDS:
         // send _ when tap
         if (record->tap.count && record->event.pressed) {
@@ -759,6 +737,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
         return true;
+        */
 
     /* when both shift are held => shift + del
        when one shift is held => del
@@ -845,7 +824,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case KEYSTR_MIN ... KEYSTR_MAX:
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
+          clear_mods();
           SEND_STRING_DELAY(p->str, p->delay);
+          set_mods(mods);
           return false;
     }
   }

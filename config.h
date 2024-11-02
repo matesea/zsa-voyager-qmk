@@ -7,6 +7,8 @@
 #define ORYX_CONFIGURATOR
 #endif
 
+#define TAP_CODE_DELAY 5
+
 #undef TAPPING_TERM
 #define TAPPING_TERM 170
 #define TAPPING_TERM_PER_KEY
