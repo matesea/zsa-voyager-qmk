@@ -74,6 +74,9 @@ enum custom_keycodes {
   TMUX_J,   // C-A j, select up pane
   TMUX_L,   // C-A l, select right pane
 
+  TMUX_SPC, // C-A space, next layout
+  TMUX_BSPC, // C-A backspace, previous layout
+
   TMUX_ML,   // C-A M-left, resize
   TMUX_MD,   // C-A M-down, resize
   TMUX_MU,   // C-A M-up, resize
@@ -187,7 +190,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_LCBR,
                               TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, TMUX_RCBR,
                               TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, TMUX_QUES,
-                              _______, _______
+                              TMUX_BSPC, TMUX_SPC
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
@@ -691,6 +694,9 @@ static const struct keystring_t keystrings[] = {
     [TMUX_LCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_LBRC)), TAP_CODE_DELAY},
     [TMUX_RCBR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LSFT(SS_TAP(X_RBRC)), TAP_CODE_DELAY},
 
+    [TMUX_SPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_SPC), TAP_CODE_DELAY},
+    [TMUX_BSPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_BSPC), TAP_CODE_DELAY},
+
     [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
     [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
     [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_UP)), TAP_CODE_DELAY},
@@ -919,6 +925,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case RBRC_X: return LBRC_X;
             case RBRC_Z: return LBRC_Z;
 
+            /* select pane */
             case TMUX_J: return TMUX_K;
             case TMUX_K: return TMUX_J;
             case TMUX_H: return TMUX_L;
@@ -930,11 +937,17 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case TMUX_MU: return TMUX_MD;
             case TMUX_MD: return TMUX_MU;
 
+            /* swap pane */
             case TMUX_LCBR: return TMUX_RCBR;
             case TMUX_RCBR: return TMUX_LCBR;
+
             /* tmux previous/next window */
             case TMUX_N: return TMUX_P;
             case TMUX_P: return TMUX_N;
+
+            /* previous/next layout */
+            case TMUX_SPC: return TMUX_BSPC;
+            case TMUX_BSPC: return TMUX_SPC;
         }
     }
     return KC_TRNS;
