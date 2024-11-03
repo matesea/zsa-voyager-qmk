@@ -98,8 +98,9 @@ struct keystring_t {
 enum {
     BASE = 0,
     NAVI,
-    FNSYS,
-    TMUX,
+    FN,
+    TMUX_LH,
+    TMUX_RH,
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
@@ -112,8 +113,8 @@ enum {
 #define BASE_D      MT(MOD_LCTL, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
-#define BASE_Z      LT(FNSYS, KC_Z)
-#define BASE_X      LT(TMUX, KC_X)
+#define BASE_Z      LT(FN, KC_Z)
+#define BASE_X      LT(TMUX_RH, KC_X)
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
 
@@ -124,16 +125,11 @@ enum {
 
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
 #define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
-#define BASE_DOT    LT(TMUX, KC_DOT)
-#define BASE_SLSH   LT(FNSYS, KC_SLSH)
+#define BASE_DOT    LT(TMUX_LH, KC_DOT)
+#define BASE_SLSH   KC_SLSH
 
 #define BASE_UNDS   KC_UNDS
 #define BASE_COLN   KC_COLN
-
-#define OSM_SFT     OSM(MOD_LSFT)
-#define OSM_CTL     OSM(MOD_LCTL)
-#define OSM_GUI     OSM(MOD_LGUI)
-#define OSM_ALT     OSM(MOD_LALT)
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -165,11 +161,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______
             ),
 
-    [FNSYS] = LAYOUT_LR(
-            XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
-            XXXXXXX, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, XXXXXXX,
-            XXXXXXX, OSM_GUI, OSM_ALT,  OSM_CTL, OSM_SFT, MAC_TOG,
-            XXXXXXX, KC_MUTE, KC_VOLD,  KC_VOLU, KC_MPLY, KC_MNXT,
+    [FN] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
@@ -179,25 +175,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______
             ),
 
-    [TMUX] = LAYOUT_LR(
+    [TMUX_LH] = LAYOUT_LR(
             XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
+                              _______, _______, _______, _______, _______,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
+                              XXXXXXX, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
+                              _______, _______
+            ),
+
+    [TMUX_RH] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                                _______, _______,
+
                               XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX,   XXXXXXX,
-                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_LCBR,
-                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, TMUX_RCBR,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, TMUX_QUES,
+                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    XXXXXXX,
+                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, XXXXXXX,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, XXXXXXX,
                               TMUX_BSPC, TMUX_SPC
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, LBRC_Q,  LBRC_W,  LBRC_E,  LBRC_R,  LBRC_T,
-            _______, LBRC_A,  LBRC_S,  LBRC_D,  LBRC_F,  LBRC_G,
-            _______, LBRC_Z,  LBRC_X,  LBRC_C,  LBRC_V,  LBRC_B,
+            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
+            _______, LBRC_Q,  LBRC_W,  LBRC_E,  LBRC_R,   LBRC_T,
+            _______, LBRC_A,  LBRC_S,  LBRC_D,  LBRC_F,   LBRC_G,
+            _______, LBRC_Z,  LBRC_X,  LBRC_C,  LBRC_V,   LBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -208,7 +218,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [PREFIX_RBRC] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
+            _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
             _______, RBRC_Q,  RBRC_W,  RBRC_E,  RBRC_R,  RBRC_T,
             _______, RBRC_A,  RBRC_S,  RBRC_D,  RBRC_F,  RBRC_G,
             _______, RBRC_Z,  RBRC_X,  RBRC_C,  RBRC_V,  RBRC_B,
@@ -335,7 +345,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     // only enable permissive hold for specific layer
     if (IS_QK_LAYER_TAP(keycode)) {
         layer = QK_LAYER_TAP_GET_LAYER(keycode);
-        return layer == NAVI || layer == FNSYS;
+        return layer == NAVI || layer == FN;
     }
     // disable permissive hold for ALT
     // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
@@ -367,11 +377,11 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {0,0,0}
     },
 
-    [FNSYS] = {
+    [FN] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {0,0,0},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {184,218,204}, {184,218,204}, {184,218,204}, {184,218,204}, {6,255,255},
-        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
                                                               {0,0,0},       {0,0,0},
 
             {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
@@ -381,7 +391,21 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [TMUX] = {
+    [TMUX_LH] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
+    [TMUX_RH] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -396,7 +420,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [PREFIX_LBRC] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {44,255,255}, {44,255,255}, {44,255,255}, {44,255,255}, {6,255,255},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -410,7 +434,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [PREFIX_RBRC] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -831,6 +855,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif  // RGB_MATRIX_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
+          if (shift_mods) {
+              switch (keycode) {
+                  case TMUX_H: keycode = TMUX_ML; break;
+                  case TMUX_J: keycode = TMUX_MD; break;
+                  case TMUX_K: keycode = TMUX_MU; break;
+                  case TMUX_L: keycode = TMUX_MR; break;
+                  case TMUX_LBRC: keycode = TMUX_LCBR; break;
+                  case TMUX_RBRC: keycode = TMUX_RCBR; break;
+                  case TMUX_SLSH: keycode = TMUX_QUES; break;
+              }
+          }
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
           clear_mods();
           SEND_STRING_DELAY(p->str, p->delay);

@@ -9,9 +9,9 @@ Personal ZSA voyager keyboard config
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
-    * FNSYS: Fn/flash/Audio/Bright/animation/Dynamic tapping term
+    * FN: Fn/flash
     * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
-    * TMUX: tmux shortcuts
+    * TMUX_LH/TMUX_RH: tmux shortcuts
 * Combo:
     * fg = swapp
     * hj = TO(NAVI)
