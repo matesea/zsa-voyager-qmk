@@ -74,6 +74,17 @@ enum custom_keycodes {
   TMUX_J,   // C-A j, select up pane
   TMUX_L,   // C-A l, select right pane
 
+  TMUX_1,   // C-A 1, select window
+  TMUX_2,   // C-A 2, select window
+  TMUX_3,   // C-A 3, select window
+  TMUX_4,   // C-A 4, select window
+  TMUX_5,   // C-A 5, select window
+  TMUX_6,   // C-A 6, select window
+  TMUX_7,   // C-A 7, select window
+  TMUX_8,   // C-A 8, select window
+  TMUX_9,   // C-A 9, select window
+  TMUX_0,   // C-A 0, select window
+
   TMUX_SPC, // C-A space, next layout
   TMUX_BSPC, // C-A backspace, previous layout
 
@@ -176,7 +187,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX_LH] = LAYOUT_LR(
-            XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX,  TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
             XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
@@ -196,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX,   XXXXXXX,
+                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
                               XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    XXXXXXX,
                               TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, XXXXXXX,
                               TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, XXXXXXX,
@@ -720,6 +731,17 @@ static const struct keystring_t keystrings[] = {
 
     [TMUX_SPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_SPC), TAP_CODE_DELAY},
     [TMUX_BSPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_BSPC), TAP_CODE_DELAY},
+
+    [TMUX_1 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_1), TAP_CODE_DELAY},
+    [TMUX_2 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_2), TAP_CODE_DELAY},
+    [TMUX_3 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_3), TAP_CODE_DELAY},
+    [TMUX_4 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_4), TAP_CODE_DELAY},
+    [TMUX_5 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_5), TAP_CODE_DELAY},
+    [TMUX_6 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_6), TAP_CODE_DELAY},
+    [TMUX_7 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_7), TAP_CODE_DELAY},
+    [TMUX_8 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_8), TAP_CODE_DELAY},
+    [TMUX_9 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_9), TAP_CODE_DELAY},
+    [TMUX_0 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_TAP(X_0), TAP_CODE_DELAY},
 
     [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
     [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
