@@ -25,33 +25,45 @@ enum custom_keycodes {
   LBRC_B,
   LBRC_C,
   LBRC_D,
+  /*
   LBRC_E,
   LBRC_F,
   LBRC_G,
+  */
   LBRC_Q,
+  /*
   LBRC_R,
   LBRC_S,
+  */
   LBRC_T,
+  /*
   LBRC_V,
   LBRC_W,
   LBRC_X,
   LBRC_Z,
+  */
 
   RBRC_A,
   RBRC_B,
   RBRC_C,
   RBRC_D,
+  /*
   RBRC_E,
   RBRC_F,
   RBRC_G,
+  */
   RBRC_Q,
+  /*
   RBRC_R,
   RBRC_S,
+  */
   RBRC_T,
+  /*
   RBRC_V,
   RBRC_W,
   RBRC_X,
   RBRC_Z,
+  */
 
   /* tmux navigation */
   TMUX_A,    // C-a C-a, last window
@@ -216,9 +228,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [PREFIX_LBRC] = LAYOUT_LR(
             _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
-            _______, LBRC_Q,  LBRC_W,  LBRC_E,  LBRC_R,   LBRC_T,
-            _______, LBRC_A,  LBRC_S,  LBRC_D,  LBRC_F,   LBRC_G,
-            _______, LBRC_Z,  LBRC_X,  LBRC_C,  LBRC_V,   LBRC_B,
+            _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
+            _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -230,9 +242,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [PREFIX_RBRC] = LAYOUT_LR(
             _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
-            _______, RBRC_Q,  RBRC_W,  RBRC_E,  RBRC_R,  RBRC_T,
-            _______, RBRC_A,  RBRC_S,  RBRC_D,  RBRC_F,  RBRC_G,
-            _______, RBRC_Z,  RBRC_X,  RBRC_C,  RBRC_V,  RBRC_B,
+            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
+            _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -676,33 +688,45 @@ static const struct keystring_t keystrings[] = {
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
     [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
+    /*
     [LBRC_E - KEYSTR_MIN]   = {"[e", TAP_CODE_DELAY},
     [LBRC_F - KEYSTR_MIN]   = {"[f", TAP_CODE_DELAY},
     [LBRC_G - KEYSTR_MIN]   = {"[g", TAP_CODE_DELAY},
+    */
     [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
+    /*
     [LBRC_R - KEYSTR_MIN]   = {"[r", TAP_CODE_DELAY},
     [LBRC_S - KEYSTR_MIN]   = {"[s", TAP_CODE_DELAY},
+    */
     [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
+    /*
     [LBRC_V - KEYSTR_MIN]   = {"[v", TAP_CODE_DELAY},
     [LBRC_W - KEYSTR_MIN]   = {"[w", TAP_CODE_DELAY},
     [LBRC_X - KEYSTR_MIN]   = {"[x", TAP_CODE_DELAY},
     [LBRC_Z - KEYSTR_MIN]   = {"[z", TAP_CODE_DELAY},
+    */
 
     [RBRC_A - KEYSTR_MIN]   = {"]a", TAP_CODE_DELAY},
     [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
     [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
     [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
+    /*
     [RBRC_E - KEYSTR_MIN]   = {"]e", TAP_CODE_DELAY},
     [RBRC_F - KEYSTR_MIN]   = {"]f", TAP_CODE_DELAY},
     [RBRC_G - KEYSTR_MIN]   = {"]g", TAP_CODE_DELAY},
+    */
     [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
+    /*
     [RBRC_R - KEYSTR_MIN]   = {"]r", TAP_CODE_DELAY},
     [RBRC_S - KEYSTR_MIN]   = {"]s", TAP_CODE_DELAY},
+    */
     [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
+    /*
     [RBRC_V - KEYSTR_MIN]   = {"]v", TAP_CODE_DELAY},
     [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
+    */
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
@@ -954,33 +978,45 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case LBRC_B: return RBRC_B;
             case LBRC_C: return RBRC_C;
             case LBRC_D: return RBRC_D;
+            /*
             case LBRC_E: return RBRC_E;
             case LBRC_F: return RBRC_F;
             case LBRC_G: return RBRC_G;
+            */
             case LBRC_Q: return RBRC_Q;
+            /*
             case LBRC_R: return RBRC_R;
             case LBRC_S: return RBRC_S;
+            */
             case LBRC_T: return RBRC_T;
+            /*
             case LBRC_W: return RBRC_W;
             case LBRC_V: return RBRC_V;
             case LBRC_X: return RBRC_X;
             case LBRC_Z: return RBRC_Z;
+            */
 
             case RBRC_A: return LBRC_A;
             case RBRC_B: return LBRC_B;
             case RBRC_C: return LBRC_C;
             case RBRC_D: return LBRC_D;
+            /*
             case RBRC_E: return LBRC_E;
             case RBRC_F: return LBRC_F;
             case RBRC_G: return LBRC_G;
+            */
             case RBRC_Q: return LBRC_Q;
+            /*
             case RBRC_R: return LBRC_R;
             case RBRC_S: return LBRC_S;
+            */
             case RBRC_T: return LBRC_T;
+            /*
             case RBRC_W: return LBRC_W;
             case RBRC_V: return LBRC_V;
             case RBRC_X: return LBRC_X;
             case RBRC_Z: return LBRC_Z;
+            */
 
             /* select pane */
             case TMUX_J: return TMUX_K;
