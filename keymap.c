@@ -228,23 +228,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                               TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
-                              XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, TMUX_P,    XXXXXXX,
-                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, XXXXXXX,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, XXXXXXX,
+                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_LCBR,
+                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, TMUX_RCBR,
+                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, TMUX_QUES,
                               TMUX_BSPC, TMUX_SPC
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
-            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
+            KC_GRV,  RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
             _______, LBRC_Q,  VIM_W,    XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  VIM_SP,   LBRC_D,  XXXXXXX, XXXXXXX,
             _______, VIM_Z,   TMUX_P,   LBRC_C,  VIM_VS,  LBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
+                              XXXXXXX, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
                               _______, _______
             ),
 
@@ -256,9 +256,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
-                              _______, _______, _______, _______, _______,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
+                              XXXXXXX, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI,  _______,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
                               _______, _______
             ),
 
@@ -800,7 +800,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
-  const bool ctrl = all_mods & MOD_MASK_CTRL;
 
   static uint16_t swapp_active = KC_NO;
 
@@ -861,7 +860,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     /*
        shift + esc = ~
-       ctrl + esc = `
     */
     case KC_ESC: {
       static uint16_t registered_key = KC_NO;
@@ -869,12 +867,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (shift_mods) {
               registered_key = KC_GRV;
               // do not clear shift to make KC_GRV as KC_TILD
-          } else if (ctrl) {
-              registered_key = KC_GRV;
-#ifndef NO_ACTION_ONESHOT
-              del_oneshot_mods(MOD_MASK_CTRL);
-#endif
-              unregister_mods(MOD_MASK_CTRL);
           } else
               registered_key = KC_ESC;
           register_code(registered_key);
