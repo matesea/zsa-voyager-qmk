@@ -4,6 +4,7 @@
 #ifdef ACHORDION_ENABLE
 #include "features/achordion.h"
 #endif
+
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
 
@@ -799,6 +800,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
+  const bool ctrl = all_mods & MOD_MASK_CTRL;
 
   static uint16_t swapp_active = KC_NO;
 
@@ -857,6 +859,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     } return false;
 
+    /*
+       shift + esc = ~
+       ctrl + esc = `
+    */
+    case KC_ESC: {
+      static uint16_t registered_key = KC_NO;
+      if (record->event.pressed) {
+          if (shift_mods) {
+              registered_key = KC_GRV;
+              // do not clear shift to make KC_GRV as KC_TILD
+          } else if (ctrl) {
+              registered_key = KC_GRV;
+#ifndef NO_ACTION_ONESHOT
+              del_oneshot_mods(MOD_MASK_CTRL);
+#endif
+              unregister_mods(MOD_MASK_CTRL);
+          } else
+              registered_key = KC_ESC;
+          register_code(registered_key);
+          set_mods(mods);
+      } else
+          unregister_code(registered_key);
+    } return false;
   }
 
   if (record->event.pressed) {
