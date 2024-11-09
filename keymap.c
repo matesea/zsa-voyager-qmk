@@ -130,13 +130,14 @@ enum {
     BASE = 0,
     NAVI,
     FN,
-    TMUX_LH,
-    TMUX_RH,
+    TMUX,
     PREFIX_LBRC,
     PREFIX_RBRC,
     LAYER_MAX = PREFIX_RBRC,
-    /* SYM, */
-    /* NUM, */
+    /*
+    SYM,
+    NUM,
+    */
 };
 
 #define BASE_A      MT(MOD_LGUI, KC_A)
@@ -145,7 +146,7 @@ enum {
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
 #define BASE_Z      LT(FN, KC_Z)
-#define BASE_X      LT(TMUX_RH, KC_X)
+#define BASE_X      LT(TMUX, KC_X)
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
 
@@ -156,9 +157,11 @@ enum {
 
 #define BASE_M      LT(PREFIX_LBRC, KC_M)
 #define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
-#define BASE_DOT    LT(TMUX_LH, KC_DOT)
+#define BASE_DOT    LT(TMUX, KC_DOT)
 #define BASE_SLSH   KC_SLSH
 
+#define BASE_TAB    KC_TAB
+#define BASE_QUOT   KC_QUOT
 #define BASE_UNDS   KC_UNDS
 #define BASE_COLN   KC_COLN
 
@@ -167,13 +170,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,    KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            KC_TAB,    BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            BASE_TAB,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             BASE_COLN, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-                            KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
+                            KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
                             KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, BASE_UNDS,
                             KC_BSPC, KC_SPC
             ),
@@ -206,25 +209,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______
             ),
 
-    [TMUX_LH] = LAYOUT_LR(
+    [TMUX] = LAYOUT_LR(
             XXXXXXX,  TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
             XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
-                                                _______, _______,
-
-                              _______, _______, _______, _______, _______,  _______,
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
-                              XXXXXXX, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI,  _______,
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,
-                              _______, _______
-            ),
-
-    [TMUX_RH] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                               TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
@@ -249,7 +238,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [PREFIX_RBRC] = LAYOUT_LR(
-            _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
+            KC_GRV,  KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
             _______, RBRC_Q,  VIM_Q,   XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
@@ -291,10 +280,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______,   _______,  _______, _______, _______,  _______,
                                                    _______,  _______,
 
-                                 _______,  _______,  _______,  _______,  _______,  _______,
-                                 KC_COLN,  KC_7,     KC_8,     KC_9,     KC_PLUS,  KC_ASTR,
-                                 KC_COMM,  KC_4,     KC_5,     KC_6,     KC_MINS,  KC_SLSH,
-                                 KC_0,     KC_1,     KC_2,     KC_3,     KC_DOT,   KC_EQL,
+                                 _______, _______, _______, _______, _______, _______,
+                                 KC_COLN, KC_7,    KC_8,    KC_9,    KC_PLUS, KC_ASTR,
+                                 KC_COMM, KC_4,    KC_5,    KC_6,    KC_MINS, KC_SLSH,
+                                 KC_0,    KC_1,    KC_2,    KC_3,    KC_DOT,  KC_EQL,
                                  _______,  _______
             ),
     */
@@ -422,21 +411,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [TMUX_LH] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
-    [TMUX_RH] = {
+    [TMUX] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -931,6 +906,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif  // RGB_MATRIX_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
+          /*
           if (shift_mods) {
               switch (keycode) {
                   case TMUX_H: keycode = TMUX_ML; break;
@@ -942,6 +918,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   case TMUX_SLSH: keycode = TMUX_QUES; break;
               }
           }
+          */
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
           clear_mods();
           SEND_STRING_DELAY(p->str, p->delay);
