@@ -67,11 +67,13 @@ enum custom_keycodes {
   */
 
   /* vim navigation */
+  /*
   VIM_VS,
   VIM_SP,
   VIM_Z,
   VIM_W,
   VIM_Q,
+  */
 
   /* tmux navigation */
   TMUX_A,    // C-a C-a, last window
@@ -216,18 +218,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
-                              TMUX_6,  TMUX_7,    TMUX_8,    TMUX_9,  TMUX_0,    XXXXXXX,
-                              TMUX_ML, TMUX_MD,   TMUX_MU,   TMUX_MR, TMUX_P,    TMUX_LCBR,
-                              TMUX_H,  TMUX_J,    TMUX_K,    TMUX_L,  TMUX_SCLN, TMUX_RCBR,
-                              TMUX_N,  TMUX_LBRC, TMUX_RBRC, XXXXXXX, TMUX_SLSH, TMUX_QUES,
+                              TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    XXXXXXX,
+                              TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   XXXXXXX,   XXXXXXX,
+                              TMUX_H,    TMUX_J,    TMUX_K,    TMUX_L,    TMUX_SCLN, XXXXXXX,
+                              TMUX_LCBR, TMUX_LBRC, TMUX_RBRC, TMUX_RCBR, TMUX_SLSH, TMUX_QUES,
                               TMUX_BSPC, TMUX_SPC
             ),
 
     [PREFIX_LBRC] = LAYOUT_LR(
             KC_GRV,  RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
-            _______, LBRC_Q,  VIM_W,    XXXXXXX, XXXXXXX, LBRC_T,
-            _______, LBRC_A,  VIM_SP,   LBRC_D,  XXXXXXX, XXXXXXX,
-            _______, VIM_Z,   TMUX_P,   LBRC_C,  VIM_VS,  LBRC_B,
+            _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
+            _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
                                                 _______, _______,
 
                               _______, _______, _______, _______, _______,  _______,
@@ -238,8 +240,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [PREFIX_RBRC] = LAYOUT_LR(
-            KC_GRV,  KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
-            _______, RBRC_Q,  VIM_Q,   XXXXXXX, XXXXXXX, RBRC_T,
+            _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
+            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
                                                 _______, _______,
@@ -711,11 +713,13 @@ static const struct keystring_t keystrings[] = {
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
     */
 
+    /*
     [VIM_SP - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_S), TAP_CODE_DELAY},
     [VIM_VS - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_V), TAP_CODE_DELAY},
     [VIM_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_Z), TAP_CODE_DELAY},
     [VIM_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_W), TAP_CODE_DELAY},
     [VIM_Q - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_Q), TAP_CODE_DELAY},
+    */
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(100) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
