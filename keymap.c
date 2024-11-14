@@ -11,18 +11,19 @@
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ARROW,    // -> => <-> <=>
-  SELLINE,  // select entire line
   SELWORD,  // select word
-  UPDIR,    // input ../ per press
-  USRNAME,  // input username
   IME,      // switch ime
   RGB_DEF,  // set rgb to some nice default
   SWAPP,    // alt-tab or gui-tab to switch foreground app
   MAC_TOG,  // toggle mac os
 
+  KEYSTR_MIN,
+  SELLINE = KEYSTR_MIN,  // select entire line
+  UPDIR,    // input ../ per press
+  USRNAME,  // input username
+
   /* vim navigation */
   LBRC_A,
-  KEYSTR_MIN = LBRC_A,
   LBRC_B,
   LBRC_C,
   LBRC_D,
@@ -65,6 +66,10 @@ enum custom_keycodes {
   RBRC_X,
   RBRC_Z,
   */
+
+  PAREN, // parenthesis
+  BRACKET, // bracket
+  CURLYBR, // curly bracket
 
   /* vim navigation */
   /*
@@ -190,7 +195,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              USRNAME, ARROW,   UPDIR,   SELLINE, SELWORD, XXXXXXX,
+                              USRNAME, ARROW,   UPDIR,   PAREN,   BRACKET, CURLYBR,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                               KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
@@ -204,7 +209,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                              XXXXXXX, SELLINE, SELWORD, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
@@ -392,7 +397,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {0,0,0},
+            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {19,255,255},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
@@ -406,7 +411,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
                                                               {0,0,0},       {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0}, {19,255,255}, {19,255,255},  {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -669,6 +674,9 @@ void static update_swapper(
 }
 
 static const struct keystring_t keystrings[] = {
+    [SELLINE - KEYSTR_MIN]  = {SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY},
+    [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
+    [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
     [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
@@ -712,6 +720,10 @@ static const struct keystring_t keystrings[] = {
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
     */
+
+    [PAREN - KEYSTR_MIN]     = {SS_LSFT(SS_TAP(X_9) SS_TAP(X_0)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
+    [BRACKET - KEYSTR_MIN]   = {SS_TAP(X_LBRC) SS_TAP(X_RBRC) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
+    [CURLYBR - KEYSTR_MIN]   = {SS_LSFT(SS_TAP(X_LBRC) SS_TAP(X_RBRC)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
 
     /*
     [VIM_SP - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(100) SS_TAP(X_S), TAP_CODE_DELAY},
@@ -849,7 +861,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           } else
               registered_key = KC_ESC;
           register_code(registered_key);
-          set_mods(mods);
       } else
           unregister_code(registered_key);
     } return false;
@@ -868,18 +879,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING_DELAY(SS_LCTL(SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
             return false;
 
-        case SELLINE:  // Selects the current line.
-            SEND_STRING_DELAY(
-                    SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY);
-            return false;
-
-        case UPDIR:
-            SEND_STRING_DELAY("../", TAP_CODE_DELAY);
-            return false;
-
-        case USRNAME:
-            SEND_STRING_DELAY("wenlongy", TAP_CODE_DELAY);
-            return false;
         case RGB_SLD:
             rgblight_mode(1);
             return false;
