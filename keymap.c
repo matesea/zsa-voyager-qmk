@@ -138,9 +138,9 @@ enum {
     NAVI,
     FN,
     TMUX,
-    PREFIX_LBRC,
-    PREFIX_RBRC,
-    LAYER_MAX = PREFIX_RBRC,
+    BACKWARD,
+    FORWARD,
+    LAYER_MAX = FORWARD,
     /*
     SYM,
     NUM,
@@ -162,8 +162,8 @@ enum {
 #define BASE_L      MT(MOD_LALT, KC_L)
 #define BASE_SCLN   MT(MOD_RGUI, KC_SCLN)
 
-#define BASE_M      LT(PREFIX_LBRC, KC_M)
-#define BASE_COMM   LT(PREFIX_RBRC, KC_COMM)
+#define BASE_M      LT(BACKWARD, KC_M)
+#define BASE_COMM   LT(FORWARD, KC_COMM)
 #define BASE_DOT    LT(TMUX, KC_DOT)
 #define BASE_SLSH   KC_SLSH
 
@@ -230,7 +230,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               TMUX_BSPC, TMUX_SPC
             ),
 
-    [PREFIX_LBRC] = LAYOUT_LR(
+    [BACKWARD] = LAYOUT_LR(
             KC_GRV,  RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
             _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
@@ -244,7 +244,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______
             ),
 
-    [PREFIX_RBRC] = LAYOUT_LR(
+    [FORWARD] = LAYOUT_LR(
             _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
             _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
@@ -432,7 +432,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [PREFIX_LBRC] = {
+    [BACKWARD] = {
         {0,0,0}, {44,255,255}, {44,255,255}, {44,255,255}, {44,255,255}, {6,255,255},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -446,7 +446,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [PREFIX_RBRC] = {
+    [FORWARD] = {
         {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},

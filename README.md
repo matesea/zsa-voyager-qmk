@@ -10,8 +10,8 @@ Personal ZSA voyager keyboard config
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * FN: Fn/flash
-    * PREFIX_LBRC, PREFIX_RBRC: prefix any keystroke with [ or ], mainly for vim navigation
-    * TMUX_LH/TMUX_RH: tmux shortcuts
+    * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
+    * TMUX: tmux shortcuts
 * Combo:
     * fg = swapp
     * hj = TO(NAVI)
