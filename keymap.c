@@ -196,9 +196,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                               USRNAME, ARROW,   UPDIR,   PAREN,   BRACKET, CURLYBR,
-                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
+                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  XXXXXXX,
+                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  KC_SCRL,
                               _______, _______
             ),
 
@@ -398,9 +398,9 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                             {0,0,0}, {0,0,0},
 
             {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {19,255,255},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
             {0,0,0},      {0,0,0}
     },
 
@@ -855,15 +855,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     */
     case KC_ESC: {
       static uint16_t registered_key = KC_NO;
+
       if (record->event.pressed) {
-          if (shift_mods) {
-              registered_key = KC_GRV;
-              // do not clear shift to make KC_GRV as KC_TILD
-          } else
-              registered_key = KC_ESC;
-          register_code(registered_key);
-      } else
-          unregister_code(registered_key);
+          process_caps_word(keycode, record);
+          const bool shifted = (mods | get_weak_mods()) & MOD_MASK_SHIFT;
+          clear_weak_mods();
+          clear_mods();
+
+          registered_key = shifted ? KC_TILD : KC_ESC;
+          register_code16(registered_key);
+          set_mods(mods);
+      } else if (registered_key) {
+          unregister_code16(registered_key);
+          registered_key = KC_NO;
+      }
     } return false;
   }
 
