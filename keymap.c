@@ -136,15 +136,13 @@ struct keystring_t {
 enum {
     BASE = 0,
     NAVI,
+    SYM,
+    NUM,
     FN,
     TMUX,
     BACKWARD,
     FORWARD,
     LAYER_MAX = FORWARD,
-    /*
-    SYM,
-    NUM,
-    */
 };
 
 #define BASE_A      MT(MOD_LGUI, KC_A)
@@ -152,9 +150,9 @@ enum {
 #define BASE_D      MT(MOD_LCTL, KC_D)
 #define BASE_F      MT(MOD_LSFT, KC_F)
 
-#define BASE_Z      LT(FN, KC_Z)
+#define BASE_Z      LT(SYM, KC_Z)
 #define BASE_X      LT(TMUX, KC_X)
-#define BASE_C      KC_C
+#define BASE_C      LT(NUM, KC_C)
 #define BASE_V      LT(NAVI, KC_V)
 
 #define BASE_J      MT(MOD_RSFT, KC_J)
@@ -165,12 +163,12 @@ enum {
 #define BASE_M      LT(BACKWARD, KC_M)
 #define BASE_COMM   LT(FORWARD, KC_COMM)
 #define BASE_DOT    LT(TMUX, KC_DOT)
-#define BASE_SLSH   KC_SLSH
+#define BASE_SLSH   LT(SYM, KC_SLSH)
 
 #define BASE_TAB    KC_TAB
 #define BASE_QUOT   KC_QUOT
 #define BASE_UNDS   KC_UNDS
-#define BASE_COLN   KC_COLN
+// #define BASE_COLN   KC_COLN
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -178,7 +176,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,    KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             BASE_TAB,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            BASE_COLN, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            CW_TOGG,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -209,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, SELLINE, SELWORD, XXXXXXX, XXXXXXX, QK_BOOT,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
@@ -217,10 +215,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            XXXXXXX,  TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
-            XXXXXXX,  XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
-            XXXXXXX,  TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
-            XXXXXXX,  TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
+            TMUX_LBRC, TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
+            XXXXXXX,   XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX,   TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
+            XXXXXXX,   TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
                               TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    XXXXXXX,
@@ -266,7 +264,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 & X [ ]
                 | : ( ) %
                 ~ $ { }
-    [SYM] = LAYOUT_LR(  // Symbol layer.
+                */
+
+    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
               _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
@@ -277,7 +277,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
                                 KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
-                       _______, _______
+                                _______, _______
             ),
 
     [NUM] = LAYOUT_LR(
@@ -287,13 +287,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______,   _______,  _______, _______, _______,  _______,
                                                    _______,  _______,
 
-                                 _______, _______, _______, _______, _______, _______,
-                                 KC_COLN, KC_7,    KC_8,    KC_9,    KC_PLUS, KC_ASTR,
-                                 KC_COMM, KC_4,    KC_5,    KC_6,    KC_MINS, KC_SLSH,
-                                 KC_0,    KC_1,    KC_2,    KC_3,    KC_DOT,  KC_EQL,
-                                 _______,  _______
+                                 XXXXXXX, SELLINE, SELWORD, XXXXXXX, XXXXXXX, XXXXXXX,
+                                 XXXXXXX, KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
+                                 KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
+                                 KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_EQL,
+                                 _______, KC_0
             ),
-    */
 };
 
 #if defined(COMBO_ENABLE)
@@ -301,37 +300,43 @@ enum combos {
     /* left hand */
     FG,
     CV,
-    XCV,
+    XC,
 
     /* right hand */
     HJ,
+    NM,
     MC,
     CD,
 
     /* return BASE from other layers */
     NAVI_BASE,
+    NUM_BASE,
 };
 
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
+const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
+const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
+const uint16_t PROGMEM num_base[] = {KC_COMM, KC_1, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
-    [XCV] = COMBO(xcv, CW_TOGG),
+    [XC] = COMBO(xc, OSL(FN)),
 
     [HJ] = COMBO(hj, TO(NAVI)),
+    [NM] = COMBO(nm, TO(NUM)),
     [MC] = COMBO(mc, QK_AREP),
     [CD] = COMBO(cd, C(KC_W)), // vim window prefix
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
+    [NUM_BASE] = COMBO(num_base, TO(BASE)),
 };
 #endif
 
@@ -372,7 +377,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     // only enable permissive hold for specific layer
     if (IS_QK_LAYER_TAP(keycode)) {
         layer = QK_LAYER_TAP_GET_LAYER(keycode);
-        return layer == NAVI || layer == FN;
+        return layer == NAVI || layer == SYM;
     }
     // disable permissive hold for ALT
     // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
@@ -411,7 +416,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
                                                               {0,0,0},       {0,0,0},
 
-            {0,0,0}, {19,255,255}, {19,255,255},  {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -460,7 +465,6 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    /*
     [SYM] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {0,0,0},       {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
@@ -482,14 +486,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0},
 
-            {184,218,204},{89,255,255}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0},      {184,218,204},{184,218,204},{0,0,0},      {0,0,0},      {0,0,0},
+            {0,0,0},      {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {0,0,0}, {0,0,0}
+            {0,0,0}, {19,255,255}
     },
 
-    */
 };
 
 void set_layer_color(int layer) {
