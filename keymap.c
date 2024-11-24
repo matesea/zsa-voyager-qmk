@@ -21,6 +21,9 @@ enum custom_keycodes {
   SELLINE = KEYSTR_MIN,  // select entire line
   UPDIR,    // input ../ per press
   USRNAME,  // input username
+  GOTOPATH, // entering selected path on windows
+            // ctrl+c, win+r, ctrl+v
+  CLOSAPP,  // alt+f4, close app
 
   /* vim navigation */
   LBRC_A,
@@ -207,7 +210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                               XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                               XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
@@ -273,7 +276,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
                                                            _______, _______,
 
-                                _______, _______, _______, _______, _______, _______,
+                                CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                                 KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
                                 KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
@@ -301,6 +304,7 @@ enum combos {
     FG,
     CV,
     XC,
+    XCV,
 
     /* right hand */
     HJ,
@@ -316,6 +320,7 @@ enum combos {
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
@@ -329,6 +334,7 @@ combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, OSL(FN)),
+    [XCV] = COMBO(xcv, GOTOPATH),
 
     [HJ] = COMBO(hj, TO(NAVI)),
     [NM] = COMBO(nm, TO(NUM)),
@@ -372,12 +378,11 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-    uint16_t layer;
-
     // only enable permissive hold for specific layer
+    uint16_t layer;
     if (IS_QK_LAYER_TAP(keycode)) {
         layer = QK_LAYER_TAP_GET_LAYER(keycode);
-        return layer == NAVI || layer == SYM;
+        return layer == NAVI || layer == SYM || layer == NUM;
     }
     // disable permissive hold for ALT
     // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
@@ -416,7 +421,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
                                                               {0,0,0},       {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -472,10 +477,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
-            {0,0,0},       {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
-            {151,234,222}, {44,255,255}, {29,239,251}, {29,239,251}, {0,0,0},      {0,0,0},
-            {151,234,222}, {44,255,255}, {29,239,251}, {29,239,251}, {44,255,255}, {0,0,0},
-            {151,234,222}, {44,255,255}, {29,239,251}, {29,239,251}, {0,0,0},      {0,0,0},
+            {184,218,204}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {6,255,255},
+            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
+            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},       {0,0,0}
     },
 
@@ -681,6 +686,8 @@ static const struct keystring_t keystrings[] = {
     [SELLINE - KEYSTR_MIN]  = {SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY},
     [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
+    [GOTOPATH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_C)) SS_DELAY(PREFIX_DELAY) SS_LGUI(SS_TAP(X_R)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_V)), TAP_CODE_DELAY},
+    [CLOSAPP - KEYSTR_MIN]  = {SS_LALT(SS_TAP(X_F4)), TAP_CODE_DELAY},
     [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
@@ -797,6 +804,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const bool alt = all_mods & MOD_BIT(KC_LALT);
 
   static uint16_t swapp_active = KC_NO;
+  const uint8_t layer = read_source_layers_cache(record->event.key);
+
+  // WA to address unintended shift
+  // source: reddit r/zsaVoyager: Weird firmware issue with [ turning into {
+  if (layer == SYM && record->event.pressed) {
+      switch (keycode) {
+          case KC_BSLS:
+          case KC_GRV:
+          case KC_EQL:
+          case KC_MINS:
+          case KC_SLSH:
+          case KC_LBRC:
+          case KC_RBRC:
+              clear_weak_mods();
+              send_keyboard_report();
+              break;
+      }
+  }
 
   update_swapper(
           &swapp_active,
