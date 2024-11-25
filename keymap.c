@@ -72,7 +72,6 @@ enum custom_keycodes {
 
   PAREN, // parenthesis
   BRACKET, // bracket
-  CURLYBR, // curly bracket
 
   /* vim navigation */
   /*
@@ -196,10 +195,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              USRNAME, ARROW,   UPDIR,   PAREN,   BRACKET, CURLYBR,
+                              XXXXXXX, SELLINE, SELWORD, XXXXXXX, XXXXXXX, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR, KC_APP,  KC_SCRL,
+                              ARROW,   UPDIR,   PAREN,   BRACKET, KC_APP,  KC_SCRL,
                               _______, _______
             ),
 
@@ -232,7 +231,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [BACKWARD] = LAYOUT_LR(
-            KC_GRV,  RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
+            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
             _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
@@ -276,7 +275,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
                                                            _______, _______,
 
-                                CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                                _______, _______, _______, _______, _______, _______,
                                 KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
                                 KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
@@ -290,7 +289,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______,   _______,  _______, _______, _______,  _______,
                                                    _______,  _______,
 
-                                 XXXXXXX, SELLINE, SELWORD, XXXXXXX, XXXXXXX, XXXXXXX,
+                                 CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                                  XXXXXXX, KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
                                  KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
                                  KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_EQL,
@@ -385,8 +384,8 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         return layer == NAVI || layer == SYM || layer == NUM;
     }
     // disable permissive hold for ALT
-    // disable permissive hold for RGUI for avoid misfire vim leader sequence starting with ;
-    if (keycode & (QK_LALT | QK_RGUI))
+    // disable permissive hold for GUI for avoid misfire vim leader sequence starting with ;
+    if (keycode & (QK_LALT | QK_LGUI))
         return false;
     return true;
 }
@@ -407,7 +406,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255},  {19,255,255},
+            {0,0,0},      {19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
@@ -477,11 +476,11 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
-            {184,218,204}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {6,255,255},
-            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {83,193,218},  {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {0,0,0},       {0,0,0}
+            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {0,0,0},      {0,0,0}
     },
 
     [NUM] = {
@@ -491,10 +490,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0},
 
-            {0,0,0},      {184,218,204},{184,218,204},{0,0,0},      {0,0,0},      {0,0,0},
-            {0,0,0},      {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {184,218,204}, {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {6,255,255},
+            {0,0,0},       {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {89,255,255},  {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {89,255,255},  {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
             {0,0,0}, {19,255,255}
     },
 
@@ -576,6 +575,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                         other_keycode == BASE_X ||
                         other_keycode == BASE_C ||
                         other_keycode == BASE_V ||
+                        other_keycode == KC_B ||
                         other_keycode == KC_T)
                     return true;
                 break;
@@ -616,10 +616,10 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 #ifdef ACHORDION_STREAK
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
+    uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
 
-  if (QK_LAYER_TAP_GET_LAYER(tap_hold_keycode) == NAVI) {
+  if (layer == NAVI)
     return 150;  // shorter streak detection on NAVI layer-tap key.
-  }
 
   // shortcut not blocked by streak detection
     if (isMacOS) {
@@ -632,6 +632,7 @@ uint16_t achordion_streak_chord_timeout(
                         next_keycode == KC_T ||
                         next_keycode == KC_W)
                     return 0;
+                break;
         }
     } else {
         switch (tap_hold_keycode) {
@@ -640,8 +641,10 @@ uint16_t achordion_streak_chord_timeout(
                         next_keycode == BASE_X ||
                         next_keycode == BASE_C ||
                         next_keycode == BASE_V ||
+                        next_keycode == KC_B ||
                         next_keycode == KC_T)
                     return 0;
+                break;
         }
     }
 
@@ -734,7 +737,6 @@ static const struct keystring_t keystrings[] = {
 
     [PAREN - KEYSTR_MIN]     = {SS_LSFT(SS_TAP(X_9) SS_TAP(X_0)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
     [BRACKET - KEYSTR_MIN]   = {SS_TAP(X_LBRC) SS_TAP(X_RBRC) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
-    [CURLYBR - KEYSTR_MIN]   = {SS_LSFT(SS_TAP(X_LBRC) SS_TAP(X_RBRC)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
 
     /*
     [VIM_SP - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
