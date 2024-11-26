@@ -11,7 +11,7 @@ Personal ZSA voyager keyboard config
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * NUM: numpad
     * SYM: symbol layer
-    * FN: Fn/flash
+    * FN: Fn
     * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
 * Combo:
@@ -20,7 +20,7 @@ Personal ZSA voyager keyboard config
     * cv = IME
     * xc = osl(FN)
     * nm = to(NUM)
-    * m, = QK_AREP
+    * m, = QK_AREP, alternate repeat
     * ,. = C-W, vim window prefix
 * Key Override
     * shift + backspace = delete
