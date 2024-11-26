@@ -20,7 +20,7 @@
 #if !defined(PERMISSIVE_HOLD)
 #define PERMISSIVE_HOLD
 #endif
-#define PERMISSIVE_HOLD_PER_KEY
+// #define PERMISSIVE_HOLD_PER_KEY
 
 #ifdef COMBO_ENABLE
 #define COMBO_TERM 35
