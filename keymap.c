@@ -68,10 +68,10 @@ enum custom_keycodes {
   RBRC_W,
   RBRC_X,
   RBRC_Z,
-  */
 
   PAREN, // parenthesis
   BRACKET, // bracket
+  */
 
   /* vim navigation */
   /*
@@ -197,11 +197,49 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              CLOSAPP, SELLINE, SELWORD, XXXXXXX, XXXXXXX, QK_BOOT,
-                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
-                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              ARROW,   UPDIR,   PAREN,   BRACKET, KC_APP,  KC_SCRL,
+                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  XXXXXXX, XXXXXXX,
+                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
+                              ARROW,   UPDIR,   SELLINE, SELWORD, XXXXXXX, XXXXXXX,
                               _______, _______
+            ),
+
+    /*
+         < > \ `
+       ! - + = #
+         / * ^ X
+
+                & X [ ]
+                | : ( ) %
+                ~ $ { }
+                */
+
+    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
+              _______, _______, _______, _______, _______, _______,
+              _______, XXXXXXX, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
+              _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
+              _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
+                                                           _______, _______,
+
+                                _______, _______, _______, _______, _______, _______,
+                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
+                                KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
+                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
+                                _______, _______
+            ),
+
+    [NUM] = LAYOUT_LR(
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+            _______,   _______,  _______, _______, _______,  _______,
+                                                   _______,  _______,
+
+                                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                 KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
+                                 KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
+                                 KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
+                                 KC_0, _______
             ),
 
     [FN] = LAYOUT_LR(
@@ -211,10 +249,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                              XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                              XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
-                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
+                              CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                              KC_INS,  KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_BRK,
+                              KC_DEL,  KC_F4,   KC_F5,   KC_F6,   KC_F11,  KC_PSCR,
+                              KC_APP,  KC_F1,   KC_F2,   KC_F3,   KC_F12,  KC_SCRL,
                               _______, _______
             ),
 
@@ -259,44 +297,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               _______, _______, _______, _______, _______, _______,
                               _______, _______
             ),
-
-    /*
-         < > \ `
-       ! - + = #
-         / * ^ X
-
-                & X [ ]
-                | : ( ) %
-                ~ $ { }
-                */
-
-    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, _______, _______, _______, _______, _______,
-              _______, XXXXXXX, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
-              _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
-              _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
-                                                           _______, _______,
-
-                                _______, _______, _______, _______, _______, _______,
-                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
-                                KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
-                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
-                                _______, _______
-            ),
-
-    [NUM] = LAYOUT_LR(
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-                                                   _______,  _______,
-
-                                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                 KC_COLN, KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
-                                 KC_0,    KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
-                                 KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_EQL,
-                                 _______, _______
-            ),
 };
 
 #if defined(COMBO_ENABLE)
@@ -306,6 +306,7 @@ enum combos {
     CV,
     VB,
     XC,
+    XCV,
 
     /* right hand */
     HJ,
@@ -322,6 +323,7 @@ const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM vb[] = {BASE_V, KC_B, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
@@ -334,8 +336,9 @@ const uint16_t PROGMEM num_base[] = {KC_COMM, KC_1, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
-    [VB] = COMBO(vb, OSL(FN)),
-    [XC] = COMBO(xc, GOTOPATH),
+    [VB] = COMBO(vb, MO(NUM)),
+    [XC] = COMBO(xc, OSL(FN)),
+    [XCV] = COMBO(xcv, GOTOPATH),
 
     [HJ] = COMBO(hj, TO(NAVI)),
     [NM] = COMBO(nm, TO(NUM)),
@@ -408,11 +411,39 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204},{19,255,255}, {19,255,255}, {0,0,0},      {0,0,0},       {6,255,255},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
+            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {0,0,0},
+            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {0,0,0}, {0,0,0},
             {0,0,0},      {0,0,0}
+    },
+
+    [SYM] = {
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {0,0,0},       {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
+        {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
+        {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
+                                                              {0,0,0}, {0,0,0},
+
+            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {0,0,0},      {0,0,0}
+    },
+
+    [NUM] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+
+            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
+            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
+            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {184,218,204},
+            {19,255,255}, {0,0,0},
     },
 
     [FN] = {
@@ -422,11 +453,11 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {0,0,0},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {0,0,0}
+            {184,218,204}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {127,234,222},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {127,234,222},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {127,234,222},
+            {0,0,0},       {0,0,0}
     },
 
     [TMUX] = {
@@ -470,35 +501,6 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
-
-    [SYM] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {0,0,0},       {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
-        {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
-        {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
-                                                              {0,0,0}, {0,0,0},
-
-            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {0,0,0},      {0,0,0}
-    },
-
-    [NUM] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {19,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {0,0,0}, {19,255,255}
-    },
-
 };
 
 void set_layer_color(int layer) {
@@ -735,12 +737,10 @@ static const struct keystring_t keystrings[] = {
     [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
-    */
 
     [PAREN - KEYSTR_MIN]     = {SS_LSFT(SS_TAP(X_9) SS_TAP(X_0)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
     [BRACKET - KEYSTR_MIN]   = {SS_TAP(X_LBRC) SS_TAP(X_RBRC) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
 
-    /*
     [VIM_SP - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
     [VIM_VS - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_V), TAP_CODE_DELAY},
     [VIM_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},

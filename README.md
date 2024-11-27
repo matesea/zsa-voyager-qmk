@@ -18,7 +18,9 @@ Personal ZSA voyager keyboard config
     * fg = swapp
     * hj = to(NAVI)
     * cv = IME
+    * vb = MO(NUM)
     * xc = osl(FN)
+    * xcv = ctrl-c copy, win+r, ctrl-v paste
     * nm = to(NUM)
     * m, = QK_AREP, alternate repeat
     * ,. = C-W, vim window prefix

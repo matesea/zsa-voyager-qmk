@@ -24,7 +24,7 @@
 
 #ifdef COMBO_ENABLE
 #define COMBO_TERM 35
-#define COMBO_COUNT 10
+#define COMBO_COUNT 11
 #endif
 
 #define USB_SUSPEND_WAKEUP_DELAY 0
