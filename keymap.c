@@ -218,7 +218,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, XXXXXXX, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
               _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
               _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
-                                                           _______, _______,
+                                                  _______, _______,
 
                                 _______, _______, _______, _______, _______, _______,
                                 KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
@@ -873,8 +873,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
           process_caps_word(keycode, record);
           const bool shifted = (mods | get_weak_mods()) & MOD_MASK_SHIFT;
-          clear_weak_mods();
-          clear_mods();
+          unregister_mods(MOD_MASK_SHIFT);
 
           registered_key = shifted ? KC_TILD : KC_ESC;
           register_code16(registered_key);
@@ -978,7 +977,6 @@ bool caps_word_press_user(uint16_t keycode) {
     case KC_1 ... KC_0:
     case KC_BSPC:
     case KC_DEL:
-    case KC_MINS:
     case KC_UNDS:
       return true;
 
