@@ -169,17 +169,21 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   MT(MOD_RGUI, KC_SLSH)
 
-#define BASE_TAB    LT(TMUX, KC_TAB)
-#define BASE_QUOT   LT(TMUX, KC_QUOT)
-#define BASE_UNDS   KC_UNDS
+#define BASE_QUOT   KC_QUOT
+#define BASE_UNDS   LT(TMUX, KC_UNDS)
+#define BASE_TAB    KC_TAB
+#define BASE_CW     LT(TMUX, CW_TOGG)
+
+#define GS_LEFT     G(S(KC_LEFT))
+#define GS_RGHT     G(S(KC_RGHT))
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_EQL,    KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            BASE_TAB,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            CW_TOGG,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            BASE_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            QK_AREP,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            BASE_CW,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -199,7 +203,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              ARROW,   UPDIR,   SELLINE, SELWORD, KC_APP,  KC_SCRL,
+                              SELWORD, SELLINE, GS_LEFT, GS_RGHT, KC_APP,  KC_SCRL,
                               _______, _______
             ),
 
@@ -215,15 +219,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______, _______, _______, _______,
-              _______, XXXXXXX, KC_LABK, KC_RABK, KC_BSLS, KC_GRV ,
+              _______, MO(FN),  KC_LABK, KC_RABK, KC_BSLS, KC_GRV,
               _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
-              _______, XXXXXXX, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
+              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, UPDIR,
                                                   _______, _______,
 
                                 _______, _______, _______, _______, _______, _______,
-                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
+                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, USRNAME, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
-                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, XXXXXXX, _______,
+                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, _______, _______,
                                 _______, _______
             ),
 
@@ -304,7 +308,6 @@ enum combos {
     FG,
     CV,
     XC,
-    XCV,
 
     /* right hand */
     HJ,
@@ -318,7 +321,6 @@ enum combos {
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
-const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
@@ -329,8 +331,7 @@ const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
-    [XC] = COMBO(xc, OSL(FN)),
-    [XCV] = COMBO(xcv, GOTOPATH),
+    [XC] = COMBO(xc, GOTOPATH),
 
     [HJ] = COMBO(hj, TO(NAVI)),
     [MC] = COMBO(mc, QK_AREP),
@@ -410,13 +411,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
 
     [SYM] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {0,0,0},       {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
+        {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {29,239,251},  {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},      {0,0,0}
@@ -825,17 +826,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           KC_TAB, SWAPP, keycode, record);
 
   switch (keycode) {
-      /*
-      case BASE_UNDS:
-        // send _ when tap
-        if (record->tap.count && record->event.pressed) {
-            clear_mods();
-            tap_code16(KC_UNDS);
-            set_mods(mods);
-            return false;
-        }
-        return true;
-        */
+    case BASE_UNDS:
+      // send _ when tap
+      if (record->tap.count && record->event.pressed) {
+          clear_mods();
+          tap_code16(KC_UNDS);
+          set_mods(mods);
+          return false;
+      }
+      return true;
+
+    case BASE_CW:
+      if (record->tap.count && record->event.pressed) {
+          clear_mods();
+          caps_word_toggle();
+          set_mods(mods);
+          return false;
+      }
+      return true;
 
     /* when both shift are held => shift + del
        when one shift is held => del
