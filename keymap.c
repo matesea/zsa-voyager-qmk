@@ -17,6 +17,18 @@ enum custom_keycodes {
   SWAPP,    // alt-tab or gui-tab to switch foreground app
   MAC_TOG,  // toggle mac os
 
+  // Macros invoked through the Magic key.
+  M_DOCSTR,
+  M_INCLUDE,
+  M_ION,
+  M_MENT,
+  M_MKGRVS,
+  M_QUEN,
+  M_THE,
+  M_TMENT,
+  M_UPDIR,
+  M_NOOP,
+
   KEYSTR_MIN,
   SELLINE = KEYSTR_MIN,  // select entire line
   UPDIR,    // input ../ per press
@@ -68,18 +80,6 @@ enum custom_keycodes {
   RBRC_W,
   RBRC_X,
   RBRC_Z,
-
-  PAREN, // parenthesis
-  BRACKET, // bracket
-  */
-
-  /* vim navigation */
-  /*
-  VIM_VS,
-  VIM_SP,
-  VIM_Z,
-  VIM_W,
-  VIM_Q,
   */
 
   /* tmux navigation */
@@ -182,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             BASE_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            QK_AREP,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            QK_AREP,     BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             BASE_CW,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
@@ -221,11 +221,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, _______, _______, _______, _______, _______,
               _______, MO(FN),  KC_LABK, KC_RABK, KC_BSLS, KC_GRV,
               _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
-              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, UPDIR,
+              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
                                                   _______, _______,
 
                                 _______, _______, _______, _______, _______, _______,
-                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, USRNAME, _______,
+                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, _______, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
                                 KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, _______, _______,
                                 _______, _______
@@ -417,7 +417,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                                               {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {29,239,251},  {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},      {0,0,0}
@@ -589,22 +589,6 @@ bool achordion_chord(uint16_t tap_hold_keycode,
 }
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    /*
-    tap_hold_keycode &= 0xff;
-    // only enable achordion for homerow
-    switch (tap_hold_keycode) {
-        // homerow and bottom row
-        case KC_A: case KC_S: case KC_D: case KC_F:
-        case KC_C: case KC_V: case KC_X: case KC_Z:
-        case KC_J: case KC_K: case KC_L: case KC_SCLN:
-        case KC_M: case KC_COMM: case KC_DOT: case KC_SLSH:
-
-        // thumb keys or edge columns
-        case KC_ENT: case KC_MINS: case KC_TAB:
-            return 650;
-    }
-    // bypass achordion timeout
-    */
     return 650;
 }
 
@@ -679,6 +663,210 @@ void static update_swapper(
     }
 }
 
+#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
+                            uint8_t* remembered_mods) {
+  // Unpack tapping keycode for tap-hold keys.
+  switch (keycode) {
+#ifndef NO_ACTION_TAPPING
+    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+      keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+      break;
+#ifndef NO_ACTION_LAYER
+    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+      keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+      break;
+#endif  // NO_ACTION_LAYER
+#endif  // NO_ACTION_TAPPING
+  }
+
+  // Forget Shift on most letters when Shift or AltGr are the only mods. Some
+  // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
+  switch (keycode) {
+    case KC_A ... KC_H:
+    case KC_K ... KC_M:
+    case KC_O ... KC_U:
+      if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
+        *remembered_mods &= ~MOD_MASK_SHIFT;
+      }
+      break;
+  }
+
+  return true;
+}
+
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
+        switch (keycode) {
+          case BASE_A: return C(KC_C);  // Ctrl+A -> Ctrl+C
+          case BASE_C: return C(KC_V);    // Ctrl+C -> Ctrl+V
+          case BASE_TAB: return C(S(KC_TAB));
+        }
+    } else if (mods == MOD_BIT_LGUI || mods == MOD_BIT_RGUI) {
+        switch (keycode) {
+          case BASE_A: return G(KC_C);    // GUI+A -> GUI+C
+          case BASE_C: return G(KC_V);    // GUI+C -> GUI+V
+          case BASE_TAB: return G(S(KC_TAB));
+        }
+    } else if (mods == MOD_BIT_LALT) {
+        switch (keycode) {
+          case BASE_TAB: return A(S(KC_TAB));
+        }
+    } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
+        switch (keycode) {
+            case KC_N:
+                if ((mods & MOD_MASK_SHIFT) == 0)
+                    return S(KC_N);
+                return KC_N;
+
+            case KC_SPC:  // spc -> THE
+            case KC_ENT:
+            case KC_TAB:
+              return M_THE;
+
+            // fix SFB
+            case KC_E: return KC_D;     // E -> D
+            case BASE_D: return KC_E;   // D -> E
+            case BASE_C: return KC_E;   // C -> E
+            case BASE_L: return KC_O;   // L -> O
+            case KC_U: return KC_N;     // U -> N
+
+            case BASE_M: return M_MENT; // M -> ENT
+            case KC_Q: return M_QUEN;   // Q -> UEN
+            case KC_T: return M_TMENT;  // T -> TMENT
+
+            case BASE_DOT:
+              if ((mods & MOD_MASK_SHIFT) == 0) {
+                return M_UPDIR;  // . -> ./
+              }
+              return M_NOOP;
+
+            case KC_I:
+              if ((mods & MOD_MASK_SHIFT) == 0) {
+                return M_ION;  // I -> ON
+              }
+              return KC_QUOT;  // Shift I -> '
+
+            case KC_HASH: return M_INCLUDE; // # -> include
+            case BASE_QUOT:
+              if ((mods & MOD_MASK_SHIFT) != 0) {
+                return M_DOCSTR;  // " -> ""<cursor>"""
+              }
+              return M_NOOP;
+            case KC_GRV:  // ` -> ``<cursor>``` (for Markdown code)
+              return M_MKGRVS;
+
+            case KC_PLUS:
+            case KC_MINS:
+            case KC_ASTR:
+            case KC_PERC:
+            case KC_PIPE:
+            case KC_AMPR:
+            case KC_CIRC:
+            case KC_TILD:
+            case KC_EXLM:
+            case KC_RABK:
+            case KC_EQL:
+              return KC_EQL;
+
+            /* reverse vim navigation */
+            case LBRC_A: return RBRC_A;
+            case LBRC_B: return RBRC_B;
+            case LBRC_C: return RBRC_C;
+            case LBRC_D: return RBRC_D;
+            /*
+            case LBRC_E: return RBRC_E;
+            case LBRC_F: return RBRC_F;
+            case LBRC_G: return RBRC_G;
+            */
+            case LBRC_Q: return RBRC_Q;
+            /*
+            case LBRC_R: return RBRC_R;
+            case LBRC_S: return RBRC_S;
+            */
+            case LBRC_T: return RBRC_T;
+            /*
+            case LBRC_W: return RBRC_W;
+            case LBRC_V: return RBRC_V;
+            case LBRC_X: return RBRC_X;
+            case LBRC_Z: return RBRC_Z;
+            */
+
+            case RBRC_A: return LBRC_A;
+            case RBRC_B: return LBRC_B;
+            case RBRC_C: return LBRC_C;
+            case RBRC_D: return LBRC_D;
+            /*
+            case RBRC_E: return LBRC_E;
+            case RBRC_F: return LBRC_F;
+            case RBRC_G: return LBRC_G;
+            */
+            case RBRC_Q: return LBRC_Q;
+            /*
+            case RBRC_R: return LBRC_R;
+            case RBRC_S: return LBRC_S;
+            */
+            case RBRC_T: return LBRC_T;
+            /*
+            case RBRC_W: return LBRC_W;
+            case RBRC_V: return LBRC_V;
+            case RBRC_X: return LBRC_X;
+            case RBRC_Z: return LBRC_Z;
+            */
+
+            /* select pane */
+            case TMUX_J: return TMUX_K;
+            case TMUX_K: return TMUX_J;
+            case TMUX_H: return TMUX_L;
+            case TMUX_L: return TMUX_H;
+
+            /* reverse tmux resize */
+            case TMUX_ML: return TMUX_MR;
+            case TMUX_MR: return TMUX_ML;
+            case TMUX_MU: return TMUX_MD;
+            case TMUX_MD: return TMUX_MU;
+
+            /* swap pane */
+            case TMUX_LCBR: return TMUX_RCBR;
+            case TMUX_RCBR: return TMUX_LCBR;
+
+            /* tmux previous/next window */
+            case TMUX_N: return TMUX_P;
+            case TMUX_P: return TMUX_N;
+
+            /* previous/next layout */
+            case TMUX_SPC: return TMUX_BSPC;
+            case TMUX_BSPC: return TMUX_SPC;
+        }
+    }
+    return KC_TRNS;
+}
+
+// An enhanced version of SEND_STRING: if Caps Word is active, the Shift key is
+// held while sending the string. Additionally, the last key is set such that if
+// the Repeat Key is pressed next, it produces `repeat_keycode`. This helper is
+// used for several macros below in my process_record_user() function.
+#define MAGIC_STRING(str, repeat_keycode) \
+  magic_send_string_P(PSTR(str), (repeat_keycode))
+static void magic_send_string_P(const char* str, uint16_t repeat_keycode) {
+  uint8_t saved_mods = 0;
+  // If Caps Word is on, save the mods and hold Shift.
+  if (is_caps_word_on()) {
+    saved_mods = get_mods();
+    register_mods(MOD_BIT(KC_LSFT));
+  }
+
+  send_string_P(str);  // Send the string.
+  set_last_keycode(repeat_keycode);
+
+  // If Caps Word is on, restore the mods.
+  if (is_caps_word_on()) {
+    set_mods(saved_mods);
+  }
+}
+#endif
+
+
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
     [SELLINE - KEYSTR_MIN]  = {SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY},
@@ -728,15 +916,6 @@ static const struct keystring_t keystrings[] = {
     [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
     [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
     [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
-
-    [PAREN - KEYSTR_MIN]     = {SS_LSFT(SS_TAP(X_9) SS_TAP(X_0)) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
-    [BRACKET - KEYSTR_MIN]   = {SS_TAP(X_LBRC) SS_TAP(X_RBRC) SS_DELAY(TAP_CODE_DELAY) SS_TAP(X_LEFT), TAP_CODE_DELAY},
-
-    [VIM_SP - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
-    [VIM_VS - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_V), TAP_CODE_DELAY},
-    [VIM_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},
-    [VIM_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_W), TAP_CODE_DELAY},
-    [VIM_Q - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_W)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Q), TAP_CODE_DELAY},
     */
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
@@ -824,6 +1003,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           &swapp_active,
           isMacOS ? KC_LGUI : KC_LALT,
           KC_TAB, SWAPP, keycode, record);
+
+  // If alt repeating key A, E, I, O, U, Y with no mods other than Shift, set
+  // the last key to KC_N. Above, alternate repeat of KC_N is defined to be
+  // again KC_N. This way, either tapping alt repeat and then repeat (or
+  // equivalently double tapping alt repeat) is useful to type certain patterns
+  // without SFBs:
+  //
+  //   D <altrep> <rep> -> DYN (as in "dynamic")
+  //   O <altrep> <rep> -> OAN (as in "loan")
+  // if (get_repeat_key_count() < 0 && !shift_mods &&
+  //     (keycode == BASE_A || keycode == KC_E || keycode == KC_I ||
+  //      keycode == KC_O || keycode == KC_U || keycode == KC_Y)) {
+  //   set_last_keycode(KC_N);
+  //   set_last_mods(0);
+  // }
 
   switch (keycode) {
     case BASE_UNDS:
@@ -936,24 +1130,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif  // RGB_MATRIX_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
-          /*
-          if (shift_mods) {
-              switch (keycode) {
-                  case TMUX_H: keycode = TMUX_ML; break;
-                  case TMUX_J: keycode = TMUX_MD; break;
-                  case TMUX_K: keycode = TMUX_MU; break;
-                  case TMUX_L: keycode = TMUX_MR; break;
-                  case TMUX_LBRC: keycode = TMUX_LCBR; break;
-                  case TMUX_RBRC: keycode = TMUX_RCBR; break;
-                  case TMUX_SLSH: keycode = TMUX_QUES; break;
-              }
-          }
-          */
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
           clear_mods();
           SEND_STRING_DELAY(p->str, p->delay);
           set_mods(mods);
           return false;
+
+        // Macros invoked through the QK_AREP key.
+        case M_THE:     MAGIC_STRING(/* */"the", KC_N); break;
+        case M_ION:     MAGIC_STRING(/*i*/"on", KC_S); break;
+        case M_MENT:    MAGIC_STRING(/*m*/"ent", KC_S); break;
+        case M_QUEN:    MAGIC_STRING(/*q*/"uen", KC_C); break;
+        case M_TMENT:   MAGIC_STRING(/*t*/"ment", KC_S); break;
+        case M_UPDIR:   MAGIC_STRING(/*.*/"./", UPDIR); break;
+        case M_INCLUDE: SEND_STRING(/*#*/"include "); break;
+        case M_DOCSTR:
+          SEND_STRING(/*"*/"\"\"\"\"\""
+              SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
+          break;
+        case M_MKGRVS:
+          SEND_STRING(/*`*/"``\n\n```" SS_TAP(X_UP));
+          break;
     }
   }
   return true;
@@ -986,6 +1183,11 @@ bool caps_word_press_user(uint16_t keycode) {
     case KC_BSPC:
     case KC_DEL:
     case KC_UNDS:
+    case M_THE:
+    case M_ION:
+    case M_MENT:
+    case M_QUEN:
+    case M_TMENT:
       return true;
 
     default:
@@ -993,104 +1195,3 @@ bool caps_word_press_user(uint16_t keycode) {
   }
 }
 #endif  // CAPS_WORD_ENABLE
-
-#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    if (keycode == KC_TAB) {
-        if ((mods & MOD_MASK_CTRL)) return C(S(KC_TAB));
-        if ((mods & MOD_MASK_ALT)) return A(S(KC_TAB));
-        if (mods & MOD_MASK_GUI) return G(S(KC_TAB));
-    } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
-        switch (keycode) {
-            case KC_N:
-                if ((mods & MOD_MASK_SHIFT) == 0)
-                    return S(KC_N);
-                else
-                    return KC_N;
-                break;
-
-            case KC_PLUS:
-            case KC_MINS:
-            case KC_ASTR:
-            case KC_PERC:
-            case KC_PIPE:
-            case KC_AMPR:
-            case KC_CIRC:
-            case KC_TILD:
-            case KC_EXLM:
-            case KC_RABK:
-              return KC_EQL;
-
-            /* reverse vim navigation */
-            case LBRC_A: return RBRC_A;
-            case LBRC_B: return RBRC_B;
-            case LBRC_C: return RBRC_C;
-            case LBRC_D: return RBRC_D;
-            /*
-            case LBRC_E: return RBRC_E;
-            case LBRC_F: return RBRC_F;
-            case LBRC_G: return RBRC_G;
-            */
-            case LBRC_Q: return RBRC_Q;
-            /*
-            case LBRC_R: return RBRC_R;
-            case LBRC_S: return RBRC_S;
-            */
-            case LBRC_T: return RBRC_T;
-            /*
-            case LBRC_W: return RBRC_W;
-            case LBRC_V: return RBRC_V;
-            case LBRC_X: return RBRC_X;
-            case LBRC_Z: return RBRC_Z;
-            */
-
-            case RBRC_A: return LBRC_A;
-            case RBRC_B: return LBRC_B;
-            case RBRC_C: return LBRC_C;
-            case RBRC_D: return LBRC_D;
-            /*
-            case RBRC_E: return LBRC_E;
-            case RBRC_F: return LBRC_F;
-            case RBRC_G: return LBRC_G;
-            */
-            case RBRC_Q: return LBRC_Q;
-            /*
-            case RBRC_R: return LBRC_R;
-            case RBRC_S: return LBRC_S;
-            */
-            case RBRC_T: return LBRC_T;
-            /*
-            case RBRC_W: return LBRC_W;
-            case RBRC_V: return LBRC_V;
-            case RBRC_X: return LBRC_X;
-            case RBRC_Z: return LBRC_Z;
-            */
-
-            /* select pane */
-            case TMUX_J: return TMUX_K;
-            case TMUX_K: return TMUX_J;
-            case TMUX_H: return TMUX_L;
-            case TMUX_L: return TMUX_H;
-
-            /* reverse tmux resize */
-            case TMUX_ML: return TMUX_MR;
-            case TMUX_MR: return TMUX_ML;
-            case TMUX_MU: return TMUX_MD;
-            case TMUX_MD: return TMUX_MU;
-
-            /* swap pane */
-            case TMUX_LCBR: return TMUX_RCBR;
-            case TMUX_RCBR: return TMUX_LCBR;
-
-            /* tmux previous/next window */
-            case TMUX_N: return TMUX_P;
-            case TMUX_P: return TMUX_N;
-
-            /* previous/next layout */
-            case TMUX_SPC: return TMUX_BSPC;
-            case TMUX_BSPC: return TMUX_SPC;
-        }
-    }
-    return KC_TRNS;
-}
-#endif
