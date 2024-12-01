@@ -182,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             BASE_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            QK_AREP,     BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            QK_AREP,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             BASE_CW,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
@@ -698,14 +698,10 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
         switch (keycode) {
-          case BASE_A: return C(KC_C);  // Ctrl+A -> Ctrl+C
-          case BASE_C: return C(KC_V);    // Ctrl+C -> Ctrl+V
           case BASE_TAB: return C(S(KC_TAB));
         }
     } else if (mods == MOD_BIT_LGUI || mods == MOD_BIT_RGUI) {
         switch (keycode) {
-          case BASE_A: return G(KC_C);    // GUI+A -> GUI+C
-          case BASE_C: return G(KC_V);    // GUI+C -> GUI+V
           case BASE_TAB: return G(S(KC_TAB));
         }
     } else if (mods == MOD_BIT_LALT) {
@@ -724,13 +720,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case KC_TAB:
               return M_THE;
 
-            // fix SFB
-            case KC_E: return KC_D;     // E -> D
-            case BASE_D: return KC_E;   // D -> E
-            case BASE_C: return KC_E;   // C -> E
-            case BASE_L: return KC_O;   // L -> O
-            case KC_U: return KC_N;     // U -> N
-
             case BASE_M: return M_MENT; // M -> ENT
             case KC_Q: return M_QUEN;   // Q -> UEN
             case KC_T: return M_TMENT;  // T -> TMENT
@@ -739,13 +728,13 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
               if ((mods & MOD_MASK_SHIFT) == 0) {
                 return M_UPDIR;  // . -> ./
               }
-              return M_NOOP;
+              break;
 
             case KC_I:
               if ((mods & MOD_MASK_SHIFT) == 0) {
                 return M_ION;  // I -> ON
               }
-              return KC_QUOT;  // Shift I -> '
+              break;
 
             case KC_HASH: return M_INCLUDE; // # -> include
             case BASE_QUOT:
@@ -1032,9 +1021,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     case BASE_CW:
       if (record->tap.count && record->event.pressed) {
-          clear_mods();
           caps_word_toggle();
-          set_mods(mods);
           return false;
       }
       return true;
@@ -1109,9 +1096,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif  // NO_ACTION_ONESHOT
             unregister_mods(MOD_MASK_SA);
             if (shift_mods)
-                SEND_STRING(alt ? "<=>" : "=>");
+                SEND_STRING_DELAY(alt ? "<=>" : "=>", TAP_CODE_DELAY);
             else
-                SEND_STRING(alt ? "<->" : "->");
+                SEND_STRING_DELAY(alt ? "<->" : "->", TAP_CODE_DELAY);
             set_mods(mods);
             return false;
 
@@ -1143,13 +1130,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case M_QUEN:    MAGIC_STRING(/*q*/"uen", KC_C); break;
         case M_TMENT:   MAGIC_STRING(/*t*/"ment", KC_S); break;
         case M_UPDIR:   MAGIC_STRING(/*.*/"./", UPDIR); break;
-        case M_INCLUDE: SEND_STRING(/*#*/"include "); break;
+        case M_INCLUDE: SEND_STRING_DELAY(/*#*/"include ", TAP_CODE_DELAY); break;
         case M_DOCSTR:
-          SEND_STRING(/*"*/"\"\"\"\"\""
-              SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT));
+          SEND_STRING_DELAY(/*"*/"\"\"\"\"\""
+              SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), TAP_CODE_DELAY);
           break;
         case M_MKGRVS:
-          SEND_STRING(/*`*/"``\n\n```" SS_TAP(X_UP));
+          SEND_STRING_DELAY(/*`*/"``\n\n```" SS_TAP(X_UP), TAP_CODE_DELAY);
           break;
     }
   }
