@@ -17,17 +17,9 @@ enum custom_keycodes {
   SWAPP,    // alt-tab or gui-tab to switch foreground app
   MAC_TOG,  // toggle mac os
 
-  // Macros invoked through the Magic key.
   M_DOCSTR,
   M_INCLUDE,
-  M_ION,
-  M_MENT,
-  M_MKGRVS,
-  M_QUEN,
-  M_THE,
-  M_TMENT,
   M_UPDIR,
-  M_NOOP,
 
   KEYSTR_MIN,
   SELLINE = KEYSTR_MIN,  // select entire line
@@ -169,10 +161,8 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   MT(MOD_RGUI, KC_SLSH)
 
-#define BASE_QUOT   KC_QUOT
-#define BASE_UNDS   LT(TMUX, KC_UNDS)
-#define BASE_TAB    KC_TAB
-#define BASE_CW     LT(TMUX, CW_TOGG)
+#define BASE_QUOT   LT(TMUX, KC_QUOT)
+#define BASE_TAB    LT(TMUX, KC_TAB)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -181,15 +171,15 @@ static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            BASE_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            QK_AREP,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            BASE_CW,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            KC_EQL,    KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            BASE_TAB,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            CW_TOGG,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                             KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                             KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                             KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
-                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, BASE_UNDS,
+                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
                             KC_BSPC, KC_SPC
             ),
 
@@ -198,12 +188,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                               CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                               KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                               KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              SELWORD, SELLINE, GS_LEFT, GS_RGHT, KC_APP,  KC_SCRL,
+                              GS_LEFT, SELLINE, SELWORD, GS_RGHT, KC_APP,  KC_SCRL,
                               _______, _______
             ),
 
@@ -221,11 +211,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, _______, _______, _______, _______, _______,
               _______, MO(FN),  KC_LABK, KC_RABK, KC_BSLS, KC_GRV,
               _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
-              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, USRNAME,
+              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, UPDIR,
                                                   _______, _______,
 
                                 _______, _______, _______, _______, _______, _______,
-                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, _______, _______,
+                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, USRNAME, _______,
                                 KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
                                 KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, _______, _______,
                                 _______, _______
@@ -236,7 +226,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______,   _______,  _______, _______, _______,  _______,
             _______,   _______,  _______, _______, _______,  _______,
             _______,   _______,  _______, _______, _______,  _______,
-                                                   _______,  QK_LLCK,
+                                                   _______,  _______,
 
                                  _______, _______, _______, _______, _______, _______,
                                  KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
@@ -250,7 +240,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                               XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
@@ -311,11 +301,18 @@ enum combos {
 
     /* right hand */
     HJ,
+    NM,
     MC,
     CD,
 
     /* return BASE from other layers */
     NAVI_BASE,
+    NUM_BASE,
+
+    /* lock layer */
+    NAVI_LOCK,
+    NUM_LOCK,
+    FN_LOCK,
 };
 
 const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
@@ -323,10 +320,16 @@ const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
+const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
+const uint16_t PROGMEM num_base[] = {KC_COMM, KC_1, COMBO_END};
+
+const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
+const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
+const uint16_t PROGMEM fn_lock[] = {KC_F1, KC_F2, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
     [FG] = COMBO(fg, SWAPP),
@@ -334,10 +337,16 @@ combo_t key_combos[COMBO_COUNT] = {
     [XC] = COMBO(xc, GOTOPATH),
 
     [HJ] = COMBO(hj, TO(NAVI)),
+    [NM] = COMBO(nm, TO(NUM)),
     [MC] = COMBO(mc, QK_AREP),
     [CD] = COMBO(cd, C(KC_W)), // vim window prefix
 
     [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
+    [NUM_BASE] = COMBO(num_base, TO(BASE)),
+
+    [NAVI_LOCK] = COMBO(navi_lock, QK_LLCK),
+    [NUM_LOCK] = COMBO(num_lock, QK_LLCK),
+    [FN_LOCK] = COMBO(fn_lock, QK_LLCK),
 };
 #endif
 
@@ -400,7 +409,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
@@ -417,7 +426,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                                               {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {6,255,255},  {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},      {0,0,0}
@@ -428,7 +437,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
@@ -442,7 +451,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -664,37 +673,6 @@ void static update_swapper(
 }
 
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
-                            uint8_t* remembered_mods) {
-  // Unpack tapping keycode for tap-hold keys.
-  switch (keycode) {
-#ifndef NO_ACTION_TAPPING
-    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-      keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-      break;
-#ifndef NO_ACTION_LAYER
-    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-      keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-      break;
-#endif  // NO_ACTION_LAYER
-#endif  // NO_ACTION_TAPPING
-  }
-
-  // Forget Shift on most letters when Shift or AltGr are the only mods. Some
-  // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
-  switch (keycode) {
-    case KC_A ... KC_H:
-    case KC_K ... KC_M:
-    case KC_O ... KC_U:
-      if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
-        *remembered_mods &= ~MOD_MASK_SHIFT;
-      }
-      break;
-  }
-
-  return true;
-}
-
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
         switch (keycode) {
@@ -715,24 +693,9 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                     return S(KC_N);
                 return KC_N;
 
-            case KC_SPC:  // spc -> THE
-            case KC_ENT:
-            case KC_TAB:
-              return M_THE;
-
-            case BASE_M: return M_MENT; // M -> ENT
-            case KC_Q: return M_QUEN;   // Q -> UEN
-            case KC_T: return M_TMENT;  // T -> TMENT
-
             case BASE_DOT:
               if ((mods & MOD_MASK_SHIFT) == 0) {
-                return M_UPDIR;  // . -> ./
-              }
-              break;
-
-            case KC_I:
-              if ((mods & MOD_MASK_SHIFT) == 0) {
-                return M_ION;  // I -> ON
+                return M_UPDIR;  // . -> ../
               }
               break;
 
@@ -741,22 +704,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
               if ((mods & MOD_MASK_SHIFT) != 0) {
                 return M_DOCSTR;  // " -> ""<cursor>"""
               }
-              return M_NOOP;
-            case KC_GRV:  // ` -> ``<cursor>``` (for Markdown code)
-              return M_MKGRVS;
-
-            case KC_PLUS:
-            case KC_MINS:
-            case KC_ASTR:
-            case KC_PERC:
-            case KC_PIPE:
-            case KC_AMPR:
-            case KC_CIRC:
-            case KC_TILD:
-            case KC_EXLM:
-            case KC_RABK:
-            case KC_EQL:
-              return KC_EQL;
+              break;
 
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
@@ -993,22 +941,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           isMacOS ? KC_LGUI : KC_LALT,
           KC_TAB, SWAPP, keycode, record);
 
-  // If alt repeating key A, E, I, O, U, Y with no mods other than Shift, set
-  // the last key to KC_N. Above, alternate repeat of KC_N is defined to be
-  // again KC_N. This way, either tapping alt repeat and then repeat (or
-  // equivalently double tapping alt repeat) is useful to type certain patterns
-  // without SFBs:
-  //
-  //   D <altrep> <rep> -> DYN (as in "dynamic")
-  //   O <altrep> <rep> -> OAN (as in "loan")
-  // if (get_repeat_key_count() < 0 && !shift_mods &&
-  //     (keycode == BASE_A || keycode == KC_E || keycode == KC_I ||
-  //      keycode == KC_O || keycode == KC_U || keycode == KC_Y)) {
-  //   set_last_keycode(KC_N);
-  //   set_last_mods(0);
-  // }
-
   switch (keycode) {
+      /*
     case BASE_UNDS:
       // send _ when tap
       if (record->tap.count && record->event.pressed) {
@@ -1025,6 +959,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
       }
       return true;
+      */
 
     /* when both shift are held => shift + del
        when one shift is held => del
@@ -1124,19 +1059,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
 
         // Macros invoked through the QK_AREP key.
-        case M_THE:     MAGIC_STRING(/* */"the", KC_N); break;
-        case M_ION:     MAGIC_STRING(/*i*/"on", KC_S); break;
-        case M_MENT:    MAGIC_STRING(/*m*/"ent", KC_S); break;
-        case M_QUEN:    MAGIC_STRING(/*q*/"uen", KC_C); break;
-        case M_TMENT:   MAGIC_STRING(/*t*/"ment", KC_S); break;
         case M_UPDIR:   MAGIC_STRING(/*.*/"./", UPDIR); break;
         case M_INCLUDE: SEND_STRING_DELAY(/*#*/"include ", TAP_CODE_DELAY); break;
         case M_DOCSTR:
           SEND_STRING_DELAY(/*"*/"\"\"\"\"\""
               SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), TAP_CODE_DELAY);
-          break;
-        case M_MKGRVS:
-          SEND_STRING_DELAY(/*`*/"``\n\n```" SS_TAP(X_UP), TAP_CODE_DELAY);
           break;
     }
   }
@@ -1170,11 +1097,6 @@ bool caps_word_press_user(uint16_t keycode) {
     case KC_BSPC:
     case KC_DEL:
     case KC_UNDS:
-    case M_THE:
-    case M_ION:
-    case M_MENT:
-    case M_QUEN:
-    case M_TMENT:
       return true;
 
     default:
