@@ -14,7 +14,6 @@ enum custom_keycodes {
   SELWORD,  // select word
   IME,      // switch ime
   RGB_DEF,  // set rgb to some nice default
-  SWAPP,    // alt-tab or gui-tab to switch foreground app
   MAC_TOG,  // toggle mac os
 
   M_DOCSTR,
@@ -95,7 +94,6 @@ enum custom_keycodes {
   TMUX_J,   // C-A j, select up pane
   TMUX_L,   // C-A l, select right pane
 
-  /*
   TMUX_1,   // C-A 1, select window
   TMUX_2,   // C-A 2, select window
   TMUX_3,   // C-A 3, select window
@@ -106,7 +104,6 @@ enum custom_keycodes {
   TMUX_8,   // C-A 8, select window
   TMUX_9,   // C-A 9, select window
   TMUX_0,   // C-A 0, select window
-  */
 
   TMUX_SPC, // C-A space, next layout
   TMUX_BSPC, // C-A backspace, previous layout
@@ -167,20 +164,25 @@ enum {
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
 
+#define SYM_PLUS    LCTL_T(KC_PLUS)
+#define SYM_MINS    LALT_T(KC_MINS)
+#define SYM_LPRN    RCTL_T(KC_LPRN)
+#define SYM_RPRN    LALT_T(KC_RPRN)
+
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
-            KC_ESC,    KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_EQL,    KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            BASE_TAB,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            CW_TOGG,   BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
+            KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
-                            KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
-                            KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-                            KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
-                            KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
-                            KC_BSPC, KC_SPC
+                      KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
+                      KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
+                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
+                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
+                      KC_BSPC, KC_SPC
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -190,11 +192,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
                                                 _______, _______,
 
-                              CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                              KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
-                              KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                              GS_LEFT, SELLINE, SELWORD, GS_RGHT, KC_APP,  KC_SCRL,
-                              _______, _______
+                     CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
+                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
+                     GS_LEFT, SELLINE, SELWORD, GS_RGHT, KC_APP,  KC_SCRL,
+                     _______, _______
             ),
 
     /*
@@ -208,31 +210,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, _______, _______, _______, _______, _______,
-              _______, MO(FN),  KC_LABK, KC_RABK, KC_BSLS, KC_GRV,
-              _______, KC_EXLM, KC_MINS, KC_PLUS, KC_EQL , KC_HASH,
-              _______, _______, KC_SLSH, KC_ASTR, KC_CIRC, UPDIR,
+              _______, _______, _______,  _______,  _______, _______,
+              _______, MO(FN),  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              _______, KC_EXLM, SYM_MINS, SYM_PLUS, KC_EQL , KC_HASH,
+              _______, KC_LGUI, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                   _______, _______,
 
-                                _______, _______, _______, _______, _______, _______,
-                                KC_AMPR, ARROW,   KC_LBRC, KC_RBRC, USRNAME, _______,
-                                KC_PIPE, KC_COLN, KC_LPRN, KC_RPRN, KC_PERC, _______,
-                                KC_TILD, KC_DLR , KC_LCBR, KC_RCBR, _______, _______,
-                                _______, _______
+                       _______, _______, _______,  _______,  _______, _______,
+                       KC_AMPR, ARROW,   KC_LBRC,  KC_RBRC,  USRNAME, _______,
+                       KC_PIPE, KC_COLN, SYM_LPRN, SYM_RPRN, KC_PERC, _______,
+                       KC_TILD, KC_DLR , KC_LCBR,  KC_RCBR,  KC_RGUI, _______,
+                       _______, _______
             ),
 
     [NUM] = LAYOUT_LR(
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-            _______,   _______,  _______, _______, _______,  _______,
-                                                   _______,  _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, _______, _______, _______,
+                                                _______, _______,
 
-                                 _______, _______, _______, _______, _______, _______,
-                                 KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
-                                 KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
-                                 KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
-                                 KC_0, _______
+                     _______, _______, _______, _______, _______, _______,
+                     KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
+                     KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
+                     KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
+                     KC_0, _______
             ),
 
     [FN] = LAYOUT_LR(
@@ -242,25 +244,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                              XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                              XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
-                              XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
-                              _______, _______
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
+                     _______, _______
             ),
 
     [TMUX] = LAYOUT_LR(
-            TMUX_LBRC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            TMUX_LBRC, TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
             XXXXXXX,   XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,   TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,   TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                 _______, _______,
 
-                              XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,   XXXXXXX,
-                              TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   TMUX_RBRC, XXXXXXX,
-                              TMUX_H,    TMUX_J,    TMUX_K,    TMUX_L,    TMUX_SCLN, XXXXXXX,
-                              TMUX_LCBR, TMUX_LBRC, TMUX_RBRC, TMUX_RCBR, TMUX_SLSH, TMUX_QUES,
-                              TMUX_BSPC, TMUX_SPC
+                       TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    XXXXXXX,
+                       TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   TMUX_RBRC, XXXXXXX,
+                       TMUX_H,    TMUX_J,    TMUX_K,    TMUX_L,    TMUX_SCLN, XXXXXXX,
+                       TMUX_LCBR, TMUX_LBRC, TMUX_RBRC, TMUX_RCBR, TMUX_SLSH, TMUX_QUES,
+                       TMUX_BSPC, TMUX_SPC
             ),
 
     [BACKWARD] = LAYOUT_LR(
@@ -270,11 +272,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
                                                 _______, _______,
 
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______
             ),
 
     [FORWARD] = LAYOUT_LR(
@@ -284,18 +286,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
                                                 _______, _______,
 
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______, _______, _______, _______, _______,
-                              _______, _______
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______
             ),
 };
 
 #if defined(COMBO_ENABLE)
 enum combos {
     /* left hand */
-    FG,
     CV,
     XC,
 
@@ -311,11 +312,11 @@ enum combos {
 
     /* lock layer */
     NAVI_LOCK,
+    SYM_LOCK,
     NUM_LOCK,
     FN_LOCK,
 };
 
-const uint16_t PROGMEM fg[] = {BASE_F, KC_G, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
@@ -330,9 +331,9 @@ const uint16_t PROGMEM num_base[] = {KC_COMM, KC_1, COMBO_END};
 const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
 const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
 const uint16_t PROGMEM fn_lock[] = {KC_F1, KC_F2, COMBO_END};
+const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-    [FG] = COMBO(fg, SWAPP),
     [CV] = COMBO(cv, IME),
     [XC] = COMBO(xc, GOTOPATH),
 
@@ -347,6 +348,7 @@ combo_t key_combos[COMBO_COUNT] = {
     [NAVI_LOCK] = COMBO(navi_lock, QK_LLCK),
     [NUM_LOCK] = COMBO(num_lock, QK_LLCK),
     [FN_LOCK] = COMBO(fn_lock, QK_LLCK),
+    [SYM_LOCK] = COMBO(sym_lock, QK_LLCK),
 };
 #endif
 
@@ -647,31 +649,6 @@ uint16_t achordion_streak_chord_timeout(
 #endif
 #endif
 
-void static update_swapper(
-    uint16_t *active,
-    uint16_t cmdish,
-    uint16_t tabish,
-    uint16_t trigger,
-    uint16_t keycode,
-    keyrecord_t *record
-) {
-    if (keycode == trigger) {
-        if (record->event.pressed) {
-            if (*active == KC_NO) {
-                register_code(cmdish);
-                *active = cmdish;
-            }
-            register_code(tabish);
-        } else {
-            unregister_code(tabish);
-            // Don't unregister cmdish until some other key is hit or released.
-        }
-    } else if (*active != KC_NO) {
-        unregister_code(*active);
-        *active = KC_NO;
-    }
-}
-
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
@@ -883,7 +860,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_SPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_SPC), TAP_CODE_DELAY},
     [TMUX_BSPC - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_BSPC), TAP_CODE_DELAY},
 
-    /*
     [TMUX_1 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_1), TAP_CODE_DELAY},
     [TMUX_2 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_2), TAP_CODE_DELAY},
     [TMUX_3 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_3), TAP_CODE_DELAY},
@@ -894,7 +870,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_8 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_8), TAP_CODE_DELAY},
     [TMUX_9 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_9), TAP_CODE_DELAY},
     [TMUX_0 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_0), TAP_CODE_DELAY},
-    */
 
     [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
     [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
@@ -915,8 +890,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
-
-  static uint16_t swapp_active = KC_NO;
   const uint8_t layer = read_source_layers_cache(record->event.key);
 
   // WA to address unintended shift
@@ -935,11 +908,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
       }
   }
-
-  update_swapper(
-          &swapp_active,
-          isMacOS ? KC_LGUI : KC_LALT,
-          KC_TAB, SWAPP, keycode, record);
 
   switch (keycode) {
       /*
@@ -960,6 +928,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return true;
       */
+    case SYM_PLUS:
+    case SYM_LPRN:
+    case SYM_RPRN:
+      if (record->tap.count && record->event.pressed) {
+          keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+          tap_code16(S(keycode));
+          return false;
+      }
+      break;
 
     /* when both shift are held => shift + del
        when one shift is held => del

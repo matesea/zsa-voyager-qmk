@@ -15,7 +15,6 @@ Personal ZSA voyager keyboard config
     * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
 * Combo:
-    * fg = swapp
     * hj = to(NAVI)
     * cv = IME
     * xc = ctrl-c copy, win+r, ctrl-v paste
