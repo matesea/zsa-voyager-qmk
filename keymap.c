@@ -164,10 +164,10 @@ enum {
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
 
-#define SYM_PLUS    LCTL_T(KC_PLUS)
-#define SYM_MINS    LALT_T(KC_MINS)
-#define SYM_LPRN    RCTL_T(KC_LPRN)
-#define SYM_RPRN    LALT_T(KC_RPRN)
+#define SYM_PLUS    KC_PLUS
+#define SYM_MINS    KC_MINS
+#define SYM_LPRN    KC_LPRN
+#define SYM_RPRN    KC_RPRN
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -225,9 +225,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NUM] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -295,28 +295,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
-enum combos {
-    /* left hand */
-    CV,
-    XC,
-
-    /* right hand */
-    HJ,
-    NM,
-    MC,
-    CD,
-
-    /* return BASE from other layers */
-    NAVI_BASE,
-    NUM_BASE,
-
-    /* lock layer */
-    NAVI_LOCK,
-    SYM_LOCK,
-    NUM_LOCK,
-    FN_LOCK,
-};
-
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
 
@@ -333,22 +311,22 @@ const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
 const uint16_t PROGMEM fn_lock[] = {KC_F1, KC_F2, COMBO_END};
 const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 
-combo_t key_combos[COMBO_COUNT] = {
-    [CV] = COMBO(cv, IME),
-    [XC] = COMBO(xc, GOTOPATH),
+combo_t key_combos[] = {
+    COMBO(cv, IME),
+    COMBO(xc, GOTOPATH),
 
-    [HJ] = COMBO(hj, TO(NAVI)),
-    [NM] = COMBO(nm, TO(NUM)),
-    [MC] = COMBO(mc, QK_AREP),
-    [CD] = COMBO(cd, C(KC_W)), // vim window prefix
+    COMBO(hj, TO(NAVI)),
+    COMBO(nm, TO(NUM)),
+    COMBO(mc, QK_AREP),
+    COMBO(cd, C(KC_W)), // vim window prefix
 
-    [NAVI_BASE] = COMBO(navi_base, TO(BASE)),
-    [NUM_BASE] = COMBO(num_base, TO(BASE)),
+    COMBO(navi_base, TO(BASE)),
+    COMBO(num_base, TO(BASE)),
 
-    [NAVI_LOCK] = COMBO(navi_lock, QK_LLCK),
-    [NUM_LOCK] = COMBO(num_lock, QK_LLCK),
-    [FN_LOCK] = COMBO(fn_lock, QK_LLCK),
-    [SYM_LOCK] = COMBO(sym_lock, QK_LLCK),
+    COMBO(navi_lock, QK_LLCK),
+    COMBO(num_lock, QK_LLCK),
+    COMBO(fn_lock, QK_LLCK),
+    COMBO(sym_lock, QK_LLCK),
 };
 #endif
 
@@ -928,15 +906,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return true;
       */
-    case SYM_PLUS:
-    case SYM_LPRN:
-    case SYM_RPRN:
-      if (record->tap.count && record->event.pressed) {
-          keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-          tap_code16(S(keycode));
-          return false;
-      }
-      break;
 
     /* when both shift are held => shift + del
        when one shift is held => del
