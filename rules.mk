@@ -14,7 +14,8 @@ LEADER_ENABLE = no
 LAYER_LOCK_ENABLE = yes
 REPEAT_KEY_ENABLE = yes
 LTO_ENABLE = yes
+EXTRAKEY_ENABLE = yes
 
 # use userspace version achordion
-OPT_DEFS += -DACHORDION_ENABLE
+OPT_DEFS += -DACHORDION_ENABLE -DACHORDION_STREAK
 SRC += features/achordion.c

@@ -139,24 +139,24 @@ enum {
 };
 
 #define BASE_A      LT(SYM, KC_A)
-#define BASE_S      MT(MOD_LALT, KC_S)
-#define BASE_D      MT(MOD_LCTL, KC_D)
-#define BASE_F      MT(MOD_LSFT, KC_F)
+#define BASE_S      LALT_T(KC_S)
+#define BASE_D      LCTL_T(KC_D)
+#define BASE_F      LSFT_T(KC_F)
 
-#define BASE_Z      MT(MOD_LGUI, KC_Z)
+#define BASE_Z      LGUI_T(KC_Z)
 #define BASE_X      LT(NUM, KC_X)
 #define BASE_C      KC_C
 #define BASE_V      LT(NAVI, KC_V)
 
-#define BASE_J      MT(MOD_RSFT, KC_J)
-#define BASE_K      MT(MOD_RCTL, KC_K)
-#define BASE_L      MT(MOD_LALT, KC_L)
+#define BASE_J      RSFT_T(KC_J)
+#define BASE_K      RCTL_T(KC_K)
+#define BASE_L      LALT_T(KC_L)
 #define BASE_SCLN   LT(SYM, KC_SCLN)
 
 #define BASE_M      KC_M
 #define BASE_COMM   LT(BACKWARD, KC_COMM)
 #define BASE_DOT    LT(FORWARD, KC_DOT)
-#define BASE_SLSH   MT(MOD_RGUI, KC_SLSH)
+#define BASE_SLSH   RGUI_T(KC_SLSH)
 
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_TAB    LT(TMUX, KC_TAB)
@@ -175,7 +175,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            QK_AREP,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
@@ -210,16 +210,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, _______, _______,  _______,  _______, _______,
+              _______, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX, GOTOPATH,
               _______, MO(FN),  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, KC_EQL , KC_HASH,
-              _______, KC_LGUI, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                   _______, _______,
 
                        _______, _______, _______,  _______,  _______, _______,
                        KC_AMPR, ARROW,   KC_LBRC,  KC_RBRC,  USRNAME, _______,
                        KC_PIPE, KC_COLN, SYM_LPRN, SYM_RPRN, KC_PERC, _______,
-                       KC_TILD, KC_DLR , KC_LCBR,  KC_RCBR,  KC_RGUI, _______,
+                       KC_TILD, KC_DLR , KC_LCBR,  KC_RCBR,  _______, _______,
                        _______, _______
             ),
 
@@ -296,7 +296,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
 const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
@@ -313,7 +313,7 @@ const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(xc, GOTOPATH),
+    COMBO(xcv, CW_TOGG),
 
     COMBO(hj, TO(NAVI)),
     COMBO(nm, TO(NUM)),
@@ -363,14 +363,12 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     // only enable permissive hold for specific layer
-    uint16_t layer;
     if (IS_QK_LAYER_TAP(keycode)) {
-        layer = QK_LAYER_TAP_GET_LAYER(keycode);
+        uint16_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
         return layer == NAVI || layer == SYM;
     }
     // disable permissive hold for ALT
-    // disable permissive hold for GUI for avoid misfire vim leader sequence starting with ;
-    if (keycode & (QK_LALT | QK_LGUI))
+    if (keycode & QK_LALT)
         return false;
     return true;
 }
@@ -399,7 +397,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYM] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {19,255,255},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
@@ -529,11 +527,10 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                      keyrecord_t* tap_hold_record,
                      uint16_t other_keycode,
                      keyrecord_t* other_record) {
-    uint8_t tap_hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
     uint8_t other_row = other_record->event.key.row % (MATRIX_ROWS / 2);
 
-    // allow either hold key or other key in thumb
-    if (tap_hold_row > 4 ||
+    // allow same-hand shortcut when tap in thumb or first row
+    if (other_row < 1 ||
             other_row > 4)
         return true;
 
@@ -561,6 +558,10 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                         other_keycode == BASE_V ||
                         other_keycode == KC_B ||
                         other_keycode == KC_T)
+                    return true;
+                break;
+            case BASE_Z:
+                if (other_keycode == KC_R)
                     return true;
                 break;
         }
@@ -611,6 +612,10 @@ uint16_t achordion_streak_chord_timeout(
                         next_keycode == BASE_V ||
                         next_keycode == KC_B ||
                         next_keycode == KC_T)
+                    return 0;
+                break;
+            case BASE_Z:
+                if (next_keycode == KC_R)
                     return 0;
                 break;
         }
