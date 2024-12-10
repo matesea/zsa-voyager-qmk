@@ -19,13 +19,15 @@ enum custom_keycodes {
   M_DOCSTR,
   M_INCLUDE,
   M_UPDIR,
+  M_ION,
+  M_MENT,
+  M_QUEN,
+  M_TMENT,
 
   KEYSTR_MIN,
   SELLINE = KEYSTR_MIN,  // select entire line
   UPDIR,    // input ../ per press
   USRNAME,  // input username
-  GOTOPATH, // entering selected path on windows
-            // ctrl+c, win+r, ctrl+v
   CLOSAPP,  // alt+f4, close app
 
   /* vim navigation */
@@ -158,30 +160,26 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   RGUI_T(KC_SLSH)
 
-#define BASE_QUOT   LT(TMUX, KC_QUOT)
-#define BASE_TAB    LT(TMUX, KC_TAB)
+#define BASE_UNDS   LT(TMUX, KC_UNDS)
+#define BASE_EQL    LT(TMUX, KC_EQL)
+#define BASE_TAB    KC_TAB
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
-
-#define SYM_PLUS    KC_PLUS
-#define SYM_MINS    KC_MINS
-#define SYM_LPRN    KC_LPRN
-#define SYM_RPRN    KC_RPRN
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            QK_AREP,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            KC_TAB,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            QK_AREP,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            BASE_EQL, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
-                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
+                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
+                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, BASE_UNDS,
                       KC_BSPC, KC_SPC
             ),
 
@@ -210,15 +208,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX, GOTOPATH,
+              _______, _______, _______,  _______,  _______, _______,
               _______, MO(FN),  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, KC_EXLM, SYM_MINS, SYM_PLUS, KC_EQL , KC_HASH,
+              _______, KC_EXLM, KC_MINS,  KC_PLUS,  KC_EQL , KC_HASH,
               _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                   _______, _______,
 
                        _______, _______, _______,  _______,  _______, _______,
                        KC_AMPR, ARROW,   KC_LBRC,  KC_RBRC,  USRNAME, _______,
-                       KC_PIPE, KC_COLN, SYM_LPRN, SYM_RPRN, KC_PERC, _______,
+                       KC_PIPE, KC_COLN, KC_LPRN,  KC_RPRN,  KC_PERC, _______,
                        KC_TILD, KC_DLR , KC_LCBR,  KC_RCBR,  _______, _______,
                        _______, _______
             ),
@@ -296,15 +294,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xcv[] = {BASE_X, BASE_C, BASE_V, COMBO_END};
 
-const uint16_t PROGMEM hj[] = {BASE_J, KC_H, COMBO_END};
-const uint16_t PROGMEM nm[] = {KC_N, BASE_M, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
-
-const uint16_t PROGMEM navi_base[] = {KC_LEFT, KC_DOWN, COMBO_END};
-const uint16_t PROGMEM num_base[] = {KC_COMM, KC_1, COMBO_END};
 
 const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
 const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
@@ -313,15 +305,8 @@ const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(xcv, CW_TOGG),
-
-    COMBO(hj, TO(NAVI)),
-    COMBO(nm, TO(NUM)),
-    COMBO(mc, QK_AREP),
+    COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
-
-    COMBO(navi_base, TO(BASE)),
-    COMBO(num_base, TO(BASE)),
 
     COMBO(navi_lock, QK_LLCK),
     COMBO(num_lock, QK_LLCK),
@@ -397,7 +382,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYM] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {19,255,255},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
@@ -633,6 +618,38 @@ uint16_t achordion_streak_chord_timeout(
 #endif
 
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
+                            uint8_t* remembered_mods) {
+  // Unpack tapping keycode for tap-hold keys.
+  switch (keycode) {
+#ifndef NO_ACTION_TAPPING
+    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+      keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+      break;
+#ifndef NO_ACTION_LAYER
+    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+      keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+      break;
+#endif  // NO_ACTION_LAYER
+#endif  // NO_ACTION_TAPPING
+  }
+
+  // Forget Shift on most letters when Shift or AltGr are the only mods. Some
+  // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
+  // NN, SS, ZZ are excluded
+  switch (keycode) {
+    case KC_A ... KC_M:
+    case KC_O ... KC_R:
+    case KC_T ... KC_Y:
+      if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
+        *remembered_mods &= ~MOD_MASK_SHIFT;
+      }
+      break;
+  }
+
+  return true;
+}
+
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
         switch (keycode) {
@@ -660,11 +677,21 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
               break;
 
             case KC_HASH: return M_INCLUDE; // # -> include
-            case BASE_QUOT:
+            case KC_QUOT:
               if ((mods & MOD_MASK_SHIFT) != 0) {
                 return M_DOCSTR;  // " -> ""<cursor>"""
               }
               break;
+
+            case KC_I:
+              if ((mods & MOD_MASK_SHIFT) == 0) {
+                  return M_ION;
+              }
+              break;
+
+            case KC_M: return M_MENT;
+            case KC_Q: return M_QUEN;
+            case KC_T: return M_TMENT;
 
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
@@ -769,7 +796,6 @@ static const struct keystring_t keystrings[] = {
     [SELLINE - KEYSTR_MIN]  = {SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY},
     [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
-    [GOTOPATH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_C)) SS_DELAY(PREFIX_DELAY) SS_LGUI(SS_TAP(X_R)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_V)), TAP_CODE_DELAY},
     [CLOSAPP - KEYSTR_MIN]  = {SS_LALT(SS_TAP(X_F4)), TAP_CODE_DELAY},
     [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
@@ -893,17 +919,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-      /*
-    case BASE_UNDS:
-      // send _ when tap
-      if (record->tap.count && record->event.pressed) {
-          clear_mods();
-          tap_code16(KC_UNDS);
-          set_mods(mods);
-          return false;
-      }
-      return true;
+    case BASE_UNDS: {
+        // send _ when tap
+        static bool registered = false;
+        if (record->tap.count) {
+            if (record->event.pressed) {
+                if (registered)
+                    unregister_code16(KC_UNDS);
+                register_code16(KC_UNDS);
+                registered = true;
+            } else {
+                unregister_code16(KC_UNDS);
+                registered = false;
+            }
+            return false;
+        }
+        return true;
+    }
 
+      /*
     case BASE_CW:
       if (record->tap.count && record->event.pressed) {
           caps_word_toggle();
@@ -1016,6 +1050,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           SEND_STRING_DELAY(/*"*/"\"\"\"\"\""
               SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), TAP_CODE_DELAY);
           break;
+        case M_ION: MAGIC_STRING(/*i*/"on", KC_S); break;
+        case M_MENT: MAGIC_STRING(/*m*/"ent", KC_S); break;
+        case M_QUEN: MAGIC_STRING(/*q*/"uen", KC_C); break;
+        case M_TMENT: MAGIC_STRING(/*t*/"ment", KC_S); break;
     }
   }
   return true;
@@ -1048,6 +1086,10 @@ bool caps_word_press_user(uint16_t keycode) {
     case KC_BSPC:
     case KC_DEL:
     case KC_UNDS:
+    case M_ION:
+    case M_MENT:
+    case M_QUEN:
+    case M_TMENT:
       return true;
 
     default:

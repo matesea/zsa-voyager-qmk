@@ -15,14 +15,12 @@ Personal ZSA voyager keyboard config
     * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
 * Combo:
-    * hj = to(NAVI)
     * cv = IME
-    * xc = ctrl-c copy, win+r, ctrl-v paste
-    * m, = QK_AREP, alternate repeat
+    * m, = CW_TOGG
     * ,. = C-W, vim window prefix
 * Key Override
     * shift + backspace = delete
-    * gui + esc = \`
+    * both shift + backspace = shift + delete
     * shift + esc = ~
 
 ## Additional features
