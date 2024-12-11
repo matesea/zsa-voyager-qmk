@@ -162,7 +162,6 @@ enum {
 
 #define BASE_UNDS   LT(TMUX, KC_UNDS)
 #define BASE_EQL    LT(TMUX, KC_EQL)
-#define BASE_TAB    KC_TAB
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -653,15 +652,15 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
         switch (keycode) {
-          case BASE_TAB: return C(S(KC_TAB));
+          case KC_TAB: return C(S(KC_TAB));
         }
     } else if (mods == MOD_BIT_LGUI || mods == MOD_BIT_RGUI) {
         switch (keycode) {
-          case BASE_TAB: return G(S(KC_TAB));
+          case KC_TAB: return G(S(KC_TAB));
         }
     } else if (mods == MOD_BIT_LALT) {
         switch (keycode) {
-          case BASE_TAB: return A(S(KC_TAB));
+          case KC_TAB: return A(S(KC_TAB));
         }
     } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
@@ -921,8 +920,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case BASE_UNDS: {
         // send _ when tap
-        static bool registered = false;
         if (record->tap.count) {
+            static bool registered = false;
             if (record->event.pressed) {
                 if (registered)
                     unregister_code16(KC_UNDS);
@@ -949,29 +948,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     /* when both shift are held => shift + del
        when one shift is held => del
      */
-    case KC_BSPC: {
-      static uint16_t registered_key = KC_NO;
-      if (record->event.pressed) {  // On key press.
-        if (shift_mods) {  // At least one shift key is held.
-          registered_key = KC_DEL;
-          // If one shift is held, clear it from the mods. But if both
-          // shifts are held, leave as is to send Shift + Del.
-          if (shift_mods != MOD_MASK_SHIFT) {
+    case KC_BSPC:
+      if (record->tap.count) {
+          static uint16_t registered_key = KC_NO;
+          if (record->event.pressed) {  // On key press.
+            if (shift_mods) {  // At least one shift key is held.
+              registered_key = KC_DEL;
+              // If one shift is held, clear it from the mods. But if both
+              // shifts are held, leave as is to send Shift + Del.
+              if (shift_mods != MOD_MASK_SHIFT) {
 #ifndef NO_ACTION_ONESHOT
-            del_oneshot_mods(MOD_MASK_SHIFT);
+                del_oneshot_mods(MOD_MASK_SHIFT);
 #endif  // NO_ACTION_ONESHOT
-            unregister_mods(MOD_MASK_SHIFT);
-          }
-        } else {
-          registered_key = KC_BSPC;
-        }
+                unregister_mods(MOD_MASK_SHIFT);
+              }
+            } else {
+              registered_key = KC_BSPC;
+            }
 
-        register_code(registered_key);
-        set_mods(mods);
-      } else {  // On key release.
-        unregister_code(registered_key);
-      }
-    } return false;
+            register_code(registered_key);
+            set_mods(mods);
+          } else {  // On key release.
+            unregister_code(registered_key);
+          }
+          return false;
+      } break;
 
     /*
        shift + esc = ~
