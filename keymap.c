@@ -522,31 +522,35 @@ bool achordion_chord(uint16_t tap_hold_keycode,
         switch (tap_hold_keycode) {
             /* same hand exceptions for GUI shortcut */
             case BASE_Z:
-                // for cut/copy/paste/new tab on MAC OS
-                if (other_keycode == BASE_X ||
-                        other_keycode == BASE_C ||
-                        other_keycode == BASE_V ||
-                        other_keycode == KC_T ||
-                        other_keycode == KC_W)
-                    return true;
+                switch (other_keycode) {
+                    case BASE_X:
+                    case BASE_C:
+                    case BASE_V:
+                    case KC_B:
+                    case KC_T:
+                        return true;
+                }
                 break;
         }
     } else {
         switch (tap_hold_keycode) {
             /* same hand exceptions for CTRL shortcut */
             case BASE_D:
-                if (other_keycode == BASE_A || // for tmux, ctrl-a ctrl-<letter>
-                    // for cut/copy/paste/new tab
-                        other_keycode == BASE_X ||
-                        other_keycode == BASE_C ||
-                        other_keycode == BASE_V ||
-                        other_keycode == KC_B ||
-                        other_keycode == KC_T)
-                    return true;
+                switch (other_keycode) {
+                    case BASE_A:
+                    case BASE_X:
+                    case BASE_C:
+                    case BASE_V:
+                    case KC_B:
+                    case KC_T:
+                        return true;
+                }
                 break;
             case BASE_Z:
-                if (other_keycode == KC_R)
-                    return true;
+                switch (other_keycode) {
+                    case KC_R:
+                        return true;
+                }
                 break;
         }
     }
@@ -579,28 +583,34 @@ uint16_t achordion_streak_chord_timeout(
         switch (tap_hold_keycode) {
             case BASE_Z:
                 // for cut/copy/paste/new tab on MAC OS
-                if (next_keycode == BASE_X ||
-                        next_keycode == BASE_C ||
-                        next_keycode == BASE_V ||
-                        next_keycode == KC_T ||
-                        next_keycode == KC_W)
-                    return 0;
+                switch (next_keycode) {
+                    case BASE_X:
+                    case BASE_C:
+                    case BASE_V:
+                    case KC_B:
+                    case KC_T:
+                        return 0;
+                }
                 break;
         }
     } else {
         switch (tap_hold_keycode) {
             case BASE_D:
-                if (next_keycode == BASE_A ||
-                        next_keycode == BASE_X ||
-                        next_keycode == BASE_C ||
-                        next_keycode == BASE_V ||
-                        next_keycode == KC_B ||
-                        next_keycode == KC_T)
-                    return 0;
+                switch (next_keycode) {
+                    case BASE_A:
+                    case BASE_X:
+                    case BASE_C:
+                    case KC_V:
+                    case KC_B:
+                    case KC_T:
+                        return 0;
+                }
                 break;
             case BASE_Z:
-                if (next_keycode == KC_R)
-                    return 0;
+                switch (next_keycode) {
+                    case KC_R:
+                        return 0;
+                }
                 break;
         }
     }
