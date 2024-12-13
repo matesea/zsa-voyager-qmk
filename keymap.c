@@ -959,7 +959,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        when one shift is held => del
      */
     case KC_BSPC:
-      if (record->tap.count) {
+      {
           static uint16_t registered_key = KC_NO;
           if (record->event.pressed) {  // On key press.
             if (shift_mods) {  // At least one shift key is held.
@@ -981,8 +981,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           } else {  // On key release.
             unregister_code(registered_key);
           }
-          return false;
-      } break;
+      } return false;
 
     /*
        shift + esc = ~
