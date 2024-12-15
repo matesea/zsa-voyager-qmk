@@ -160,11 +160,18 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   RGUI_T(KC_SLSH)
 
-#define BASE_UNDS   LT(TMUX, KC_UNDS)
-#define BASE_EQL    LT(TMUX, KC_EQL)
+#define BASE_UNDS   KC_UNDS
+#define BASE_EQL    KC_EQL
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
+
+#define SYM_MINS    LALT_T(KC_MINS)
+#define SYM_PLUS    LCTL_T(KC_PLUS)
+#define SYM_LPRN    RCTL_T(KC_LPRN)
+#define SYM_RPRN    LALT_T(KC_RPRN)
+#define SYM_EQL     LSFT_T(KC_EQL)
+#define SYM_COLN    RSFT_T(KC_COLN)
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -209,14 +216,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______,  _______,  _______, _______,
               _______, MO(FN),  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, KC_EXLM, KC_MINS,  KC_PLUS,  KC_EQL , KC_HASH,
+              _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
               _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                   _______, _______,
 
-                       _______, _______, _______,  _______,  _______, _______,
-                       KC_AMPR, ARROW,   KC_LBRC,  KC_RBRC,  USRNAME, _______,
-                       KC_PIPE, KC_COLN, KC_LPRN,  KC_RPRN,  KC_PERC, _______,
-                       KC_TILD, KC_DLR , KC_LCBR,  KC_RCBR,  _______, _______,
+                       _______, _______,  _______,  _______,  _______, _______,
+                       KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  USRNAME, _______,
+                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, KC_PERC, _______,
+                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______, _______,
                        _______, _______
             ),
 
@@ -297,6 +304,9 @@ const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
+const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
+const uint16_t PROGMEM nm[] = {BASE_M, KC_N, COMBO_END};
+
 const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
 const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
 const uint16_t PROGMEM fn_lock[] = {KC_F1, KC_F2, COMBO_END};
@@ -305,7 +315,10 @@ const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(mc, CW_TOGG),
-    COMBO(cd, C(KC_W)), // vim window prefix
+    COMBO(nm, C(KC_W)), // vim window prefix
+
+    COMBO(xc, MO(TMUX)),
+    COMBO(cd, MO(TMUX)),
 
     COMBO(navi_lock, QK_LLCK),
     COMBO(num_lock, QK_LLCK),
@@ -895,6 +908,36 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
+bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
+    if (record->tap.count) {
+        switch (keycode) {
+#ifndef NO_ACTION_TAPPING
+            case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+              keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+              break;
+#ifndef NO_ACTION_LAYER
+            case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+              keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+              break;
+#endif  // NO_ACTION_LAYER
+#endif  // NO_ACTION_TAPPING
+        }
+        keycode = S(keycode);
+
+        if (record->event.pressed) {
+            if (*registered)
+                unregister_code16(keycode);
+            register_code16(keycode);
+            *registered = true;
+        } else {
+            unregister_code16(keycode);
+            *registered = false;
+        }
+        return false;
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) return false;
@@ -916,8 +959,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       switch (keycode) {
           case KC_BSLS:
           case KC_GRV:
-          case KC_EQL:
-          case KC_MINS:
+          case SYM_EQL:
+          case SYM_MINS:
           case KC_SLSH:
           case KC_LBRC:
           case KC_RBRC:
@@ -928,22 +971,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
+      /*
     case BASE_UNDS: {
         // send _ when tap
-        if (record->tap.count) {
-            static bool registered = false;
-            if (record->event.pressed) {
-                if (registered)
-                    unregister_code16(KC_UNDS);
-                register_code16(KC_UNDS);
-                registered = true;
-            } else {
-                unregister_code16(KC_UNDS);
-                registered = false;
-            }
-            return false;
-        }
-        return true;
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    */
+    case SYM_PLUS: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case SYM_LPRN: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case SYM_RPRN: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case SYM_COLN: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
     }
 
       /*
