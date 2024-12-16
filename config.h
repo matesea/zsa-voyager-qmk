@@ -18,7 +18,6 @@
 
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
-#define NO_ACTION_ONESHOT
 
 #if !defined(PERMISSIVE_HOLD)
 #define PERMISSIVE_HOLD

@@ -160,8 +160,8 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   RGUI_T(KC_SLSH)
 
-#define BASE_UNDS   KC_UNDS
-#define BASE_EQL    KC_EQL
+#define BASE_UNDS   LT(TMUX, KC_UNDS)
+#define BASE_EQL    LT(TMUX, KC_EQL)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -299,13 +299,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
+const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
-
-const uint16_t PROGMEM xc[] = {BASE_X, BASE_C, COMBO_END};
-const uint16_t PROGMEM nm[] = {BASE_M, KC_N, COMBO_END};
 
 const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
 const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
@@ -314,11 +312,9 @@ const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
+    COMBO(xc, OSL(FN)),
     COMBO(mc, CW_TOGG),
-    COMBO(nm, C(KC_W)), // vim window prefix
-
-    COMBO(xc, MO(TMUX)),
-    COMBO(cd, MO(TMUX)),
+    COMBO(cd, C(KC_W)), // vim window prefix
 
     COMBO(navi_lock, QK_LLCK),
     COMBO(num_lock, QK_LLCK),
@@ -524,6 +520,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                      keyrecord_t* tap_hold_record,
                      uint16_t other_keycode,
                      keyrecord_t* other_record) {
+    // uint8_t hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
     uint8_t other_row = other_record->event.key.row % (MATRIX_ROWS / 2);
 
     // allow same-hand shortcut when tap in thumb or first row
@@ -925,6 +922,7 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
         keycode = S(keycode);
 
         if (record->event.pressed) {
+            process_caps_word(keycode, record);
             if (*registered)
                 unregister_code16(keycode);
             register_code16(keycode);
@@ -971,13 +969,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-      /*
     case BASE_UNDS: {
         // send _ when tap
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
-    */
     case SYM_PLUS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
