@@ -204,6 +204,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     /*
+       \: in base layer, replace with $
        $: present at both sides, left for vim, right for shell
 
        X < > $ `
@@ -217,15 +218,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______,  _______,  _______, _______,
-              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              _______, USRNAME, KC_LABK,  KC_RABK,  KC_DLR,  KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______, KC_LGUI, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, QK_LLCK,
 
                        _______, _______,  _______,  _______,  _______,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
                        KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
-                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  KC_RGUI, _______,
+                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______, _______,
                        _______, _______
             ),
 
