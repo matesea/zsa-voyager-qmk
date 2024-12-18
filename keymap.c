@@ -194,7 +194,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-                                                _______, _______,
+                                                _______, QK_LLCK,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
@@ -204,26 +204,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     /*
-         < > \ `
+       $: present at both sides, left for vim, right for shell
+
+       X < > $ `
        ! - + = #
          / * ^ X
 
-                & X [ ]
+                & X [ ] @
                 | : ( ) %
                 ~ $ { }
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______,  _______,  _______, _______,
-              _______, MO(FN),  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
-                                                  _______, _______,
+              _______, KC_LGUI, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+                                                    _______, QK_LLCK,
 
-                       _______, _______,  _______,  _______,  _______, _______,
-                       KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  USRNAME, _______,
-                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, KC_PERC, _______,
-                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______, _______,
+                       _______, _______,  _______,  _______,  _______,  _______,
+                       KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
+                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
+                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  KC_RGUI, _______,
                        _______, _______
             ),
 
@@ -232,7 +234,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
+                                                _______, QK_LLCK,
 
                      _______, _______, _______, _______, _______, _______,
                      KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
@@ -246,7 +248,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
+                                                _______, QK_LLCK,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
@@ -305,21 +307,12 @@ const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
-const uint16_t PROGMEM navi_lock[] = {SELLINE, SELWORD, COMBO_END};
-const uint16_t PROGMEM num_lock[] = {KC_1, KC_2, COMBO_END};
-const uint16_t PROGMEM fn_lock[] = {KC_F1, KC_F2, COMBO_END};
-const uint16_t PROGMEM sym_lock[] = {KC_DLR, KC_LCBR, COMBO_END};
-
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(xc, OSL(FN)),
     COMBO(mc, CW_TOGG),
-    COMBO(cd, C(KC_W)), // vim window prefix
 
-    COMBO(navi_lock, QK_LLCK),
-    COMBO(num_lock, QK_LLCK),
-    COMBO(fn_lock, QK_LLCK),
-    COMBO(sym_lock, QK_LLCK),
+    COMBO(xc, OSL(FN)),
+    COMBO(cd, C(KC_W)), // vim window prefix
 };
 #endif
 
@@ -358,7 +351,12 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     // only enable permissive hold for specific layer
     if (IS_QK_LAYER_TAP(keycode)) {
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
-        return layer == NAVI || layer == SYM;
+        switch (layer) {
+            case NAVI:
+            case SYM:
+                return true;
+        }
+        return false;
     }
     // disable permissive hold for ALT
     if (keycode & QK_LALT)
@@ -380,7 +378,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
+                                            {0,0,0}, {184,218,204},
 
             {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
@@ -394,10 +392,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
-                                                              {0,0,0}, {0,0,0},
+                                                              {0,0,0}, {184,218,204},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {6,255,255},  {0,0,0},
+            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},      {0,0,0}
@@ -408,7 +406,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
+                                            {0,0,0}, {184,218,204},
 
             {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
@@ -422,7 +420,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
+                                            {0,0,0}, {184,218,204},
 
             {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
@@ -520,12 +518,11 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                      keyrecord_t* tap_hold_record,
                      uint16_t other_keycode,
                      keyrecord_t* other_record) {
-    // uint8_t hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
+    uint8_t hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
     uint8_t other_row = other_record->event.key.row % (MATRIX_ROWS / 2);
 
-    // allow same-hand shortcut when tap in thumb or first row
-    if (other_row < 1 ||
-            other_row > 4)
+    // allow same-hand shortcut when tap/hold in thumb
+    if (other_row > 4 || hold_row > 4)
         return true;
 
     if (isMacOS) {
