@@ -11,24 +11,14 @@
 enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ARROW,    // -> => <-> <=>
-  SELWORD,  // select word
   IME,      // switch ime
   RGB_DEF,  // set rgb to some nice default
   MAC_TOG,  // toggle mac os
-
-  M_DOCSTR,
-  M_INCLUDE,
-  M_UPDIR,
-  M_ION,
-  M_MENT,
-  M_QUEN,
-  M_TMENT,
 
   KEYSTR_MIN,
   SELLINE = KEYSTR_MIN,  // select entire line
   UPDIR,    // input ../ per press
   USRNAME,  // input username
-  CLOSAPP,  // alt+f4, close app
 
   /* vim navigation */
   LBRC_A,
@@ -160,8 +150,8 @@ enum {
 #define BASE_DOT    LT(FORWARD, KC_DOT)
 #define BASE_SLSH   RGUI_T(KC_SLSH)
 
-#define BASE_UNDS   LT(TMUX, KC_UNDS)
-#define BASE_EQL    LT(TMUX, KC_EQL)
+#define BASE_TAB    LT(TMUX, KC_TAB)
+#define BASE_QUOT   LT(TMUX, KC_QUOT)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -172,20 +162,24 @@ enum {
 #define SYM_RPRN    LALT_T(KC_RPRN)
 #define SYM_EQL     LSFT_T(KC_EQL)
 #define SYM_COLN    RSFT_T(KC_COLN)
+#define SYM_DLR     LGUI_T(KC_DLR)
+
+#define CLOSAPP     A(KC_F4)
+#define SWAPP       G(KC_TAB)
 
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_TAB,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            QK_AREP,  BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            BASE_EQL, BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+            KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
                                               KC_ENT,   QK_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
-                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, BASE_UNDS,
+                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
+                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
                       KC_BSPC, KC_SPC
             ),
 
@@ -199,17 +193,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     GS_LEFT, SELLINE, SELWORD, GS_RGHT, KC_APP,  KC_SCRL,
+                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_APP,  KC_SCRL,
                      _______, _______
             ),
 
     /*
-       \: in base layer, replace with $
-       $: present at both sides, left for vim, right for shell
-
-       X < > $ `
+       X < > \ `
        ! - + = #
-         / * ^ X
+       $ / * ^ X
 
                 & X [ ] @
                 | : ( ) %
@@ -218,9 +209,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______,  _______,  _______, _______,
-              _______, USRNAME, KC_LABK,  KC_RABK,  KC_DLR,  KC_GRV,
+              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS,  KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______, _______, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, QK_LLCK,
 
                        _______, _______,  _______,  _______,  _______,  _______,
@@ -310,7 +301,7 @@ const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(mc, CW_TOGG),
+    COMBO(mc, QK_AREP),
 
     COMBO(xc, OSL(FN)),
     COMBO(cd, C(KC_W)), // vim window prefix
@@ -687,29 +678,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                     return S(KC_N);
                 return KC_N;
 
-            case BASE_DOT:
-              if ((mods & MOD_MASK_SHIFT) == 0) {
-                return M_UPDIR;  // . -> ../
-              }
-              break;
-
-            case KC_HASH: return M_INCLUDE; // # -> include
-            case KC_QUOT:
-              if ((mods & MOD_MASK_SHIFT) != 0) {
-                return M_DOCSTR;  // " -> ""<cursor>"""
-              }
-              break;
-
-            case KC_I:
-              if ((mods & MOD_MASK_SHIFT) == 0) {
-                  return M_ION;
-              }
-              break;
-
-            case KC_M: return M_MENT;
-            case KC_Q: return M_QUEN;
-            case KC_T: return M_TMENT;
-
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
             case LBRC_B: return RBRC_B;
@@ -782,29 +750,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
     return KC_TRNS;
 }
-
-// An enhanced version of SEND_STRING: if Caps Word is active, the Shift key is
-// held while sending the string. Additionally, the last key is set such that if
-// the Repeat Key is pressed next, it produces `repeat_keycode`. This helper is
-// used for several macros below in my process_record_user() function.
-#define MAGIC_STRING(str, repeat_keycode) \
-  magic_send_string_P(PSTR(str), (repeat_keycode))
-static void magic_send_string_P(const char* str, uint16_t repeat_keycode) {
-  uint8_t saved_mods = 0;
-  // If Caps Word is on, save the mods and hold Shift.
-  if (is_caps_word_on()) {
-    saved_mods = get_mods();
-    register_mods(MOD_BIT(KC_LSFT));
-  }
-
-  send_string_P(str);  // Send the string.
-  set_last_keycode(repeat_keycode);
-
-  // If Caps Word is on, restore the mods.
-  if (is_caps_word_on()) {
-    set_mods(saved_mods);
-  }
-}
 #endif
 
 
@@ -813,7 +758,6 @@ static const struct keystring_t keystrings[] = {
     [SELLINE - KEYSTR_MIN]  = {SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)), TAP_CODE_DELAY},
     [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
-    [CLOSAPP - KEYSTR_MIN]  = {SS_LALT(SS_TAP(X_F4)), TAP_CODE_DELAY},
     [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
@@ -967,11 +911,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case BASE_UNDS: {
-        // send _ when tap
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
     case SYM_PLUS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
@@ -985,6 +924,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return process_shifted_tap(keycode, record, &registered);
     }
     case SYM_COLN: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case SYM_DLR: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
@@ -1053,13 +996,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             isMacOS = !isMacOS;
             return false;
 
-        case SELWORD:
-            if (isMacOS)
-                SEND_STRING_DELAY(SS_LALT(SS_TAP(X_LEFT)) SS_LSFT(SS_LALT(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
-            else
-                SEND_STRING_DELAY(SS_LCTL(SS_TAP(X_LEFT)) SS_LSFT(SS_LCTL(SS_TAP(X_RIGHT))), TAP_CODE_DELAY);
-            return false;
-
         case RGB_SLD:
             rgblight_mode(1);
             return false;
@@ -1095,18 +1031,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           SEND_STRING_DELAY(p->str, p->delay);
           set_mods(mods);
           return false;
-
-        // Macros invoked through the QK_AREP key.
-        case M_UPDIR:   MAGIC_STRING(/*.*/"./", UPDIR); break;
-        case M_INCLUDE: SEND_STRING_DELAY(/*#*/"include ", TAP_CODE_DELAY); break;
-        case M_DOCSTR:
-          SEND_STRING_DELAY(/*"*/"\"\"\"\"\""
-              SS_TAP(X_LEFT) SS_TAP(X_LEFT) SS_TAP(X_LEFT), TAP_CODE_DELAY);
-          break;
-        case M_ION: MAGIC_STRING(/*i*/"on", KC_S); break;
-        case M_MENT: MAGIC_STRING(/*m*/"ent", KC_S); break;
-        case M_QUEN: MAGIC_STRING(/*q*/"uen", KC_C); break;
-        case M_TMENT: MAGIC_STRING(/*t*/"ment", KC_S); break;
     }
   }
   return true;
@@ -1139,10 +1063,6 @@ bool caps_word_press_user(uint16_t keycode) {
     case KC_BSPC:
     case KC_DEL:
     case KC_UNDS:
-    case M_ION:
-    case M_MENT:
-    case M_QUEN:
-    case M_TMENT:
       return true;
 
     default:
