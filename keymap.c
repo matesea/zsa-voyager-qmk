@@ -122,7 +122,7 @@ enum {
     BASE = 0,
     NAVI,
     SYM,
-    // NUM,
+    NUM,
     FN,
     TMUX,
     BACKWARD,
@@ -185,9 +185,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAVI] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, QK_LLCK,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -221,7 +221,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        _______, _______
             ),
 
-    /*
     [NUM] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -235,7 +234,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
                      KC_0, _______
             ),
-    */
 
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
@@ -296,11 +294,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
+const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
+    COMBO(xc, MO(NUM)),
     COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
 };
@@ -391,7 +391,6 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {0,0,0}
     },
 
-    /*
     [NUM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -405,7 +404,6 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {184,218,204},
             {19,255,255}, {0,0,0},
     },
-    */
 
     [FN] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
