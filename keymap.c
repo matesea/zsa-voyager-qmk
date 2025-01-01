@@ -191,9 +191,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, QK_LLCK,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
+                     KC_INS,  GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_APP,  KC_SCRL,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  KC_SCRL,
                      _______, _______
             ),
 
@@ -209,7 +209,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______,  _______,  _______, _______,
-              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS,  KC_GRV,
+              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
               _______, SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, QK_LLCK,
@@ -371,9 +371,9 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                             {0,0,0}, {184,218,204},
 
             {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {0,0,0},      {0,0,0}
     },
 
@@ -520,10 +520,8 @@ bool achordion_chord(uint16_t tap_hold_keycode,
             /* same hand exceptions for GUI shortcut */
             case BASE_Z:
                 switch (other_keycode) {
-                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
-                    case KC_B:
                     case KC_T:
                         return true;
                 }
@@ -581,10 +579,8 @@ uint16_t achordion_streak_chord_timeout(
             case BASE_Z:
                 // for cut/copy/paste/new tab on MAC OS
                 switch (next_keycode) {
-                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
-                    case KC_B:
                     case KC_T:
                         return 0;
                 }
