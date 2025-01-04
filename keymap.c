@@ -138,7 +138,7 @@ enum {
 #define BASE_Z      LGUI_T(KC_Z)
 #define BASE_X      LT(FN, KC_X)
 #define BASE_C      KC_C
-#define BASE_V      LT(NAVI, KC_V)
+#define BASE_V      KC_V
 
 #define BASE_J      RSFT_T(KC_J)
 #define BASE_K      RCTL_T(KC_K)
@@ -152,6 +152,7 @@ enum {
 
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
+#define BASE_ENT    LT(NAVI, KC_ENT)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -174,7 +175,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             QK_AREP,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              KC_ENT,   QK_REP,
+                                              BASE_ENT, QK_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
@@ -188,13 +189,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                     KC_INS,  GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_BRK,
+                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  KC_SCRL,
-                     _______, _______
+                     _______, QK_LLCK
             ),
 
     /*
@@ -212,7 +213,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
               _______, SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
-                                                    _______, QK_LLCK,
+                                                    _______, _______,
 
                        _______, _______,  _______,  _______,  _______,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
@@ -226,13 +227,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
                      KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
                      KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
-                     KC_0, _______
+                     KC_0, QK_LLCK
             ),
 
     [FN] = LAYOUT_LR(
@@ -240,13 +241,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, QK_LLCK,
+                                                _______, _______,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
-                     _______, _______
+                     _______, QK_LLCK
             ),
 
     [TMUX] = LAYOUT_LR(
@@ -254,7 +255,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX,   XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
             XXXXXXX,   TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,   TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
-                                                _______, _______,
+                                                  XXXXXXX, XXXXXXX,
 
                        TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    XXXXXXX,
                        TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   TMUX_RBRC, XXXXXXX,
@@ -268,7 +269,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
-                                                _______, _______,
+                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      _______, _______, _______, _______, _______, _______,
@@ -329,6 +330,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
+    case BASE_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -368,13 +370,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
             {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {0,0,0},      {0,0,0}
+            {0,0,0},      {184,218,204}
     },
 
     [SYM] = {
@@ -382,7 +384,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
-                                                              {0,0,0}, {184,218,204},
+                                                              {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
@@ -396,13 +398,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {184,218,204},
-            {19,255,255}, {0,0,0},
+            {19,255,255}, {184,218,204},
     },
 
     [FN] = {
@@ -410,13 +412,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {184,218,204},
+                                            {0,0,0}, {0,0,0},
 
             {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0},       {0,0,0}
+            {0,0,0}, {184,218,204}
     },
 
     [TMUX] = {
