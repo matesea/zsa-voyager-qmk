@@ -121,6 +121,7 @@ struct keystring_t {
 enum {
     BASE = 0,
     NAVI,
+    MOUSE,
     SYM,
     NUM,
     FN,
@@ -192,9 +193,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_INS,  KC_BRK,
-                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  KC_SCRL,
+                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_INS,  XXXXXXX,
+                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  XXXXXXX,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  XXXXXXX,
+                     _______, QK_LLCK
+            ),
+
+    [MOUSE] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                                _______, _______,
+
+                     _______, _______, _______, _______, _______, _______,
+                     XXXXXXX, KC_BTN2, KC_BTN3, KC_BTN1, _______, _______,
+                     KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R, _______, _______,
+                     KC_WH_L, KC_WH_D, KC_WH_U, KC_WH_R, _______, _______,
                      _______, QK_LLCK
             ),
 
@@ -209,10 +224,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, _______, _______,  _______,  _______, _______,
-              _______, USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______, SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______,   _______, _______,  _______,  _______, _______,
+              MO(MOUSE), USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              MO(NUM),   KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
+              _______,   SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
                        _______, _______,  _______,  _______,  _______,  _______,
@@ -244,9 +259,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
-                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
+                     KC_BRK,  KC_F7,   KC_F8,   KC_F9,   KC_F10,  XXXXXXX,
+                     KC_PSCR, KC_F4,   KC_F5,   KC_F6,   KC_F11,  XXXXXXX,
+                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F12,  XXXXXXX,
                      _______, QK_LLCK
             ),
 
@@ -295,13 +310,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
-const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(xc, MO(NUM)),
     COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
 };
@@ -373,9 +386,23 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
                                             {0,0,0}, {0,0,0},
 
             {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
-            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {127,234,222},
+            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
+            {0,0,0},      {184,218,204}
+    },
+
+    [MOUSE] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+                                            {0,0,0}, {0,0,0},
+
+            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
+            {0,0,0},      {29,239,251}, {29,239,251}, {29,239,251}, {0,0,0}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {0,0,0},
             {0,0,0},      {184,218,204}
     },
 
@@ -414,11 +441,11 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {184,218,204}
+            {0,0,0},       {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0},       {184,218,204}
     },
 
     [TMUX] = {
