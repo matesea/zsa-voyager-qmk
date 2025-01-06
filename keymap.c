@@ -120,8 +120,9 @@ struct keystring_t {
 
 enum {
     BASE = 0,
+    // CDH, // colemak dh
     NAVI,
-    MOUSE,
+    // MOUSE,
     SYM,
     NUM,
     FN,
@@ -169,6 +170,18 @@ enum {
 #define CLOSAPP     A(KC_F4)
 #define SWAPP       G(KC_TAB)
 
+/*
+// dedicated for colemak dh layer
+#define CDH_R       LALT_T(KC_R)
+#define CDH_S       LCTL_T(KC_S)
+#define CDH_T       LSFT_T(KC_T)
+#define CDH_D       LT(NAVI, KC_D)
+#define CDH_N       RSFT_T(KC_N)
+#define CDH_E       RCTL_T(KC_E)
+#define CDH_I       LALT_T(KC_I)
+#define CDH_O       LT(SYM, KC_O)
+*/
+
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -185,6 +198,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_BSPC, KC_SPC
             ),
 
+   /*
+    [CDH] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, KC_F,    KC_P,    KC_B,
+            _______, _______, CDH_R,   CDH_S,   CDH_T,   _______,
+            _______, _______, _______, _______, CDH_D,   KC_V,
+                                                _______, _______,
+
+                     _______, _______, _______, _______, _______, _______,
+                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, _______,
+                     KC_M,    CDH_N,   CDH_E,   CDH_I,   CDH_O,   _______,
+                     KC_K,    KC_H,    _______, _______, _______, _______,
+                     _______, _______
+            ),
+    */
+
     [NAVI] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -199,6 +228,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, QK_LLCK
             ),
 
+    /*
     [MOUSE] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -212,6 +242,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_WH_L, KC_WH_D, KC_WH_U, KC_WH_R, _______, _______,
                      _______, QK_LLCK
             ),
+    */
 
     /*
        X < > \ `
@@ -225,7 +256,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______,   _______, _______,  _______,  _______, _______,
-              MO(MOUSE), USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              _______,   USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               MO(NUM),   KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
               _______,   SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
@@ -313,10 +344,20 @@ const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
+/*
+const uint16_t PROGMEM cdh_cd[] = {BASE_C, CDH_D, COMBO_END};
+const uint16_t PROGMEM cdh_hc[] = {KC_H, BASE_COMM, COMBO_END};
+*/
+
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
+
+    /*
+    COMBO(cdh_cd, IME),
+    COMBO(cdh_hc, CW_TOGG),
+    */
 };
 #endif
 
@@ -324,10 +365,18 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case BASE_F:
         case BASE_J:
+        /*
+        case CDH_T:
+        case CDH_N:
+        */
             return TAPPING_TERM;
         // longer tapping term for ALT
         case BASE_S:
         case BASE_L:
+        /*
+        case CDH_R:
+        case CDH_I:
+        */
             return TAPPING_TERM + 50;
     }
     return TAPPING_TERM + 30;
@@ -344,6 +393,10 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_K:
     case BASE_L:
     case BASE_ENT:
+    /*
+    case CDH_N:
+    case CDH_E:
+    */
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -378,6 +431,22 @@ void keyboard_post_init_user(void) {
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
+    /*
+    [CDH] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0},
+
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+    */
+
     [NAVI] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -392,6 +461,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {184,218,204}
     },
 
+    /*
     [MOUSE] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -405,6 +475,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0}, {0,0,0},
             {0,0,0},      {184,218,204}
     },
+    */
 
     [SYM] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
@@ -551,7 +622,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                 switch (other_keycode) {
                     case BASE_C:
                     case BASE_V:
-                    case KC_T:
+                    case KC_T: // case CDH_T:
                         return true;
                 }
                 break;
@@ -560,19 +631,20 @@ bool achordion_chord(uint16_t tap_hold_keycode,
         switch (tap_hold_keycode) {
             /* same hand exceptions for CTRL shortcut */
             case BASE_D:
+            // case CDH_S:
                 switch (other_keycode) {
                     case BASE_A:
                     case BASE_X:
                     case BASE_C:
                     case BASE_V:
                     case KC_B:
-                    case KC_T:
+                    case KC_T: // case CDH_T:
                         return true;
                 }
                 break;
             case BASE_Z:
                 switch (other_keycode) {
-                    case KC_R:
+                    case KC_R: // case CDH_R:
                         return true;
                 }
                 break;
@@ -610,7 +682,7 @@ uint16_t achordion_streak_chord_timeout(
                 switch (next_keycode) {
                     case BASE_C:
                     case BASE_V:
-                    case KC_T:
+                    case KC_T: // case CDH_T:
                         return 0;
                 }
                 break;
@@ -618,19 +690,20 @@ uint16_t achordion_streak_chord_timeout(
     } else {
         switch (tap_hold_keycode) {
             case BASE_D:
+            // case CDH_S:
                 switch (next_keycode) {
                     case BASE_A:
                     case BASE_X:
                     case BASE_C:
-                    case KC_V:
+                    case BASE_V:
                     case KC_B:
-                    case KC_T:
+                    case KC_T: // case CDH_T:
                         return 0;
                 }
                 break;
             case BASE_Z:
                 switch (next_keycode) {
-                    case KC_R:
+                    case KC_R: // case CDH_R:
                         return 0;
                 }
                 break;
@@ -696,7 +769,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         }
     } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
-            case KC_N:
+            case KC_N: // case CDH_N:
                 if ((mods & MOD_MASK_SHIFT) == 0)
                     return S(KC_N);
                 return KC_N;
