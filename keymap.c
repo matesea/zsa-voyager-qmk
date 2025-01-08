@@ -132,25 +132,25 @@ enum {
     LAYER_MAX = FORWARD,
 };
 
-#define BASE_A      LT(SYM, KC_A)
+#define BASE_A      LGUI_T(KC_A)
 #define BASE_S      LALT_T(KC_S)
 #define BASE_D      LCTL_T(KC_D)
 #define BASE_F      LSFT_T(KC_F)
 
-#define BASE_Z      LGUI_T(KC_Z)
-#define BASE_X      LT(FN, KC_X)
+#define BASE_Z      KC_Z
+#define BASE_X      KC_X
 #define BASE_C      KC_C
-#define BASE_V      KC_V
+#define BASE_V      LT(SYM, KC_V)
 
 #define BASE_J      RSFT_T(KC_J)
 #define BASE_K      RCTL_T(KC_K)
 #define BASE_L      LALT_T(KC_L)
-#define BASE_SCLN   LT(SYM, KC_SCLN)
+#define BASE_SCLN   RGUI_T(KC_SCLN)
 
-#define BASE_M      KC_M
+#define BASE_M      LT(SYM, KC_M)
 #define BASE_COMM   LT(BACKWARD, KC_COMM)
 #define BASE_DOT    LT(FORWARD, KC_DOT)
-#define BASE_SLSH   RGUI_T(KC_SLSH)
+#define BASE_SLSH   KC_SLSH
 
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
@@ -159,13 +159,15 @@ enum {
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
 
-#define SYM_MINS    LALT_T(KC_MINS)
+#define SYM_EQL     LSFT_T(KC_EQL)
 #define SYM_PLUS    LCTL_T(KC_PLUS)
+#define SYM_MINS    LALT_T(KC_MINS)
+#define SYM_EXLM    LGUI_T(KC_EXLM)
+
+#define SYM_COLN    RSFT_T(KC_COLN)
 #define SYM_LPRN    RCTL_T(KC_LPRN)
 #define SYM_RPRN    LALT_T(KC_RPRN)
-#define SYM_EQL     LSFT_T(KC_EQL)
-#define SYM_COLN    RSFT_T(KC_COLN)
-#define SYM_DLR     LGUI_T(KC_DLR)
+#define SYM_PERC    RGUI_T(KC_PERC)
 
 #define CLOSAPP     A(KC_F4)
 #define SWAPP       G(KC_TAB)
@@ -217,8 +219,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NAVI] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -232,8 +234,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MOUSE] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -255,24 +257,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______,   _______, _______,  _______,  _______, _______,
-              _______,   USRNAME, KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              MO(NUM),   KC_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______,   SYM_DLR, KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, RGB_DEF,  RGB_RMOD, RGB_MOD,  RGB_TOG, MAC_TOG,
+              _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
+              MO(NUM), SYM_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
+              _______, KC_DLR,   KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
-                       _______, _______,  _______,  _______,  _______,  _______,
+                       KC_MUTE, KC_VOLD,  KC_VOLU,  KC_MPLY,  KC_MNXT,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
-                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
-                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______, _______,
+                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, SYM_PERC, _______,
+                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______,  _______,
                        _______, _______
             ),
 
     [NUM] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -285,8 +287,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
@@ -311,7 +313,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [BACKWARD] = LAYOUT_LR(
-            _______, RGB_DEF, RGB_RMOD, RGB_MOD, RGB_TOG, MAC_TOG,
+            _______, _______, _______, _______, _______, _______,
             _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
@@ -325,7 +327,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [FORWARD] = LAYOUT_LR(
-            _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, KC_MNXT,
+            _______, _______, _______, _______, _______, _______,
             _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
@@ -341,6 +343,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
+const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
@@ -351,6 +354,7 @@ const uint16_t PROGMEM cdh_hc[] = {KC_H, BASE_COMM, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
+    COMBO(xc, OSL(FN)),
     COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
 
@@ -406,6 +410,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 
 #ifdef PERMISSIVE_HOLD_PER_KEY
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    /*
     // only enable permissive hold for specific layer
     if (IS_QK_LAYER_TAP(keycode)) {
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
@@ -416,6 +421,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
     }
+    */
     // disable permissive hold for ALT
     if (keycode & QK_LALT)
         return false;
@@ -478,13 +484,13 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     */
 
     [SYM] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {6,255,255},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
-            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
+            {151,234,222},{151,234,222},{151,234,222}, {151,234,222}, {151,234,222},{0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
@@ -534,7 +540,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [BACKWARD] = {
-        {0,0,0}, {44,255,255}, {44,255,255}, {44,255,255}, {44,255,255}, {6,255,255},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -548,7 +554,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [FORWARD] = {
-        {0,0,0}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222}, {151,234,222},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -1023,7 +1029,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
-    case SYM_DLR: {
+    case SYM_EXLM: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case SYM_PERC: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
