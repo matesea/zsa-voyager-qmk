@@ -45,4 +45,6 @@
 #define LAYER_LOCK_IDLE_TIMEOUT 60000
 #endif
 
+#ifdef RGB_MATRIX_CUSTOM_KB
 #include "rgb_matrix_effects.h"
+#endif
