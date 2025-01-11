@@ -12,7 +12,6 @@ enum custom_keycodes {
   RGB_SLD = ML_SAFE_RANGE,
   ARROW,    // -> => <-> <=>
   IME,      // switch ime
-  RGB_DEF,  // set rgb to some nice default
   MAC_TOG,  // toggle mac os
 
   KEYSTR_MIN,
@@ -211,7 +210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
 
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, RGB_DEF,  RGB_RMOD, RGB_MOD,  RGB_TOG, MAC_TOG,
+              _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  UG_TOGG, MAC_TOG,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               MO(NUM), SYM_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
               _______, KC_DLR,   KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
@@ -365,7 +364,8 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 extern rgb_config_t rgb_matrix_config;
 
 void keyboard_post_init_user(void) {
-  rgb_matrix_enable();
+  rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
+  rgb_matrix_enable_noeeprom();
 }
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
@@ -384,7 +384,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYM] = {
-        {0,0,0}, {44,255,255},  {44,255,255},  {44,255,255},  {44,255,255},  {6,255,255},
+        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {44,255,255},  {6,255,255},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
         {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
@@ -1019,13 +1019,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code16(isMacOS ? C(KC_SPC) : G(KC_SPC));
             set_mods(mods);
             return false;
-#ifdef RGB_MATRIX_ENABLE
-        case RGB_DEF:  // Set RGB matrix to some nice defaults.
-          rgb_matrix_enable_noeeprom();
-          rgb_matrix_mode_noeeprom(RGB_MATRIX_ALPHAS_MODS);
-          rgb_matrix_sethsv_noeeprom(17, 255, 255);  // Amber color.
-          return false;
-#endif  // RGB_MATRIX_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
