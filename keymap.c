@@ -573,10 +573,15 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
 #ifdef ACHORDION_STREAK
 uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
-    uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
 
-  if (layer == NAVI)
-    return 150;  // shorter streak detection on NAVI layer-tap key.
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
+        switch (layer) {
+            case NAVI:
+                return 150;
+        }
+        return 240;
+    }
 
   // shortcut not blocked by streak detection
     if (isMacOS) {
@@ -614,11 +619,9 @@ uint16_t achordion_streak_chord_timeout(
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-  if ((mod & (MOD_LSFT | MOD_RSFT)) != 0) {
+  if ((mod & (MOD_LSFT | MOD_RSFT)) != 0)
     return 100;  // A shorter streak timeout for Shift mod-tap keys.
-  } else {
-    return 240;  // A longer timeout otherwise.
-  }
+  return 240;  // A longer timeout otherwise.
 }
 #endif
 #endif
