@@ -152,6 +152,7 @@ enum {
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_ENT    LT(NAVI, KC_ENT)
+#define BASE_UNDS   LCTL_T(KC_UNDS)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -173,15 +174,15 @@ static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_EQL,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            KC_GRV,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
             BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            QK_AREP,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              BASE_ENT, QK_REP,
+            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+                                              BASE_ENT, BASE_UNDS,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                       KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
-                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_UNDS,
+                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_EQL,
                       KC_BSPC, KC_SPC
             ),
 
@@ -202,7 +203,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*
        X < > \ `
        ! - + = #
-       $ / * ^ X
+         / * ^ X
 
                 & X [ ] @
                 | : ( ) %
@@ -212,8 +213,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  UG_TOGG, MAC_TOG,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              MO(NUM), SYM_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
-              _______, KC_DLR,   KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, SYM_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
+              _______, MO(NUM),  KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
                        KC_MUTE, KC_VOLD,  KC_VOLU,  KC_MPLY,  KC_MNXT,  _______,
@@ -354,8 +355,11 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     }
     */
     // disable permissive hold for ALT
-    if (keycode & QK_LALT)
-        return false;
+    if (IS_QK_MODS(keycode)) {
+        uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(keycode));
+        if (mod & MOD_LALT)
+            return false;
+    }
     return true;
 }
 #endif
@@ -506,7 +510,7 @@ bool rgb_matrix_indicators_user(void) {
 
 #ifdef ACHORDION_ENABLE
 // https://getreuer.info/posts/keyboards/achordion/index.html
-void matrix_scan_user(void) {
+void housekeeping_task_user(void) {
     achordion_task();
 }
 
@@ -536,9 +540,9 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     } else {
         switch (tap_hold_keycode) {
             /* same hand exceptions for CTRL shortcut */
+            /*
             case BASE_D:
                 switch (other_keycode) {
-                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
                     case KC_B:
@@ -546,6 +550,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                         return true;
                 }
                 break;
+            */
             case BASE_A:
                 switch (other_keycode) {
                     case KC_R:
@@ -567,7 +572,14 @@ bool achordion_chord(uint16_t tap_hold_keycode,
 }
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    return 650;
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
+        switch (layer) {
+            case SYM:
+                return 350;
+        }
+    }
+    return 500;
 }
 
 #ifdef ACHORDION_STREAK
@@ -598,9 +610,9 @@ uint16_t achordion_streak_chord_timeout(
         }
     } else {
         switch (tap_hold_keycode) {
+            /*
             case BASE_D:
                 switch (next_keycode) {
-                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
                     case KC_B:
@@ -608,6 +620,7 @@ uint16_t achordion_streak_chord_timeout(
                         return 0;
                 }
                 break;
+            */
             case BASE_A:
                 switch (next_keycode) {
                     case KC_R:
@@ -620,13 +633,13 @@ uint16_t achordion_streak_chord_timeout(
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & (MOD_LSFT | MOD_RSFT)) != 0)
-    return 100;  // A shorter streak timeout for Shift mod-tap keys.
+    return 150;  // A shorter streak timeout for Shift mod-tap keys.
   return 240;  // A longer timeout otherwise.
 }
 #endif
 #endif
 
-#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
+#if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
   // Unpack tapping keycode for tap-hold keys.
@@ -659,6 +672,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
   return true;
 }
 
+#ifndef NO_ALT_REPEAT_KEY
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
         switch (keycode) {
@@ -751,6 +765,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
     return KC_TRNS;
 }
+#endif
 #endif
 
 
@@ -933,6 +948,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return process_shifted_tap(keycode, record, &registered);
     }
     case SYM_PERC: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    case BASE_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
