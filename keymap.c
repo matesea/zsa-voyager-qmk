@@ -134,20 +134,20 @@ enum {
 #define BASE_D      LCTL_T(KC_D)
 #define BASE_F      LSFT_T(KC_F)
 
-#define BASE_Z      KC_Z
+#define BASE_Z      LT(SYM, KC_Z)
 #define BASE_X      KC_X
 #define BASE_C      KC_C
-#define BASE_V      LT(SYM, KC_V)
+#define BASE_V      KC_V
 
 #define BASE_J      RSFT_T(KC_J)
 #define BASE_K      RCTL_T(KC_K)
 #define BASE_L      LALT_T(KC_L)
 #define BASE_SCLN   RGUI_T(KC_SCLN)
 
-#define BASE_M      LT(SYM, KC_M)
+#define BASE_M      KC_M
 #define BASE_COMM   LT(BACKWARD, KC_COMM)
 #define BASE_DOT    LT(FORWARD, KC_DOT)
-#define BASE_SLSH   KC_SLSH
+#define BASE_SLSH   LT(SYM, KC_SLSH)
 
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
@@ -157,12 +157,10 @@ enum {
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
 
-#define SYM_EQL     LSFT_T(KC_EQL)
 #define SYM_PLUS    LCTL_T(KC_PLUS)
 #define SYM_MINS    LALT_T(KC_MINS)
 #define SYM_EXLM    LGUI_T(KC_EXLM)
 
-#define SYM_COLN    RSFT_T(KC_COLN)
 #define SYM_LPRN    RCTL_T(KC_LPRN)
 #define SYM_RPRN    LALT_T(KC_RPRN)
 #define SYM_PERC    RGUI_T(KC_PERC)
@@ -193,8 +191,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                     GS_LEFT, SELLINE, SWAPP,   GS_RGHT, KC_INS,  XXXXXXX,
+                     CLOSAPP, SELLINE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                     SWAPP,   GS_LEFT, GS_RGHT, XXXXXXX, KC_INS,  XXXXXXX,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  XXXXXXX,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  XXXXXXX,
                      _______, QK_LLCK
@@ -213,13 +211,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  UG_TOGG, MAC_TOG,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, SYM_EXLM, SYM_MINS, SYM_PLUS, SYM_EQL, KC_HASH,
+              _______, SYM_EXLM, SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
               _______, MO(NUM),  KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
                        KC_MUTE, KC_VOLD,  KC_VOLU,  KC_MPLY,  KC_MNXT,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
-                       KC_PIPE, SYM_COLN, SYM_LPRN, SYM_RPRN, SYM_PERC, _______,
+                       KC_PIPE, KC_COLN,  SYM_LPRN, SYM_RPRN, SYM_PERC, _______,
                        KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______,  _______,
                        _______, _______
             ),
@@ -380,8 +378,8 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204},{0,0,0},      {0,0,0},      {0,0,0},      {0,0,0}, {0,0,0},
-            {29,239,251}, {29,239,251}, {29,239,251}, {29,239,251}, {127,234,222}, {0,0,0},
+            {184,218,204},{29,239,251}, {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},
+            {29,239,251}, {29,239,251}, {29,239,251}, {0,0,0},      {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
             {0,0,0},      {184,218,204}
@@ -391,7 +389,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {44,255,255},  {6,255,255},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
-        {0,0,0}, {0,0,0},       {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
+        {0,0,0}, {19,255,255},  {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
             {151,234,222},{151,234,222},{151,234,222}, {151,234,222}, {151,234,222},{0,0,0},
@@ -543,6 +541,8 @@ bool achordion_chord(uint16_t tap_hold_keycode,
             /*
             case BASE_D:
                 switch (other_keycode) {
+                    case BASE_A:
+                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
                     case KC_B:
@@ -595,7 +595,7 @@ uint16_t achordion_streak_chord_timeout(
         return 240;
     }
 
-  // shortcut not blocked by streak detection
+    // shortcut not blocked by streak detection
     if (isMacOS) {
         switch (tap_hold_keycode) {
             case BASE_A:
@@ -613,6 +613,8 @@ uint16_t achordion_streak_chord_timeout(
             /*
             case BASE_D:
                 switch (next_keycode) {
+                    case BASE_A:
+                    case BASE_X:
                     case BASE_C:
                     case BASE_V:
                     case KC_B:
@@ -915,7 +917,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       switch (keycode) {
           case KC_BSLS:
           case KC_GRV:
-          case SYM_EQL:
+          case KC_EQL:
           case SYM_MINS:
           case KC_SLSH:
           case KC_LBRC:
@@ -936,10 +938,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return process_shifted_tap(keycode, record, &registered);
     }
     case SYM_RPRN: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    case SYM_COLN: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
