@@ -572,13 +572,6 @@ bool achordion_chord(uint16_t tap_hold_keycode,
 }
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
-        switch (layer) {
-            case SYM:
-                return 350;
-        }
-    }
     return 500;
 }
 
@@ -590,9 +583,9 @@ uint16_t achordion_streak_chord_timeout(
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
             case NAVI:
+            case SYM:
                 return 150;
         }
-        return 240;
     }
 
     // shortcut not blocked by streak detection
