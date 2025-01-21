@@ -159,11 +159,11 @@ enum {
 
 #define SYM_PLUS    LCTL_T(KC_PLUS)
 #define SYM_MINS    LALT_T(KC_MINS)
-#define SYM_EXLM    LGUI_T(KC_EXLM)
+#define SYM_SLSH    LGUI_T(KC_SLSH)
 
 #define SYM_LPRN    RCTL_T(KC_LPRN)
 #define SYM_RPRN    LALT_T(KC_RPRN)
-#define SYM_PERC    RGUI_T(KC_PERC)
+#define SYM_RCBR    LGUI_T(KC_RCBR)
 
 #define CLOSAPP     A(KC_F4)
 #define SWAPP       G(KC_TAB)
@@ -211,14 +211,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, SYM_EXLM, SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
-              _______, MO(NUM),  KC_SLSH,  KC_ASTR,  KC_CIRC, UPDIR,
+              _______, KC_EXLM,  SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
+              _______, MO(NUM),  SYM_SLSH, KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
                        KC_MUTE, KC_VOLD,  KC_VOLU,  KC_MPLY,  KC_MNXT,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
-                       KC_PIPE, KC_COLN,  SYM_LPRN, SYM_RPRN, SYM_PERC, _______,
-                       KC_TILD, KC_DLR ,  KC_LCBR,  KC_RCBR,  _______,  _______,
+                       KC_PIPE, KC_COLN,  SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
+                       KC_TILD, KC_DLR ,  KC_LCBR,  SYM_RCBR, _______,  _______,
                        _______, _______
             ),
 
@@ -915,7 +915,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           case KC_GRV:
           case KC_EQL:
           case SYM_MINS:
-          case KC_SLSH:
+          case SYM_SLSH:
           case KC_LBRC:
           case KC_RBRC:
               clear_weak_mods();
@@ -937,11 +937,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
-    case SYM_EXLM: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    case SYM_PERC: {
+    case SYM_RCBR: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
