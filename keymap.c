@@ -523,7 +523,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     if (other_row > 4 || hold_row > 4)
         return true;
 
-    if (isMacOS) {
+    // if (isMacOS) {
         switch (tap_hold_keycode) {
             /* same hand exceptions for GUI shortcut */
             case BASE_A:
@@ -531,14 +531,15 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                     case BASE_C:
                     case BASE_V:
                     case KC_T:
+                    case KC_R: // for win+r run on windows
                         return true;
                 }
                 break;
         }
+    /*
     } else {
         switch (tap_hold_keycode) {
-            /* same hand exceptions for CTRL shortcut */
-            /*
+            // same hand exceptions for CTRL shortcut
             case BASE_D:
                 switch (other_keycode) {
                     case BASE_A:
@@ -550,7 +551,6 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                         return true;
                 }
                 break;
-            */
             case BASE_A:
                 switch (other_keycode) {
                     case KC_R:
@@ -559,6 +559,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                 break;
         }
     }
+    */
 
     // allow hold key at first column and last column
     /*
@@ -592,7 +593,7 @@ uint16_t achordion_streak_chord_timeout(
     }
 
     // shortcut not blocked by streak detection
-    if (isMacOS) {
+    //if (isMacOS) {
         switch (tap_hold_keycode) {
             case BASE_A:
                 // for cut/copy/paste/new tab on MAC OS
@@ -600,13 +601,14 @@ uint16_t achordion_streak_chord_timeout(
                     case BASE_C:
                     case BASE_V:
                     case KC_T:
+                    case KC_R: // for win+r run on windows
                         return 0;
                 }
                 break;
         }
+    /*
     } else {
         switch (tap_hold_keycode) {
-            /*
             case BASE_D:
                 switch (next_keycode) {
                     case BASE_A:
@@ -618,7 +620,6 @@ uint16_t achordion_streak_chord_timeout(
                         return 0;
                 }
                 break;
-            */
             case BASE_A:
                 switch (next_keycode) {
                     case KC_R:
@@ -627,11 +628,12 @@ uint16_t achordion_streak_chord_timeout(
                 break;
         }
     }
+    */
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
     if (mod & MOD_MASK_CS)
-    return 150;  // A shorter streak timeout for Shift mod-tap keys.
+    return 150;  // A shorter streak timeout for Shift or Ctrl mod-tap keys.
   return 240;  // A longer timeout otherwise.
 }
 #endif
