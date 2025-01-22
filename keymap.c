@@ -185,16 +185,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAVI] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, G(KC_A), G(KC_S), G(KC_D), G(KC_F), XXXXXXX,
+            _______, G(KC_Q), G(KC_W), G(KC_E), G(KC_R), G(KC_T),
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_G),
+            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
                                                 _______, _______,
 
-                     CLOSAPP, SELLINE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                     CLOSAPP, SELLINE, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
                      SWAPP,   GS_LEFT, GS_RGHT, XXXXXXX, KC_INS,  XXXXXXX,
-                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  XXXXXXX,
-                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  XXXXXXX,
+                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_VOLU,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_APP,  KC_VOLD,
                      _______, QK_LLCK
             ),
 
@@ -215,7 +215,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, MO(NUM),  SYM_SLSH, KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
-                       KC_MUTE, KC_VOLD,  KC_VOLU,  KC_MPLY,  KC_MNXT,  _______,
+                       XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
                        KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
                        KC_PIPE, KC_COLN,  SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
                        KC_TILD, KC_DLR ,  KC_LCBR,  SYM_RCBR, _______,  _______,
@@ -378,10 +378,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {184,218,204},{29,239,251}, {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},
+            {184,218,204},{29,239,251}, {0,0,0},      {0,0,0},      {0,0,0},       {19,255,255},
             {29,239,251}, {29,239,251}, {29,239,251}, {0,0,0},      {127,234,222}, {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {0,0,0},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {19,255,255},
+            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {19,255,255},
             {0,0,0},      {184,218,204}
     },
 
@@ -392,7 +392,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {19,255,255},  {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
                                                               {0,0,0}, {0,0,0},
 
-            {19,255,255}, {19,255,255}, {19,255,255},  {19,255,255},  {19,255,255}, {0,0,0},
+            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
@@ -524,8 +524,9 @@ bool achordion_chord(uint16_t tap_hold_keycode,
         return true;
 
     // if (isMacOS) {
+    /*
         switch (tap_hold_keycode) {
-            /* same hand exceptions for GUI shortcut */
+            // same hand exceptions for GUI shortcut
             case BASE_A:
                 switch (other_keycode) {
                     case BASE_C:
@@ -536,7 +537,6 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                 }
                 break;
         }
-    /*
     } else {
         switch (tap_hold_keycode) {
             // same hand exceptions for CTRL shortcut
@@ -594,6 +594,7 @@ uint16_t achordion_streak_chord_timeout(
 
     // shortcut not blocked by streak detection
     //if (isMacOS) {
+    /*
         switch (tap_hold_keycode) {
             case BASE_A:
                 // for cut/copy/paste/new tab on MAC OS
@@ -606,7 +607,6 @@ uint16_t achordion_streak_chord_timeout(
                 }
                 break;
         }
-    /*
     } else {
         switch (tap_hold_keycode) {
             case BASE_D:
