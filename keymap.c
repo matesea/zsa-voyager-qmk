@@ -120,8 +120,9 @@ struct keystring_t {
 enum {
     BASE = 0,
     NAVI,
-    // SYM,
-    SYM2,
+    SYM,
+    // SYM1, // getreuer's symbol layer
+    // SYM2, // sunaku's symbol layer
     // NUM,
     FN,
     TMUX,
@@ -153,8 +154,8 @@ enum {
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_ENT    LT(NAVI, KC_ENT)
-#define BASE_UNDS   LCTL_T(KC_UNDS)
-#define BASE_BSPC   LT(SYM2, KC_BSPC)
+#define BASE_UNDS   LT(SYM, KC_UNDS)
+#define BASE_BSPC   KC_BSPC
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -202,6 +203,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, QK_LLCK
             ),
 
+    [SYM] = LAYOUT_LR(  // my simplied symbol layer.
+              _______, C(KC_A), C(KC_S), C(KC_D), C(KC_F), XXXXXXX,
+              _______, C(KC_Q), C(KC_W), C(KC_E), C(KC_R), C(KC_T),
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_G),
+              _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+                                                  _______, _______,
+
+                       XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,  _______,
+                       XXXXXXX, ARROW,    KC_LBRC, KC_RBRC, XXXXXXX,  _______,
+                       XXXXXXX, USRNAME,  KC_LPRN, KC_RPRN, XXXXXXX,  _______,
+                       XXXXXXX, UPDIR ,   KC_LCBR, KC_RCBR, XXXXXXX,  _______,
+                       _______, QK_LLCK
+            ),
+
     /* getreuer's symbol layer
        X < > \ `
        ! - + = #
@@ -212,7 +227,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 ~ $ { }
                 */
     /*
-    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
+    [SYM1] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM,  SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
@@ -238,6 +253,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 " shft ctrl alt gui
                 ' bspc tab  spc ent
                 */
+    /*
     [SYM2] = LAYOUT_LR(
               KC_GRV,  KC_LBRC,  KC_LPRN,  KC_RPRN,  KC_RBRC, KC_DOT,
               KC_EXLM, KC_COMM,  KC_LCBR,  KC_RCBR,  KC_SCLN, KC_QUES,
@@ -251,6 +267,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_QUOT, KC_BSPC,  KC_TAB,  KC_SPC,  KC_ENT,  _______,
                        _______, _______
             ),
+    */
 
     /*
     [NUM] = LAYOUT_LR(
@@ -363,7 +380,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_K:
     case BASE_L:
     case BASE_ENT:
-    case BASE_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -379,7 +395,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
         switch (layer) {
             case NAVI:
-            case SYM:
+            case SYM1:
                 return true;
         }
         return false;
@@ -418,8 +434,22 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {184,218,204}
     },
 
-    /*
     [SYM] = {
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+                                            {0,0,0}, {0,0,0},
+
+            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0}, {0,0,0},
+            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
+            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
+            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
+    /*
+    [SYM1] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
         {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
@@ -434,6 +464,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
     */
 
+    /*
     [SYM2] = {
         {184,218,204}, {127,234,222}, {127,234,222}, {127,234,222}, {127,234,222}, {44,255,255},
         {184,218,204}, {44,255,255},  {127,234,222}, {127,234,222}, {44,255,255},  {44,255,255},
@@ -447,6 +478,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
+    */
 
 
     /*
@@ -639,8 +671,9 @@ uint16_t achordion_streak_chord_timeout(
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
             case NAVI:
-            // case SYM:
-            case SYM2:
+            case SYM:
+            // case SYM1:
+            // case SYM2:
                 return 150;
         }
     }
@@ -964,8 +997,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // WA to address unintended shift
   // source: reddit r/zsaVoyager: Weird firmware issue with [ turning into {
-    /*
   if (layer == SYM && record->event.pressed) {
+      switch (keycode) {
+          case KC_LBRC:
+          case KC_RBRC:
+              clear_weak_mods();
+              send_keyboard_report();
+              break;
+      }
+  }
+    /*
+  if (layer == SYM1 && record->event.pressed) {
       switch (keycode) {
           case KC_BSLS:
           case KC_GRV:
@@ -981,6 +1023,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
     */
 
+  /*
   if (layer == SYM2 && record->event.pressed) {
       switch (keycode) {
           case KC_BSLS:
@@ -998,6 +1041,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
       }
   }
+  */
 
   switch (keycode) {
     /*
@@ -1035,7 +1079,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     /* when both shift are held => shift + del
        when one shift is held => del
      */
-    /*
     case KC_BSPC:
       {
           static uint16_t registered_key = KC_NO;
@@ -1060,7 +1103,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_code(registered_key);
           }
       } return false;
-      */
 
     /*
        shift + esc = ~
