@@ -120,8 +120,9 @@ struct keystring_t {
 enum {
     BASE = 0,
     NAVI,
-    SYM,
-    NUM,
+    // SYM,
+    SYM2,
+    // NUM,
     FN,
     TMUX,
     BACKWARD,
@@ -134,7 +135,7 @@ enum {
 #define BASE_D      LCTL_T(KC_D)
 #define BASE_F      LSFT_T(KC_F)
 
-#define BASE_Z      LT(SYM, KC_Z)
+#define BASE_Z      KC_Z
 #define BASE_X      KC_X
 #define BASE_C      KC_C
 #define BASE_V      KC_V
@@ -147,16 +148,18 @@ enum {
 #define BASE_M      KC_M
 #define BASE_COMM   LT(BACKWARD, KC_COMM)
 #define BASE_DOT    LT(FORWARD, KC_DOT)
-#define BASE_SLSH   LT(SYM, KC_SLSH)
+#define BASE_SLSH   KC_SLSH
 
 #define BASE_TAB    LT(TMUX, KC_TAB)
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_ENT    LT(NAVI, KC_ENT)
 #define BASE_UNDS   LCTL_T(KC_UNDS)
+#define BASE_BSPC   LT(SYM2, KC_BSPC)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
 
+/*
 #define SYM_PLUS    LCTL_T(KC_PLUS)
 #define SYM_MINS    LALT_T(KC_MINS)
 #define SYM_SLSH    LGUI_T(KC_SLSH)
@@ -164,6 +167,7 @@ enum {
 #define SYM_LPRN    RCTL_T(KC_LPRN)
 #define SYM_RPRN    LALT_T(KC_RPRN)
 #define SYM_RCBR    LGUI_T(KC_RCBR)
+*/
 
 #define CLOSAPP     A(KC_F4)
 #define SWAPP       G(KC_TAB)
@@ -181,7 +185,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                       KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
                       KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_EQL,
-                      KC_BSPC, KC_SPC
+                      BASE_BSPC, KC_SPC
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -198,7 +202,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, QK_LLCK
             ),
 
-    /*
+    /* getreuer's symbol layer
        X < > \ `
        ! - + = #
          / * ^ X
@@ -207,12 +211,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 | : ( ) %
                 ~ $ { }
                 */
-
+    /*
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,
               _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
               _______, KC_EXLM,  SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
-              _______, MO(NUM),  SYM_SLSH, KC_ASTR,  KC_CIRC, UPDIR,
+              _______, _______,  SYM_SLSH, KC_ASTR,  KC_CIRC, UPDIR,
                                                     _______, _______,
 
                        XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
@@ -221,7 +225,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_TILD, KC_DLR ,  KC_LCBR,  SYM_RCBR, _______,  _______,
                        _______, _______
             ),
+    */
 
+    /* sunaku's symbol layer
+       ` [ ( ) ] .
+       ! , { } ; ?
+       # ^ = + $ *
+       ~ < | - > /
+               \ _
+
+                ` :    &    %   @
+                " shft ctrl alt gui
+                ' bspc tab  spc ent
+                */
+    [SYM2] = LAYOUT_LR(
+              KC_GRV,  KC_LBRC,  KC_LPRN,  KC_RPRN,  KC_RBRC, KC_DOT,
+              KC_EXLM, KC_COMM,  KC_LCBR,  KC_RCBR,  KC_SCLN, KC_QUES,
+              KC_HASH, KC_CIRC,  KC_EQL,   KC_PLUS,  KC_DLR,  KC_ASTR,
+              KC_TILD, KC_LABK,  KC_PIPE,  KC_MINS,  KC_RABK, KC_SLSH,
+                                                     KC_BSLS, KC_UNDS,
+
+                       XXXXXXX, USRNAME,  ARROW,   UPDIR,   XXXXXXX, _______,
+                       KC_GRV,  KC_COLN,  KC_AMPR, KC_PERC, KC_AT,   _______,
+                       KC_DQUO, KC_LSFT,  KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       KC_QUOT, KC_BSPC,  KC_TAB,  KC_SPC,  KC_ENT,  _______,
+                       _______, _______
+            ),
+
+    /*
     [NUM] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -235,6 +266,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
                      KC_0, QK_LLCK
             ),
+    */
 
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
@@ -331,6 +363,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_K:
     case BASE_L:
     case BASE_ENT:
+    case BASE_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -385,6 +418,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0},      {184,218,204}
     },
 
+    /*
     [SYM] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
         {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
@@ -398,7 +432,24 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0},      {0,0,0}
     },
+    */
 
+    [SYM2] = {
+        {184,218,204}, {127,234,222}, {127,234,222}, {127,234,222}, {127,234,222}, {44,255,255},
+        {184,218,204}, {44,255,255},  {127,234,222}, {127,234,222}, {44,255,255},  {44,255,255},
+        {44,255,255},  {44,255,255},  {83,193,218},  {19,255,255},  {44,255,255},  {44,255,255},
+        {184,218,204}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
+                                                                    {184,218,204}, {0,0,0},
+
+            {0,0,0},       {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
+            {184,218,204}, {44,255,255}, {44,255,255}, {44,255,255}, {44,255,255}, {0,0,0},
+            {184,218,204}, {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
+            {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0},
+            {0,0,0}, {0,0,0}
+    },
+
+
+    /*
     [NUM] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -412,6 +463,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {184,218,204},
             {19,255,255}, {184,218,204},
     },
+    */
 
     [FN] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -587,7 +639,8 @@ uint16_t achordion_streak_chord_timeout(
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
             case NAVI:
-            case SYM:
+            // case SYM:
+            case SYM2:
                 return 150;
         }
     }
@@ -911,6 +964,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // WA to address unintended shift
   // source: reddit r/zsaVoyager: Weird firmware issue with [ turning into {
+    /*
   if (layer == SYM && record->event.pressed) {
       switch (keycode) {
           case KC_BSLS:
@@ -925,8 +979,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
       }
   }
+    */
+
+  if (layer == SYM2 && record->event.pressed) {
+      switch (keycode) {
+          case KC_BSLS:
+          case KC_GRV:
+          case KC_EQL:
+          case KC_LBRC:
+          case KC_RBRC:
+          case KC_MINS:
+          case KC_DOT:
+          case KC_SCLN:
+          case KC_COMM:
+          case KC_QUOT:
+              clear_weak_mods();
+              send_keyboard_report();
+              break;
+      }
+  }
 
   switch (keycode) {
+    /*
     case SYM_PLUS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
@@ -943,6 +1017,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
+    */
     case BASE_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
@@ -960,6 +1035,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     /* when both shift are held => shift + del
        when one shift is held => del
      */
+    /*
     case KC_BSPC:
       {
           static uint16_t registered_key = KC_NO;
@@ -984,6 +1060,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_code(registered_key);
           }
       } return false;
+      */
 
     /*
        shift + esc = ~
