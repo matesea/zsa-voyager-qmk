@@ -155,7 +155,6 @@ enum {
 #define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_ENT    LT(NAVI, KC_ENT)
 #define BASE_UNDS   LT(SYM, KC_UNDS)
-#define BASE_BSPC   KC_BSPC
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -186,7 +185,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
                       KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
                       KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_EQL,
-                      BASE_BSPC, KC_SPC
+                      KC_BSPC, KC_SPC
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -205,7 +204,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
+              _______, C(KC_A), XXXXXXX, XXXXXXX, C(KC_R), C(KC_T),
               _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
               _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                   _______, _______,
@@ -213,7 +212,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                        XXXXXXX, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
                        XXXXXXX, USRNAME, KC_LPRN, KC_RPRN, KC_GRV,  _______,
-                       XXXXXXX, UPDIR ,  KC_LCBR, KC_RCBR, KC_TILD, _______,
+                       XXXXXXX, UPDIR ,  KC_LCBR, KC_RCBR, XXXXXXX, _______,
                        _______, _______
             ),
 
@@ -397,7 +396,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         uint16_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
         switch (layer) {
             case NAVI:
-            case SYM1:
+            case SYM:
                 return true;
         }
         return false;
@@ -659,9 +658,19 @@ bool achordion_chord(uint16_t tap_hold_keycode,
 }
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    const uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-    if (mod & MOD_MASK_CS)
-        return 300;
+    if (IS_QK_MODS(tap_hold_keycode)) {
+        const uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
+        if (mod & MOD_MASK_CS)
+            return 300;
+    }
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
+        switch (layer) {
+            case NAVI:
+            case SYM:
+                return 300;
+        }
+    }
     return 500;
 }
 
@@ -670,12 +679,10 @@ uint16_t achordion_streak_chord_timeout(
     uint16_t tap_hold_keycode, uint16_t next_keycode) {
 
     if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
+        const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
             case NAVI:
             case SYM:
-            // case SYM1:
-            // case SYM2:
                 return 150;
         }
     }
@@ -1003,67 +1010,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       switch (keycode) {
           case KC_LBRC:
           case KC_RBRC:
-              clear_weak_mods();
-              send_keyboard_report();
-              break;
-      }
-  }
-    /*
-  if (layer == SYM1 && record->event.pressed) {
-      switch (keycode) {
-          case KC_BSLS:
           case KC_GRV:
-          case KC_EQL:
-          case SYM_MINS:
-          case SYM_SLSH:
-          case KC_LBRC:
-          case KC_RBRC:
               clear_weak_mods();
               send_keyboard_report();
               break;
       }
   }
-    */
-
-  /*
-  if (layer == SYM2 && record->event.pressed) {
-      switch (keycode) {
-          case KC_BSLS:
-          case KC_GRV:
-          case KC_EQL:
-          case KC_LBRC:
-          case KC_RBRC:
-          case KC_MINS:
-          case KC_DOT:
-          case KC_SCLN:
-          case KC_COMM:
-          case KC_QUOT:
-              clear_weak_mods();
-              send_keyboard_report();
-              break;
-      }
-  }
-  */
 
   switch (keycode) {
-    /*
-    case SYM_PLUS: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    case SYM_LPRN: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    case SYM_RPRN: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    case SYM_RCBR: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    */
     case BASE_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
