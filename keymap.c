@@ -190,10 +190,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAVI] = LAYOUT_LR(
-            _______, G(KC_A), G(KC_S), G(KC_D), G(KC_F), XXXXXXX,
-            _______, G(KC_Q), G(KC_W), G(KC_E), G(KC_R), G(KC_T),
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_G),
-            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), XXXXXXX,
                                                 _______, _______,
 
                      CLOSAPP, SELLINE, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
@@ -204,17 +204,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
-              _______, C(KC_A), C(KC_S), C(KC_D), C(KC_F), XXXXXXX,
-              _______, C(KC_Q), C(KC_W), C(KC_E), C(KC_R), C(KC_T),
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_G),
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
               _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                   _______, _______,
 
-                       XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,  _______,
-                       XXXXXXX, ARROW,    KC_LBRC, KC_RBRC, XXXXXXX,  _______,
-                       XXXXXXX, USRNAME,  KC_LPRN, KC_RPRN, XXXXXXX,  _______,
-                       XXXXXXX, UPDIR ,   KC_LCBR, KC_RCBR, XXXXXXX,  _______,
-                       _______, QK_LLCK
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       XXXXXXX, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
+                       XXXXXXX, USRNAME, KC_LPRN, KC_RPRN, KC_GRV,  _______,
+                       XXXXXXX, UPDIR ,  KC_LCBR, KC_RCBR, KC_TILD, _______,
+                       _______, _______
             ),
 
     /* getreuer's symbol layer
@@ -379,6 +379,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
+    case BASE_D:
+    case BASE_F:
     case BASE_ENT:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
@@ -441,10 +443,10 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
                                             {0,0,0}, {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0}, {0,0,0},
-            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
-            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
-            {0,0,0}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
+            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
+            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
 
