@@ -4,6 +4,9 @@
 #ifdef ACHORDION_ENABLE
 #include "features/achordion.h"
 #endif
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+#include "features/custom_shift_keys.h"
+#endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
@@ -24,45 +27,15 @@ enum custom_keycodes {
   LBRC_B,
   LBRC_C,
   LBRC_D,
-  /*
-  LBRC_E,
-  LBRC_F,
-  LBRC_G,
-  */
   LBRC_Q,
-  /*
-  LBRC_R,
-  LBRC_S,
-  */
   LBRC_T,
-  /*
-  LBRC_V,
-  LBRC_W,
-  LBRC_X,
-  LBRC_Z,
-  */
 
   RBRC_A,
   RBRC_B,
   RBRC_C,
   RBRC_D,
-  /*
-  RBRC_E,
-  RBRC_F,
-  RBRC_G,
-  */
   RBRC_Q,
-  /*
-  RBRC_R,
-  RBRC_S,
-  */
   RBRC_T,
-  /*
-  RBRC_V,
-  RBRC_W,
-  RBRC_X,
-  RBRC_Z,
-  */
 
   /* tmux navigation */
   TMUX_A,    // C-a C-a, last window
@@ -302,15 +275,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [BACKWARD] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, LBRC_Q,  XXXXXXX,  XXXXXXX, XXXXXXX, LBRC_T,
-            _______, LBRC_A,  XXXXXXX,  LBRC_D,  XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, TMUX_P,   LBRC_C,  XXXXXXX, LBRC_B,
-                                                 _______, _______,
+            _______, LBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, LBRC_T,
+            _______, LBRC_A,  XXXXXXX, LBRC_D,  XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, TMUX_P,  LBRC_C,  XXXXXXX, LBRC_B,
+                                                _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 
@@ -322,9 +295,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 };
@@ -784,45 +757,15 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case LBRC_B: return RBRC_B;
             case LBRC_C: return RBRC_C;
             case LBRC_D: return RBRC_D;
-            /*
-            case LBRC_E: return RBRC_E;
-            case LBRC_F: return RBRC_F;
-            case LBRC_G: return RBRC_G;
-            */
             case LBRC_Q: return RBRC_Q;
-            /*
-            case LBRC_R: return RBRC_R;
-            case LBRC_S: return RBRC_S;
-            */
             case LBRC_T: return RBRC_T;
-            /*
-            case LBRC_W: return RBRC_W;
-            case LBRC_V: return RBRC_V;
-            case LBRC_X: return RBRC_X;
-            case LBRC_Z: return RBRC_Z;
-            */
 
             case RBRC_A: return LBRC_A;
             case RBRC_B: return LBRC_B;
             case RBRC_C: return LBRC_C;
             case RBRC_D: return LBRC_D;
-            /*
-            case RBRC_E: return LBRC_E;
-            case RBRC_F: return LBRC_F;
-            case RBRC_G: return LBRC_G;
-            */
             case RBRC_Q: return LBRC_Q;
-            /*
-            case RBRC_R: return LBRC_R;
-            case RBRC_S: return LBRC_S;
-            */
             case RBRC_T: return LBRC_T;
-            /*
-            case RBRC_W: return LBRC_W;
-            case RBRC_V: return LBRC_V;
-            case RBRC_X: return LBRC_X;
-            case RBRC_Z: return LBRC_Z;
-            */
 
             /* select pane */
             case TMUX_J: return TMUX_K;
@@ -864,45 +807,15 @@ static const struct keystring_t keystrings[] = {
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
     [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
-    /*
-    [LBRC_E - KEYSTR_MIN]   = {"[e", TAP_CODE_DELAY},
-    [LBRC_F - KEYSTR_MIN]   = {"[f", TAP_CODE_DELAY},
-    [LBRC_G - KEYSTR_MIN]   = {"[g", TAP_CODE_DELAY},
-    */
     [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
-    /*
-    [LBRC_R - KEYSTR_MIN]   = {"[r", TAP_CODE_DELAY},
-    [LBRC_S - KEYSTR_MIN]   = {"[s", TAP_CODE_DELAY},
-    */
     [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
-    /*
-    [LBRC_V - KEYSTR_MIN]   = {"[v", TAP_CODE_DELAY},
-    [LBRC_W - KEYSTR_MIN]   = {"[w", TAP_CODE_DELAY},
-    [LBRC_X - KEYSTR_MIN]   = {"[x", TAP_CODE_DELAY},
-    [LBRC_Z - KEYSTR_MIN]   = {"[z", TAP_CODE_DELAY},
-    */
 
     [RBRC_A - KEYSTR_MIN]   = {"]a", TAP_CODE_DELAY},
     [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
     [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
     [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
-    /*
-    [RBRC_E - KEYSTR_MIN]   = {"]e", TAP_CODE_DELAY},
-    [RBRC_F - KEYSTR_MIN]   = {"]f", TAP_CODE_DELAY},
-    [RBRC_G - KEYSTR_MIN]   = {"]g", TAP_CODE_DELAY},
-    */
     [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
-    /*
-    [RBRC_R - KEYSTR_MIN]   = {"]r", TAP_CODE_DELAY},
-    [RBRC_S - KEYSTR_MIN]   = {"]s", TAP_CODE_DELAY},
-    */
     [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
-    /*
-    [RBRC_V - KEYSTR_MIN]   = {"]v", TAP_CODE_DELAY},
-    [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
-    [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
-    [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
-    */
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
@@ -949,6 +862,8 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
+#if 0
+// process keycode with shift when tapped
 bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
     if (record->tap.count) {
         switch (keycode) {
@@ -979,11 +894,15 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
     }
     return true;
 }
+#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) return false;
 #endif
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+  if (!process_custom_shift_keys(keycode, record)) { return false; }
+#endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
   const uint8_t mods = get_mods();
   const uint8_t all_mods = (mods | get_weak_mods()
@@ -1058,26 +977,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_code(registered_key);
           }
       } return false;
-
-    /*
-       shift + esc = ~
-    */
-    case KC_ESC: {
-      static uint16_t registered_key = KC_NO;
-
-      if (record->event.pressed) {
-          process_caps_word(keycode, record);
-          const bool shifted = (mods | get_weak_mods()) & MOD_MASK_SHIFT;
-          unregister_mods(MOD_MASK_SHIFT);
-
-          registered_key = shifted ? KC_TILD : KC_ESC;
-          register_code16(registered_key);
-          set_mods(mods);
-      } else if (registered_key) {
-          unregister_code16(registered_key);
-          registered_key = KC_NO;
-      }
-    } return false;
   }
 
   if (record->event.pressed) {
@@ -1119,16 +1018,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
-#ifdef KEY_OVERRIDE_ENABLE
-// https://docs.qmk.fm/#/feature_key_overrides
-const key_override_t **key_overrides = (const key_override_t *[]){
-    // SHIFT+ESC = ~
-    &ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRV)),
-    // GUI+ESC = `
-    &ko_make_basic(MOD_MASK_GUI, KC_ESC, KC_GRV),
-    NULL
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+const custom_shift_key_t custom_shift_keys[] = {
+    {KC_ESC, KC_TILD},
 };
-#endif
+uint8_t NUM_CUSTOM_SHIFT_KEYS =
+    sizeof(custom_shift_keys) / sizeof(custom_shift_key_t);
+#endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
 ///////////////////////////////////////////////////////////////////////////////
 // Caps word (https://docs.qmk.fm/features/caps_word)

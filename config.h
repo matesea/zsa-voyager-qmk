@@ -49,3 +49,7 @@
 #ifdef RGB_MATRIX_CUSTOM_KB
 #include "rgb_matrix_effects.h"
 #endif
+
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+#define CUSTOM_SHIFT_KEYS_LAYER_MASK (1 << 0)
+#endif

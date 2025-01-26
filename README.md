@@ -5,11 +5,10 @@ Personal ZSA voyager keyboard config
 ## Configuration
 * Homerow mod: GACS
 * Thumb
-    * left: enter, repeat key
+    * left: enter, repeat
     * right: backspace, space
 * Layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
-    * NUM: numpad
     * SYM: symbol layer
     * FN: Fn
     * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
@@ -18,7 +17,7 @@ Personal ZSA voyager keyboard config
     * cv = IME
     * m, = CW_TOGG
     * ,. = C-W, vim window prefix
-* Key Override
+* Key Override/Custom Shift
     * shift + backspace = delete
     * both shift + backspace = shift + delete
     * shift + esc = ~
