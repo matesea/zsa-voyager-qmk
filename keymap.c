@@ -136,7 +136,7 @@ enum {
 #define BASE_D      LCTL_T(KC_D)
 #define BASE_F      LSFT_T(KC_F)
 
-#define BASE_Z      KC_Z
+#define BASE_Z      LT(TMUX, KC_Z)
 #define BASE_X      KC_X
 #define BASE_C      KC_C
 #define BASE_V      KC_V
@@ -149,25 +149,13 @@ enum {
 #define BASE_M      KC_M
 #define BASE_COMM   LT(BACKWARD, KC_COMM)
 #define BASE_DOT    LT(FORWARD, KC_DOT)
-#define BASE_SLSH   KC_SLSH
+#define BASE_SLSH   LT(TMUX, KC_SLSH)
 
-#define BASE_TAB    LT(TMUX, KC_TAB)
-#define BASE_QUOT   LT(TMUX, KC_QUOT)
 #define BASE_ENT    LT(NAVI, KC_ENT)
-#define BASE_UNDS   LT(SYM, KC_UNDS)
+#define BASE_REP    LT(SYM, KC_0)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
-
-/*
-#define SYM_PLUS    LCTL_T(KC_PLUS)
-#define SYM_MINS    LALT_T(KC_MINS)
-#define SYM_SLSH    LGUI_T(KC_SLSH)
-
-#define SYM_LPRN    RCTL_T(KC_LPRN)
-#define SYM_RPRN    LALT_T(KC_RPRN)
-#define SYM_RCBR    LGUI_T(KC_RCBR)
-*/
 
 #define CLOSAPP     A(KC_F4)
 #define SWAPP       G(KC_TAB)
@@ -177,22 +165,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
             KC_GRV,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            BASE_TAB, BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
-            CW_TOGG,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              BASE_ENT, BASE_UNDS,
+            KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            KC_UNDS,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
+                                              BASE_ENT, BASE_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
-                      KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_BSLS,
-                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, BASE_QUOT,
-                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_EQL,
+                      KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_EQL,
+                      KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
+                      KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_BSLS,
                       KC_BSPC, KC_SPC
             ),
 
     [NAVI] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
+            _______, C(KC_A), XXXXXXX, XXXXXXX, C(KC_R), C(KC_T),
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), XXXXXXX,
+            _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
                      CLOSAPP, SELLINE, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
@@ -204,9 +192,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, C(KC_A), XXXXXXX, XXXXXXX, C(KC_R), C(KC_T),
+              _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
               _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+              _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), XXXXXXX,
                                                   _______, _______,
 
                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
@@ -344,12 +332,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
+const uint16_t PROGMEM nm[] = {BASE_M, KC_N, COMBO_END};
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(xc, OSL(FN)),
+    COMBO(nm, QK_AREP),
     COMBO(mc, CW_TOGG),
     COMBO(cd, C(KC_W)), // vim window prefix
 };
@@ -378,9 +368,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_J:
     case BASE_K:
     case BASE_L:
-    case BASE_D:
-    case BASE_F:
     case BASE_ENT:
+    case BASE_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -445,7 +434,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
             {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
+            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
             {0,0,0}, {0,0,0}
     },
 
@@ -737,6 +726,8 @@ uint16_t achordion_streak_chord_timeout(
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
+    if (keycode == BASE_REP)
+        return false;
   // Unpack tapping keycode for tap-hold keys.
   switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -1018,19 +1009,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
+      case BASE_REP:
+          if (record->tap.count) {
+              repeat_key_invoke(&record->event);
+              return false;
+          }
+          break;
+    /*
     case BASE_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
+    */
 
-      /*
+    /*
     case BASE_CW:
       if (record->tap.count && record->event.pressed) {
           caps_word_toggle();
           return false;
       }
       return true;
-      */
+    */
 
     /* when both shift are held => shift + del
        when one shift is held => del
