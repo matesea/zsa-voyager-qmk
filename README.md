@@ -15,8 +15,10 @@ Personal ZSA voyager keyboard config
     * TMUX: tmux shortcuts
 * Combo:
     * cv = IME
+    * xc = OSL(FN)
     * m, = CW_TOGG
-    * ,. = C-W, vim window prefix
+    * ,. = alternative repeat
+    * ./ = C-W, vim window prefix
 * Key Override/Custom Shift
     * shift + backspace = delete
     * both shift + backspace = shift + delete

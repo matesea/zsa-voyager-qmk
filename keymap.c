@@ -95,7 +95,6 @@ enum {
     NAVI,
     SYM,
     // SYM1, // getreuer's symbol layer
-    // SYM2, // sunaku's symbol layer
     // NUM,
     FN,
     TMUX,
@@ -125,7 +124,8 @@ enum {
 #define BASE_SLSH   LT(TMUX, KC_SLSH)
 
 #define BASE_ENT    LT(NAVI, KC_ENT)
-#define BASE_REP    LT(SYM, KC_0)
+#define BASE_SPC    LT(SYM, KC_SPC)
+// #define BASE_REP    LT(SYM, KC_0)
 
 #define GS_LEFT     G(S(KC_LEFT))
 #define GS_RGHT     G(S(KC_RGHT))
@@ -136,17 +136,17 @@ enum {
 static bool isMacOS = false;
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
-            KC_ESC,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
-            KC_GRV,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
-            KC_TAB,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
+            KC_GRV,   KC_1,   KC_2,   KC_3,   KC_4,     KC_5,
+            KC_TAB,   KC_Q,   KC_W,   KC_E,   KC_R,     KC_T,
+            KC_ESC,   BASE_A, BASE_S, BASE_D, BASE_F,   KC_G,
             KC_UNDS,  BASE_Z, BASE_X, BASE_C, BASE_V,   KC_B,
-                                              BASE_ENT, BASE_REP,
+                                              BASE_ENT, QK_REP,
 
                       KC_6,    KC_7,   KC_8,      KC_9,     KC_0,      KC_MINS,
                       KC_Y,    KC_U,   KC_I,      KC_O,     KC_P,      KC_EQL,
                       KC_H,    BASE_J, BASE_K,    BASE_L,   BASE_SCLN, KC_QUOT,
                       KC_N,    BASE_M, BASE_COMM, BASE_DOT, BASE_SLSH, KC_BSLS,
-                      KC_BSPC, KC_SPC
+                      KC_BSPC, BASE_SPC
             ),
 
     [NAVI] = LAYOUT_LR(
@@ -164,68 +164,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), XXXXXXX,
+              _______, _______, _______, _______, _______, _______,
+              _______, XXXXXXX, ARROW,   KC_LCBR, KC_RCBR, XXXXXXX,
+              _______, XXXXXXX, USRNAME, KC_LPRN, KC_RPRN, XXXXXXX,
+              _______, XXXXXXX, UPDIR,   KC_LBRC, KC_RBRC, XXXXXXX,
                                                   _______, _______,
 
+                       _______, _______, _______, _______, _______, _______,
                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                       XXXXXXX, ARROW,   KC_LBRC, KC_RBRC, XXXXXXX, _______,
-                       XXXXXXX, USRNAME, KC_LPRN, KC_RPRN, KC_GRV,  _______,
-                       XXXXXXX, UPDIR ,  KC_LCBR, KC_RCBR, XXXXXXX, _______,
+                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                        _______, _______
             ),
 
     /* getreuer's symbol layer
-       X < > \ `
-       ! - + = #
-         / * ^ X
+       ` < > - |
+       ! * / = &
+       ~ + [ ] %
+             X _
 
-                & X [ ] @
-                | : ( ) %
-                ~ $ { }
+                ^ { } $ X
+                # ( ) ; "
+                @ : , . '
+                _ X
                 */
     /*
     [SYM1] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX,
-              _______, USRNAME,  KC_LABK,  KC_RABK,  KC_BSLS, KC_GRV,
-              _______, KC_EXLM,  SYM_MINS, SYM_PLUS, KC_EQL,  KC_HASH,
-              _______, _______,  SYM_SLSH, KC_ASTR,  KC_CIRC, UPDIR,
-                                                    _______, _______,
+              _______, _______, _______, _______, _______, _______,
+              _______, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
+              _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
+              _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
+                                                  USRNAME, _______,
 
-                       XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______,
-                       KC_AMPR, ARROW,    KC_LBRC,  KC_RBRC,  KC_AT,    _______,
-                       KC_PIPE, KC_COLN,  SYM_LPRN, SYM_RPRN, KC_PERC,  _______,
-                       KC_TILD, KC_DLR ,  KC_LCBR,  SYM_RCBR, _______,  _______,
-                       _______, _______
-            ),
-    */
-
-    /* sunaku's symbol layer
-       ` [ ( ) ] .
-       ! , { } ; ?
-       # ^ = + $ *
-       ~ < | - > /
-               \ _
-
-                ` :    &    %   @
-                " shft ctrl alt gui
-                ' bspc tab  spc ent
-                */
-    /*
-    [SYM2] = LAYOUT_LR(
-              KC_GRV,  KC_LBRC,  KC_LPRN,  KC_RPRN,  KC_RBRC, KC_DOT,
-              KC_EXLM, KC_COMM,  KC_LCBR,  KC_RCBR,  KC_SCLN, KC_QUES,
-              KC_HASH, KC_CIRC,  KC_EQL,   KC_PLUS,  KC_DLR,  KC_ASTR,
-              KC_TILD, KC_LABK,  KC_PIPE,  KC_MINS,  KC_RABK, KC_SLSH,
-                                                     KC_BSLS, KC_UNDS,
-
-                       XXXXXXX, USRNAME,  ARROW,   UPDIR,   XXXXXXX, _______,
-                       KC_GRV,  KC_COLN,  KC_AMPR, KC_PERC, KC_AT,   _______,
-                       KC_DQUO, KC_LSFT,  KC_LCTL, KC_LALT, KC_LGUI, _______,
-                       KC_QUOT, KC_BSPC,  KC_TAB,  KC_SPC,  KC_ENT,  _______,
-                       _______, _______
+                       _______, _______,  _______, _______, _______, _______,
+                       KC_CIRC, KC_LCBR,  KC_RCBR, KC_DLR,  ARROW,   _______,
+                       KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, _______,
+                       KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, _______,
+                       _______, UPDIR
             ),
     */
 
@@ -260,9 +235,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            TMUX_LBRC, TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
+            XXXXXXX,   TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
             XXXXXXX,   XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
-            XXXXXXX,   TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
+            TMUX_LBRC, TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,   TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                   XXXXXXX, XXXXXXX,
 
@@ -305,16 +280,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BASE_C, BASE_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BASE_C, BASE_X, COMBO_END};
-const uint16_t PROGMEM nm[] = {BASE_M, KC_N, COMBO_END};
+
 const uint16_t PROGMEM mc[] = {BASE_M, BASE_COMM, COMBO_END};
 const uint16_t PROGMEM cd[] = {BASE_COMM, BASE_DOT, COMBO_END};
+const uint16_t PROGMEM ds[] = {BASE_SLSH, BASE_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(xc, OSL(FN)),
-    COMBO(nm, QK_AREP),
+
     COMBO(mc, CW_TOGG),
-    COMBO(cd, C(KC_W)), // vim window prefix
+    COMBO(cd, QK_AREP),
+    COMBO(ds, C(KC_W)), // vim window prefix
 };
 #endif
 
@@ -342,7 +319,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BASE_K:
     case BASE_L:
     case BASE_ENT:
-    case BASE_REP:
+    case BASE_SPC:
+    // case BASE_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -398,51 +376,34 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     },
 
     [SYM] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
+        {0,0,0}, {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},
+        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
+        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
+        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
+                                                       {0,0,0}, {0,0,0},
 
-            {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {0,0,0}, {29,239,251}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
+            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
             {0,0,0}, {0,0,0}
     },
 
     /*
     [SYM1] = {
         {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {6,255,255},   {184,218,204}, {184,218,204}, {44,255,255},  {44,255,255},
-        {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {44,255,255},
-        {0,0,0}, {19,255,255},  {83,193,218},  {83,193,218},  {44,255,255},  {44,255,255},
-                                                              {0,0,0}, {0,0,0},
+        {0,0,0}, {44,255,255},  {184,218,204}, {184,218,204}, {83,193,218},  {83,193,218},
+        {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {83,193,218},
+        {0,0,0}, {83,193,218},  {83,193,218},  {127,234,222}, {127,234,222}, {44,255,255},
+                                                              {19,255,255}, {0,0,0},
 
             {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {0,0,0},
-            {83,193,218}, {44,255,255}, {127,234,222}, {127,234,222}, {0,0,0},      {0,0,0},
-            {0,0,0},      {0,0,0}
+            {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {6,255,255},  {0,0,0},
+            {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {44,255,255}, {0,0,0},
+            {44,255,255}, {44,255,255},  {44,255,255},  {44,255,255}, {44,255,255}, {0,0,0},
+            {0,0,0},      {19,255,255}
     },
     */
-
-    /*
-    [SYM2] = {
-        {184,218,204}, {127,234,222}, {127,234,222}, {127,234,222}, {127,234,222}, {44,255,255},
-        {184,218,204}, {44,255,255},  {127,234,222}, {127,234,222}, {44,255,255},  {44,255,255},
-        {44,255,255},  {44,255,255},  {83,193,218},  {19,255,255},  {44,255,255},  {44,255,255},
-        {184,218,204}, {83,193,218},  {83,193,218},  {83,193,218},  {83,193,218},  {44,255,255},
-                                                                    {184,218,204}, {0,0,0},
-
-            {0,0,0},       {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
-            {184,218,204}, {44,255,255}, {44,255,255}, {44,255,255}, {44,255,255}, {0,0,0},
-            {184,218,204}, {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
-            {184,218,204}, {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-    */
-
 
     /*
     [NUM] = {
@@ -570,43 +531,22 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     if (other_row > 4 || hold_row > 4)
         return true;
 
-    // if (isMacOS) {
-    /*
-        switch (tap_hold_keycode) {
-            // same hand exceptions for GUI shortcut
-            case BASE_A:
-                switch (other_keycode) {
-                    case BASE_C:
-                    case BASE_V:
-                    case KC_T:
-                    case KC_R: // for win+r run on windows
-                        return true;
-                }
-                break;
-        }
-    } else {
-        switch (tap_hold_keycode) {
-            // same hand exceptions for CTRL shortcut
-            case BASE_D:
-                switch (other_keycode) {
-                    case BASE_A:
-                    case BASE_X:
-                    case BASE_C:
-                    case BASE_V:
-                    case KC_B:
-                    case KC_T:
-                        return true;
-                }
-                break;
-            case BASE_A:
-                switch (other_keycode) {
-                    case KC_R:
-                        return true;
-                }
-                break;
-        }
+    switch (tap_hold_keycode) {
+        // same hand exceptions for GUI shortcut
+        case BASE_A:
+            switch (other_keycode) {
+                case BASE_C:
+                case BASE_V:
+                case KC_W:
+                case KC_T:
+                    if (isMacOS) return true;
+                    break;
+                case KC_R: // for win+r run on windows
+                    if (!isMacOS) return true;
+                    break;
+            }
+            break;
     }
-    */
 
     // allow hold key at first column and last column
     /*
@@ -650,42 +590,22 @@ uint16_t achordion_streak_chord_timeout(
     }
 
     // shortcut not blocked by streak detection
-    //if (isMacOS) {
-    /*
-        switch (tap_hold_keycode) {
-            case BASE_A:
-                // for cut/copy/paste/new tab on MAC OS
-                switch (next_keycode) {
-                    case BASE_C:
-                    case BASE_V:
-                    case KC_T:
-                    case KC_R: // for win+r run on windows
-                        return 0;
-                }
-                break;
-        }
-    } else {
-        switch (tap_hold_keycode) {
-            case BASE_D:
-                switch (next_keycode) {
-                    case BASE_A:
-                    case BASE_X:
-                    case BASE_C:
-                    case BASE_V:
-                    case KC_B:
-                    case KC_T:
-                        return 0;
-                }
-                break;
-            case BASE_A:
-                switch (next_keycode) {
-                    case KC_R:
-                        return 0;
-                }
-                break;
-        }
+    switch (tap_hold_keycode) {
+        case BASE_A:
+            // for cut/copy/paste/new tab on MAC OS
+            switch (next_keycode) {
+                case BASE_C:
+                case BASE_V:
+                case KC_W:
+                case KC_T:
+                    if (isMacOS) return 0;
+                    break;
+                case KC_R: // for win+r run on windows
+                    if (!isMacOS) return 0;
+                    break;
+            }
+            break;
     }
-    */
 
   // Otherwise, tap_hold_keycode is a mod-tap key.
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
@@ -699,8 +619,10 @@ uint16_t achordion_streak_chord_timeout(
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
+    /*
     if (keycode == BASE_REP)
         return false;
+    */
   // Unpack tapping keycode for tap-hold keys.
   switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -917,23 +839,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // WA to address unintended shift
   // source: reddit r/zsaVoyager: Weird firmware issue with [ turning into {
   if (layer == SYM && record->event.pressed) {
-      switch (keycode) {
-          case KC_LBRC:
-          case KC_RBRC:
-          case KC_GRV:
-              clear_weak_mods();
-              send_keyboard_report();
-              break;
-      }
+      clear_weak_mods();
+      send_keyboard_report();
   }
 
   switch (keycode) {
+      /*
       case BASE_REP:
           if (record->tap.count) {
               repeat_key_invoke(&record->event);
               return false;
           }
           break;
+       */
     /*
     case BASE_UNDS: {
         static bool registered = false;
