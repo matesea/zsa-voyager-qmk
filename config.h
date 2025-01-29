@@ -10,8 +10,10 @@
 #define TAP_CODE_DELAY 5
 
 #undef TAPPING_TERM
-#define TAPPING_TERM 170
+#define TAPPING_TERM 180
 #define TAPPING_TERM_PER_KEY
+
+#define CHORDAL_HOLD
 
 #define QUICK_TAP_TERM_PER_KEY
 #define QUICK_TAP_TERM 120
@@ -44,10 +46,6 @@
 
 #ifdef LAYER_LOCK_ENABLE
 #define LAYER_LOCK_IDLE_TIMEOUT 60000
-#endif
-
-#ifdef RGB_MATRIX_CUSTOM_KB
-#include "rgb_matrix_effects.h"
 #endif
 
 #ifdef CUSTOM_SHIFT_KEYS_ENABLE

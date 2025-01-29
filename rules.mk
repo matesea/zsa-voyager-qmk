@@ -3,8 +3,6 @@
 CONSOLE_ENABLE = no
 COMMAND_ENABLE = no
 MOUSEKEY_ENABLE = no
-ORYX_ENABLE = yes
-RGB_MATRIX_CUSTOM_KB = yes
 SPACE_CADET_ENABLE = no
 CAPS_WORD_ENABLE = yes
 COMBO_ENABLE = yes
@@ -17,11 +15,23 @@ LTO_ENABLE = yes
 EXTRAKEY_ENABLE = yes
 
 # use userspace version achordion
-OPT_DEFS += -DACHORDION_ENABLE -DACHORDION_STREAK
-SRC += features/achordion.c
+ACHORDION_ENABLE ?= no
+ifeq ($(strip $(ACHORDION_ENABLE)), yes)
+	OPT_DEFS += -DACHORDION_ENABLE -DACHORDION_STREAK
+	SRC += features/achordion.c
+endif
 
 CUSTOM_SHIFT_KEYS_ENABLE ?= no
 ifeq ($(strip $(CUSTOM_SHIFT_KEYS_ENABLE)), yes)
 	OPT_DEFS += -DCUSTOM_SHIFT_KEYS_ENABLE
 	SRC += features/custom_shift_keys.c
 endif
+
+SELECT_WORD_ENABLE ?= yes
+ifeq ($(strip $(SELECT_WORD_ENABLE)), yes)
+	OPT_DEFS += -DSELECT_WORD_ENABLE -DSELECT_WORD_OS_DYNAMIC
+	SRC += features/select_word.c
+endif
+
+ORYX_ENABLE = no
+RGB_MATRIX_CUSTOM_KB = no
