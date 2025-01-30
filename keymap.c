@@ -174,12 +174,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     /* my simplied right-handed symbol layer
+
+       ^$ vim navigation, jump to start/end of the current line
+       *# vim navigation, search behind/ahead for word under cursor
+       :% enter vim command mode, % for whole buffer
+       @: repeat last command in vim command mode
+
                 ^ { } $ X
-                # ( ) ; "
-                @ [ ] : %
-                X X
+                * ( ) # X
+                : [ ] % @
+                _ X
                 */
-    [SYM] = LAYOUT_LR(  // my simplied symbol layer.
+    [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
               _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
               _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_F),
@@ -188,9 +194,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                        _______, _______, _______, _______, _______, _______,
                        KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW,   _______,
-                       KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, _______,
-                       KC_AT,   KC_LBRC, KC_RBRC, KC_COLN, KC_PERC, _______,
-                       USRNAME, UPDIR
+                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, USRNAME, _______,
+                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
+                       _______, UPDIR
             ),
 
     /* getreuer's symbol layer
