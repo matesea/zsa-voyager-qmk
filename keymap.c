@@ -99,7 +99,7 @@ enum {
     BASE = 0,
     NAVI,
     SYM,
-    SYM1, // getreuer's symbol layer
+    // SYM1, // getreuer's symbol layer
     // NUM,
     FN,
     TMUX,
@@ -113,7 +113,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(SYM1, KC_Z)
+#define BS_Z      KC_Z
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -126,7 +126,7 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BACKWARD, KC_COMM)
 #define BS_DOT    LT(FORWARD, KC_DOT)
-#define BS_SLSH   LT(SYM1, KC_SLSH)
+#define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAVI, KC_ENT)
 #define BS_SPC    KC_SPC
@@ -173,6 +173,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, QK_LLCK
             ),
 
+    /* my simplied right-handed symbol layer
+                ^ { } $ X
+                # ( ) ; "
+                @ [ ] : %
+                X X
+                */
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
               _______, _______, _______, _______, _______, _______,
               _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
@@ -181,10 +187,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                   _______, _______,
 
                        _______, _______, _______, _______, _______, _______,
-                       XXXXXXX, KC_LCBR, KC_RCBR, ARROW,   XXXXXXX, _______,
-                       XXXXXXX, KC_LPRN, KC_RPRN, USRNAME, XXXXXXX, _______,
-                       XXXXXXX, KC_LBRC, KC_RBRC, UPDIR,   XXXXXXX, _______,
-                       _______, _______
+                       KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW,   _______,
+                       KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, _______,
+                       KC_AT,   KC_LBRC, KC_RBRC, KC_COLN, KC_PERC, _______,
+                       USRNAME, UPDIR
             ),
 
     /* getreuer's symbol layer
@@ -198,6 +204,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 @ : , . '
                 _ X
                 */
+    /*
     [SYM1] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______, _______, _______, _______,
               _______, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
@@ -211,6 +218,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, _______,
                        _______, UPDIR
             ),
+    */
 
     /*
     [NUM] = LAYOUT_LR(
@@ -731,7 +739,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
       switch (layer) {
           case SYM:
-          case SYM1:
+          // case SYM1:
               clear_weak_mods();
               send_keyboard_report();
               break;
