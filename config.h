@@ -37,7 +37,10 @@
 #define RAW_USAGE_ID 0x61
 #define LAYER_STATE_8BIT
 
+#ifdef RGB_MATRIX_ENABLE
 #define RGB_MATRIX_STARTUP_SPD 60
+#include "rgb_matrix_effects.h"
+#endif
 
 #ifdef CAPS_WORD_ENABLE
 #define CAPS_WORD_INVERT_ON_SHIFT

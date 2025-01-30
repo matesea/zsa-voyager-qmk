@@ -349,7 +349,6 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-#include "rgb_matrix_effects.h"
 void keyboard_post_init_user(void) {
   rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
   rgb_matrix_enable_noeeprom();
