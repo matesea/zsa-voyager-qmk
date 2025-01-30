@@ -181,9 +181,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        @: repeat last command in vim command mode
 
                 ^ { } $ X
-                * ( ) # X
+                * ( ) # ;
                 : [ ] % @
-                _ X
+                X X
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
@@ -194,9 +194,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                        _______, _______, _______, _______, _______, _______,
                        KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW,   _______,
-                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, USRNAME, _______,
+                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, KC_SCLN, _______,
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
-                       _______, UPDIR
+                       USRNAME, UPDIR
             ),
 
     /* getreuer's symbol layer
@@ -626,6 +626,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 static const struct keystring_t keystrings[] = {
     [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
+
     [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
