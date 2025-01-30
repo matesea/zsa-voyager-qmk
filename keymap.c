@@ -99,7 +99,7 @@ enum {
     BASE = 0,
     NAVI,
     SYM,
-    // SYM1, // getreuer's symbol layer
+    SYM1, // getreuer's symbol layer
     // NUM,
     FN,
     TMUX,
@@ -113,7 +113,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(SYM, KC_Z)
+#define BS_Z      LT(SYM1, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -126,11 +126,11 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BACKWARD, KC_COMM)
 #define BS_DOT    LT(FORWARD, KC_DOT)
-#define BS_SLSH   KC_SLSH
+#define BS_SLSH   LT(SYM1, KC_SLSH)
 
 #define BS_ENT    LT(NAVI, KC_ENT)
 #define BS_SPC    KC_SPC
-// #define BS_REP    LT(SYM, KC_0)
+#define BS_REP    LT(SYM, KC_0)
 #define BS_ESC    LT(TMUX, KC_ESC)
 #define BS_QUOT   LT(TMUX, KC_QUOT)
 
@@ -150,7 +150,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_ESC,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
             KC_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, QK_REP,
+                                             BS_ENT, BS_REP,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
@@ -161,8 +161,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAVI] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, C(KC_A), XXXXXXX, XXXXXXX, C(KC_R), C(KC_T),
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
             _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
@@ -175,9 +175,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
               _______, _______, _______, _______, _______, _______,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_F),
+              _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
                                                   _______, _______,
 
                        _______, _______, _______, _______, _______, _______,
@@ -198,7 +198,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 @ : , . '
                 _ X
                 */
-    /*
     [SYM1] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______, _______, _______, _______,
               _______, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
@@ -212,7 +211,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, _______,
                        _______, UPDIR
             ),
-    */
 
     /*
     [NUM] = LAYOUT_LR(
@@ -328,7 +326,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_L:
     case BS_ENT:
     // case BS_SPC:
-    // case BS_REP:
+    case BS_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -375,6 +373,7 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
+    /*
     switch (tap_hold_keycode) {
       // same hand exceptions for GUI shortcut
       case BS_A:
@@ -390,7 +389,8 @@ bool get_chordal_hold(
                   break;
           }
           break;
-  }
+    }
+    */
   return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
@@ -506,38 +506,36 @@ uint16_t achordion_streak_chord_timeout(
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-    /*
     if (keycode == BS_REP)
         return false;
-    */
-  // Unpack tapping keycode for tap-hold keys.
-  switch (keycode) {
+    // Unpack tapping keycode for tap-hold keys.
+    switch (keycode) {
 #ifndef NO_ACTION_TAPPING
-    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-      keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-      break;
+        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+          keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+          break;
 #ifndef NO_ACTION_LAYER
-    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-      keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-      break;
+        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+          keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+          break;
 #endif  // NO_ACTION_LAYER
 #endif  // NO_ACTION_TAPPING
-  }
+    }
 
-  // Forget Shift on most letters when Shift or AltGr are the only mods. Some
-  // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
-  // NN, SS, ZZ are excluded
-  switch (keycode) {
-    case KC_A ... KC_M:
-    case KC_O ... KC_R:
-    case KC_T ... KC_Y:
-      if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
-        *remembered_mods &= ~MOD_MASK_SHIFT;
-      }
-      break;
-  }
+    // Forget Shift on most letters when Shift or AltGr are the only mods. Some
+    // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
+    // NN, SS, ZZ are excluded
+    switch (keycode) {
+      case KC_A ... KC_M:
+      case KC_O ... KC_R:
+      case KC_T ... KC_Y:
+        if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
+          *remembered_mods &= ~MOD_MASK_SHIFT;
+        }
+        break;
+    }
 
-  return true;
+    return true;
 }
 
 #ifndef NO_ALT_REPEAT_KEY
@@ -733,7 +731,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
       switch (layer) {
           case SYM:
-          // case SYM1:
+          case SYM1:
               clear_weak_mods();
               send_keyboard_report();
               break;
@@ -764,14 +762,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         select_word_unregister();
       }
       break;
-      /*
-      case BS_REP:
-          if (record->tap.count) {
-              repeat_key_invoke(&record->event);
-              return false;
-          }
-          break;
-       */
+    case BS_REP:
+      if (record->tap.count) {
+          repeat_key_invoke(&record->event);
+          return false;
+      }
+      break;
     /*
     case BS_UNDS: {
         static bool registered = false;
