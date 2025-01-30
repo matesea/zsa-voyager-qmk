@@ -167,16 +167,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
-                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_INS,  XXXXXXX,
-                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_DEL,  KC_VOLU,
-                     SELLINE, SELWBAK, SELWFWD, KC_APP,  XXXXXXX, KC_VOLD,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
+                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_VOLU,
+                     SELLINE, SELWBAK, SELWFWD, XXXXXXX, KC_APP,  KC_VOLD,
                      _______, QK_LLCK
             ),
 
     [SYM] = LAYOUT_LR(  // my simplied symbol layer.
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, KC_LGUI, KC_LALT, KC_LCTL, XXXXXXX, XXXXXXX,
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 

@@ -18,7 +18,6 @@ Personal ZSA voyager keyboard config
     * xc = OSL(FN)
     * m, = CW_TOGG
     * ,. = alternative repeat
-    * ./ = C-W, vim window prefix
 * Key Override/Custom Shift
     * shift + backspace = delete
     * both shift + backspace = shift + delete
