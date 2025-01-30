@@ -824,9 +824,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             isMacOS = !isMacOS;
             return false;
 
+#ifdef RGB_MATRIX_ENABLE
         case RGB_SLD:
             rgblight_mode(1);
             return false;
+#endif
         case ARROW:
 #ifndef NO_ACTION_ONESHOT
             del_oneshot_mods(MOD_MASK_SHIFT);
