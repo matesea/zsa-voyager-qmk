@@ -24,7 +24,7 @@
 #if !defined(PERMISSIVE_HOLD)
 #define PERMISSIVE_HOLD
 #endif
-#define PERMISSIVE_HOLD_PER_KEY
+// #define PERMISSIVE_HOLD_PER_KEY
 // #define NO_ALT_REPEAT_KEY
 
 #ifdef COMBO_ENABLE

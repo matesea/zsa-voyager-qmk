@@ -103,9 +103,9 @@ enum {
     // NUM,
     FN,
     TMUX,
-    BACKWARD,
-    FORWARD,
-    LAYER_MAX = FORWARD,
+    BAK,
+    FWD,
+    LAYER_MAX = FWD,
 };
 
 #define BS_A      LGUI_T(KC_A)
@@ -113,7 +113,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      KC_Z
+#define BS_Z      LT(TMUX, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -124,15 +124,15 @@ enum {
 #define BS_SCLN   RGUI_T(KC_SCLN)
 
 #define BS_M      KC_M
-#define BS_COMM   LT(BACKWARD, KC_COMM)
-#define BS_DOT    LT(FORWARD, KC_DOT)
-#define BS_SLSH   KC_SLSH
+#define BS_COMM   LT(BAK, KC_COMM)
+#define BS_DOT    LT(FWD, KC_DOT)
+#define BS_SLSH   LT(TMUX, KC_SLSH)
 
 #define BS_ENT    LT(NAVI, KC_ENT)
 #define BS_SPC    KC_SPC
 #define BS_REP    LT(SYM, KC_0)
-#define BS_ESC    LT(TMUX, KC_ESC)
-#define BS_QUOT   LT(TMUX, KC_QUOT)
+#define BS_ESC    KC_ESC
+#define BS_QUOT   KC_QUOT
 
 #define CLOSAPP     A(KC_F4)
 
@@ -270,7 +270,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        TMUX_BSPC, TMUX_SPC
             ),
 
-    [BACKWARD] = LAYOUT_LR(
+    [BAK] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, LBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, LBRC_T,
             _______, LBRC_A,  XXXXXXX, LBRC_D,  XXXXXXX, XXXXXXX,
@@ -284,7 +284,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, _______
             ),
 
-    [FORWARD] = LAYOUT_LR(
+    [FWD] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
@@ -993,7 +993,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [BACKWARD] = {
+    [BAK] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
@@ -1007,7 +1007,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
             {0,0,0}, {0,0,0}
     },
 
-    [FORWARD] = {
+    [FWD] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
