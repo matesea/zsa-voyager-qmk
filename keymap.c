@@ -15,8 +15,7 @@
 #define ML_SAFE_RANGE SAFE_RANGE
 
 enum custom_keycodes {
-  RGB_SLD = ML_SAFE_RANGE,
-  ARROW,    // -> => <-> <=>
+  ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
@@ -97,8 +96,8 @@ struct keystring_t {
 
 enum {
     BASE = 0,
-    NAVI,
     SYM,
+    NAV,
     // SYM1, // getreuer's symbol layer
     // NUM,
     FN,
@@ -128,7 +127,7 @@ enum {
 #define BS_DOT    LT(FWD, KC_DOT)
 #define BS_SLSH   LT(TMUX, KC_SLSH)
 
-#define BS_ENT    LT(NAVI, KC_ENT)
+#define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
 #define BS_REP    LT(SYM, KC_0)
 #define BS_ESC    KC_ESC
@@ -159,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_BSPC, BS_SPC
             ),
 
-    [NAVI] = LAYOUT_LR(
+    [NAV] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
@@ -180,10 +179,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-                ^ { } $ X
-                * ( ) # ;
-                : [ ] % @
                 X X
+                ^ { } $ X
+                * ( ) # ; ENT
+                : [ ] % @
+                _ _
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
@@ -192,11 +192,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
                                                   _______, _______,
 
-                       _______, _______, _______, _______, _______, _______,
+                       UPDIR,   USRNAME, _______, _______, _______, _______,
                        KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW,   _______,
-                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, KC_SCLN, _______,
+                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, KC_SCLN, KC_ENT,
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
-                       USRNAME, UPDIR
+                       _______, _______
             ),
 
     /* getreuer's symbol layer
@@ -469,7 +469,7 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
         const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
-            case NAVI:
+            case NAV:
             case SYM:
                 return 300;
         }
@@ -484,7 +484,7 @@ uint16_t achordion_streak_chord_timeout(
     if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
         const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
         switch (layer) {
-            case NAVI:
+            case NAV:
             case SYM:
                 return 150;
         }
@@ -742,7 +742,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t layer = read_source_layers_cache(record->event.key);
 
   // WA to address unintended shift
-  // source: reddit r/zsaVoyager: Weird firmware issue with [ turning into {
   if (record->event.pressed) {
       switch (layer) {
           case SYM:
@@ -834,11 +833,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             isMacOS = !isMacOS;
             return false;
 
-#ifdef RGB_MATRIX_ENABLE
-        case RGB_SLD:
-            rgblight_mode(1);
-            return false;
-#endif
         case ARROW:
 #ifndef NO_ACTION_ONESHOT
             del_oneshot_mods(MOD_MASK_SHIFT);
@@ -905,7 +899,7 @@ bool caps_word_press_user(uint16_t keycode) {
 extern rgb_config_t rgb_matrix_config;
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [NAVI] = {
+    [NAV] = {
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
         {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
