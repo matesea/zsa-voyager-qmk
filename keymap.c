@@ -112,7 +112,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(TMUX, KC_Z)
+#define BS_Z      LT(SYM, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -125,15 +125,17 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   LT(TMUX, KC_SLSH)
+#define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
-#define BS_REP    LT(SYM, KC_0)
 #define BS_ESC    KC_ESC
 #define BS_QUOT   KC_QUOT
 
-#define CLOSAPP     A(KC_F4)
+#define BS_UNDS   LT(TMUX, KC_UNDS)
+#define BS_BSLS   LT(TMUX, KC_BSLS)
+
+#define CLOSAPP   A(KC_F4)
 
 static bool isMacOS = false;
 
@@ -148,13 +150,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_GRV,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_ESC,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
-            KC_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, BS_REP,
+            BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
+                                             BS_ENT, QK_REP,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
                       KC_H,   BS_J,   BS_K,    BS_L,   BS_SCLN, BS_QUOT,
-                      KC_N,   BS_M,   BS_COMM, BS_DOT, BS_SLSH, KC_BSLS,
+                      KC_N,   BS_M,   BS_COMM, BS_DOT, BS_SLSH, BS_BSLS,
                       KC_BSPC, BS_SPC
             ),
 
@@ -187,9 +189,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
-              _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_F),
-              _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+              _______, XXXXXXX, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
                        UPDIR,   USRNAME, _______, _______, _______, _______,
@@ -252,7 +254,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                      KC_BRK,  KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      KC_PSCR, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
-                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
+                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
                      _______, QK_LLCK
             ),
 
@@ -340,7 +342,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_L:
     case BS_ENT:
     // case BS_SPC:
-    case BS_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -387,13 +388,13 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
-    /*
     switch (tap_hold_keycode) {
       // same hand exceptions for GUI shortcut
       case BS_A:
           switch (other_keycode) {
               case BS_C:
               case BS_V:
+              case BS_F:
               case KC_W:
               case KC_T:
                   if (isMacOS) return true;
@@ -404,8 +405,7 @@ bool get_chordal_hold(
           }
           break;
     }
-    */
-  return get_chordal_hold_default(tap_hold_record, other_record);
+    return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
 
@@ -520,8 +520,6 @@ uint16_t achordion_streak_chord_timeout(
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-    if (keycode == BS_REP)
-        return false;
     // Unpack tapping keycode for tap-hold keys.
     switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -686,7 +684,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
-#if 0
 // process keycode with shift when tapped
 bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
     if (record->tap.count) {
@@ -718,7 +715,6 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
     }
     return true;
 }
-#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef ACHORDION_ENABLE
@@ -776,20 +772,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         select_word_unregister();
       }
       break;
+    case BS_UNDS: {
+        static bool registered = false;
+        return process_shifted_tap(keycode, record, &registered);
+    }
+    /*
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
           return false;
       }
       break;
-    /*
-    case BS_UNDS: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
-    */
-
-    /*
     case BS_CW:
       if (record->tap.count && record->event.pressed) {
           caps_word_toggle();
