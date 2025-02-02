@@ -136,12 +136,19 @@ enum {
 #define BS_BSLS   LT(TMUX, KC_BSLS)
 
 #define CLOSAPP   A(KC_F4)
+#define SWAPP     G(KC_TAB)
 
 static bool isMacOS = false;
 
 #if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
     return isMacOS;
+}
+#endif
+#ifdef OS_DETECTION_ENABLE
+bool process_detected_host_os_user(os_variant_t os) {
+    isMacOS = (os == OS_MACOS || os == OS_IOS);
+    return true;
 }
 #endif
 
@@ -170,7 +177,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_VOLU,
-                     SELLINE, SELWBAK, SELWFWD, XXXXXXX, KC_APP,  KC_VOLD,
+                     SELLINE, SELWBAK, SELWFWD, SWAPP,   KC_APP,  KC_VOLD,
                      _______, QK_LLCK
             ),
 
@@ -191,7 +198,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
               _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI, XXXXXXX,
                                                   _______, _______,
 
                        UPDIR,   USRNAME, _______, _______, _______, _______,
@@ -392,9 +399,11 @@ bool get_chordal_hold(
       // same hand exceptions for GUI shortcut
       case BS_A:
           switch (other_keycode) {
+              case BS_X:
               case BS_C:
               case BS_V:
               case BS_F:
+              case KC_B:
               case KC_W:
               case KC_T:
                   if (isMacOS) return true;

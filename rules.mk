@@ -27,6 +27,7 @@ UNICODE_ENABLE = no
 UNICODEMAP_ENABLE = no
 UCIS_ENABLE = no
 UNICODE_COMMON = no
+OS_DETECTION_ENABLE = yes
 
 # use userspace version achordion
 ACHORDION_ENABLE ?= no
