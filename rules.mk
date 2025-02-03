@@ -36,7 +36,7 @@ ifeq ($(strip $(ACHORDION_ENABLE)), yes)
 	SRC += features/achordion.c
 endif
 
-CUSTOM_SHIFT_KEYS_ENABLE ?= no
+CUSTOM_SHIFT_KEYS_ENABLE ?= yes
 ifeq ($(strip $(CUSTOM_SHIFT_KEYS_ENABLE)), yes)
 	OPT_DEFS += -DCUSTOM_SHIFT_KEYS_ENABLE
 	SRC += features/custom_shift_keys.c

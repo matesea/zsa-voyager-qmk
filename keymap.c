@@ -133,7 +133,7 @@ enum {
 #define BS_SPC    LT(SYM, KC_SPC)
 #define BS_BSPC   KC_BSPC
 
-#define BS_ESC    KC_ESC
+#define BS_TAB    KC_TAB
 #define BS_QUOT   KC_QUOT
 
 #define BS_UNDS   LT(TMUX, KC_UNDS)
@@ -157,9 +157,9 @@ bool process_detected_host_os_user(os_variant_t os) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
-            KC_GRV,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
-            KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
-            BS_ESC,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
+            KC_ESC,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
+            KC_GRV,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
+            BS_TAB,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
             BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
                                              BS_ENT, BS_REP,
 
@@ -268,9 +268,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            XXXXXXX,   TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
+            TMUX_LBRC, TMUX_1,  TMUX_2,  TMUX_3,  TMUX_4,  TMUX_5,
             XXXXXXX,   XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
-            TMUX_LBRC, TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
+            XXXXXXX,   TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
             XXXXXXX,   TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
                                                   XXXXXXX, XXXXXXX,
 
