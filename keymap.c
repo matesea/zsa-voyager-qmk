@@ -17,6 +17,7 @@
 enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
+  CLOSAPP,  // close app
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
   SELWBAK,  // backward word selection
@@ -112,7 +113,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(SYM, KC_Z)
+#define BS_Z      KC_Z
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -128,14 +129,16 @@ enum {
 #define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAV, KC_ENT)
-#define BS_SPC    KC_SPC
+#define BS_REP    QK_REP
+#define BS_SPC    LT(SYM, KC_SPC)
+#define BS_BSPC   KC_BSPC
+
 #define BS_ESC    KC_ESC
 #define BS_QUOT   KC_QUOT
 
 #define BS_UNDS   LT(TMUX, KC_UNDS)
 #define BS_BSLS   LT(TMUX, KC_BSLS)
 
-#define CLOSAPP   A(KC_F4)
 #define SWAPP     G(KC_TAB)
 
 static bool isMacOS = false;
@@ -158,13 +161,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_ESC,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
             BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, QK_REP,
+                                             BS_ENT, BS_REP,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
                       KC_H,   BS_J,   BS_K,    BS_L,   BS_SCLN, BS_QUOT,
                       KC_N,   BS_M,   BS_COMM, BS_DOT, BS_SLSH, BS_BSLS,
-                      KC_BSPC, BS_SPC
+                      BS_BSPC, BS_SPC
             ),
 
     [NAV] = LAYOUT_LR(
@@ -181,30 +184,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, QK_LLCK
             ),
 
-    /* my simplied right-handed symbol layer
+    /* my simplied left-handed symbol layer
 
        ^$ vim navigation, jump to start/end of the current line
        *# vim navigation, search behind/ahead for word under cursor
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-                X X
-                ^ { } $ X
-                * ( ) # ; ENT
-                : [ ] % @
-                _ _
+                X ^ { } $
+                X * ( ) #
+                @ % [ ] :
+                      _ X
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, XXXXXXX, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, KC_LGUI, XXXXXXX,
-                                                  _______, _______,
+              _______, ARROW,   KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,
+              _______, USRNAME, KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH,
+              _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
+                                                  _______, UPDIR,
 
-                       UPDIR,   USRNAME, _______, _______, _______, _______,
-                       KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW,   _______,
-                       KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH, KC_SCLN, KC_ENT,
-                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
+                       _______, _______, _______, _______, _______, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                        _______, _______
             ),
 
@@ -348,7 +350,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
-    // case BS_SPC:
+    case BS_SPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -847,10 +849,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             set_mods(mods);
             return false;
 
-        /* switch IME based on layer */
+        /* switch IME */
         case IME:
             clear_mods();
             tap_code16(isMacOS ? C(KC_SPC) : G(KC_SPC));
+            set_mods(mods);
+            return false;
+
+        /* close app */
+        case CLOSAPP:
+            clear_mods();
+            tap_code16(isMacOS ? G(KC_Q) : A(KC_F4));
             set_mods(mods);
             return false;
 
