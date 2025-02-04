@@ -10,7 +10,7 @@
 #define TAP_CODE_DELAY 5
 
 #undef TAPPING_TERM
-#define TAPPING_TERM 170
+#define TAPPING_TERM 150
 #define TAPPING_TERM_PER_KEY
 
 #define CHORDAL_HOLD

@@ -181,7 +181,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_VOLU,
                      SELLINE, SELWBAK, SELWFWD, SWAPP,   KC_APP,  KC_VOLD,
-                     _______, QK_LLCK
+                     QK_LLCK, CW_TOGG
             ),
 
     /* my simplied left-handed symbol layer
@@ -264,7 +264,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_BRK,  KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      KC_PSCR, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
                      KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
-                     _______, QK_LLCK
+                     QK_LLCK, _______
             ),
 
     [TMUX] = LAYOUT_LR(
@@ -334,9 +334,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         // longer tapping term for ALT
         case BS_S:
         case BS_L:
-            return TAPPING_TERM + 50;
+            return TAPPING_TERM + 90;
     }
-    return TAPPING_TERM + 30;
+    return TAPPING_TERM + 70;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
