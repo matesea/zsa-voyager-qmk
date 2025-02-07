@@ -10,7 +10,7 @@
 #define TAP_CODE_DELAY 5
 
 #undef TAPPING_TERM
-#define TAPPING_TERM 150
+#define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
 
 #define CHORDAL_HOLD
@@ -56,6 +56,6 @@
 #define CUSTOM_SHIFT_KEYS_LAYER_MASK (1 << 0)
 #endif
 
-#ifdef OS_DETECTION_ENABLE
-#define OS_DETECTION_SINGLE_REPORT
-#endif
+// #ifdef OS_DETECTION_ENABLE
+// #define OS_DETECTION_SINGLE_REPORT
+// #endif
