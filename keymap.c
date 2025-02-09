@@ -18,8 +18,8 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
   CLOSAPP,  // close app
-  // SWAPFWD,  // switch foreground window forwardly
-  // SWAPBAK,  // switch foreground window backwardly
+  SWAPFWD,  // switch foreground window forwardly
+  SWAPBAK,  // switch foreground window backwardly
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
   SELWBAK,  // backward word selection
@@ -131,14 +131,16 @@ enum {
 #define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAV, KC_ENT)
-#define BS_REP    QK_REP
-#define BS_SPC    LT(SYM, KC_SPC)
+#define BS_UNDS   LT(SYM, KC_UNDS)
+#define BS_SPC    KC_SPC
 #define BS_BSPC   KC_BSPC
+
+// #define BS_REP    LT(SYM, QK_REP)
 
 #define BS_TAB    KC_TAB
 #define BS_QUOT   KC_QUOT
 
-#define BS_UNDS   LT(TMUX, KC_UNDS)
+#define BS_CW     LT(TMUX, CW_TOGG)
 #define BS_BSLS   LT(TMUX, KC_BSLS)
 
 static bool isMacOS = false;
@@ -159,8 +161,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
             KC_GRV,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_TAB,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
-            BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, BS_REP,
+            BS_CW,   BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
+                                             BS_ENT, BS_UNDS,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
@@ -171,9 +173,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_F),
+            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
                                                 _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
@@ -183,29 +185,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      QK_LLCK, _______
             ),
 
-    /* my simplied left-handed symbol layer
+    /* my simplied right-handed symbol layer
 
        ^$ vim navigation, jump to start/end of the current line
        *# vim navigation, search behind/ahead for word under cursor
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-                X ^ { } $
-                X * ( ) #
-                @ % [ ] :
-                        X
+                * { } # X
+                ^ ( ) $ X X
+                : [ ] % @
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
-              _______, ARROW,   KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,
-              _______, USRNAME, KC_ASTR, KC_LPRN, KC_RPRN, KC_HASH,
-              _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
-                                                  _______, UPDIR,
+              _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
+              _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+                                                  _______, _______,
 
-                       _______, _______, _______, _______, _______, _______,
                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   _______,
+                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  UPDIR,   USRNAME,
+                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
                        _______, _______
             ),
 
@@ -291,7 +292,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, _______
+                     _______, SWAPBAK
             ),
 
     [FWD] = LAYOUT_LR(
@@ -305,7 +306,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, _______
+                     _______, SWAPFWD
             ),
 };
 
@@ -314,14 +315,14 @@ const uint16_t PROGMEM cv[] = {BS_C, BS_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BS_C, BS_X, COMBO_END};
 
 const uint16_t PROGMEM mc[] = {BS_M, BS_COMM, COMBO_END};
-const uint16_t PROGMEM cd[] = {BS_COMM, BS_DOT, COMBO_END};
+// const uint16_t PROGMEM cd[] = {BS_COMM, BS_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(xc, OSL(FN)),
 
     COMBO(mc, CW_TOGG),
-    COMBO(cd, QK_AREP),
+    // COMBO(cd, QK_AREP),
 };
 #endif
 
@@ -334,8 +335,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_S:
         case BS_L:
             return TAPPING_TERM + 75; // 250ms
-        case BS_SPC:
-            return TAPPING_TERM + 125; // 300ms
     }
     return TAPPING_TERM + 45; // 220ms
 }
@@ -351,7 +350,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
-    case BS_SPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -398,6 +396,7 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
+    /*
     switch (tap_hold_keycode) {
       // same hand exceptions for GUI shortcut
       case BS_A:
@@ -417,6 +416,7 @@ bool get_chordal_hold(
           }
           break;
     }
+    */
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
@@ -751,7 +751,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // hold alt/gui for alt+tab/gui+tab to switching app
   // define A(KC_TAB) or G(KC_TAB) to use
-  /*
   if ((keycode == BS_COMM || keycode == BS_DOT) && record->tap.count == 0 && !record->event.pressed) {
       unregister_mods(isMacOS ? MOD_BIT_LGUI: MOD_BIT_LALT);
   } else if (keycode == SWAPFWD || keycode == SWAPBAK) {
@@ -761,7 +760,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
   }
-  */
 
   // WA to address unintended shift
   if (record->event.pressed) {
@@ -840,17 +838,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
       }
       break;
+    */
     case BS_CW:
       if (record->tap.count && record->event.pressed) {
           caps_word_toggle();
           return false;
       }
       return true;
-    */
 
     /* when both shift are held => shift + del
        when one shift is held => del
      */
+    /*
     case KC_BSPC:
       {
           static uint16_t registered_key = KC_NO;
@@ -875,6 +874,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_code(registered_key);
           }
       } return false;
+      */
   }
 
   if (record->event.pressed) {
