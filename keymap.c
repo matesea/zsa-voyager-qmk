@@ -18,8 +18,8 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
   CLOSAPP,  // close app
-  SWAPFWD,  // switch foreground window forwardly
-  SWAPBAK,  // switch foreground window backwardly
+  // SWAPFWD,  // switch foreground window forwardly
+  // SWAPBAK,  // switch foreground window backwardly
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
   SELWBAK,  // backward word selection
@@ -115,7 +115,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      KC_Z
+#define BS_Z      LT(TMUX, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -128,7 +128,7 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   KC_SLSH
+#define BS_SLSH   LT(TMUX, KC_SLSH)
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_UNDS   LT(SYM, KC_UNDS)
@@ -140,8 +140,8 @@ enum {
 #define BS_TAB    KC_TAB
 #define BS_QUOT   KC_QUOT
 
-#define BS_CW     LT(TMUX, CW_TOGG)
-#define BS_BSLS   LT(TMUX, KC_BSLS)
+#define BS_CW     CW_TOGG
+#define BS_BSLS   KC_BSLS
 
 static bool isMacOS = false;
 #if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -292,7 +292,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, SWAPBAK
+                     _______, _______
             ),
 
     [FWD] = LAYOUT_LR(
@@ -306,7 +306,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, SWAPFWD
+                     _______, _______
             ),
 };
 
@@ -350,6 +350,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
+    // case BS_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -532,6 +533,11 @@ uint16_t achordion_streak_chord_timeout(
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
+    /*
+    if (keycode == BS_REP)
+        return false;
+    */
+
     // Unpack tapping keycode for tap-hold keys.
     switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -751,6 +757,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   // hold alt/gui for alt+tab/gui+tab to switching app
   // define A(KC_TAB) or G(KC_TAB) to use
+  /*
   if ((keycode == BS_COMM || keycode == BS_DOT) && record->tap.count == 0 && !record->event.pressed) {
       unregister_mods(isMacOS ? MOD_BIT_LGUI: MOD_BIT_LALT);
   } else if (keycode == SWAPFWD || keycode == SWAPBAK) {
@@ -760,6 +767,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
   }
+  */
 
   // WA to address unintended shift
   if (record->event.pressed) {
@@ -787,20 +795,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     /* close app */
     case CLOSAPP:
-        if (isMacOS) {
+        {
             if (record->event.pressed) {
-                register_mods(MOD_BIT_LGUI);
-                tap_code16(KC_Q);
+                register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+                tap_code16(isMacOS ? KC_Q : KC_F4);
             } else
-                unregister_mods(MOD_BIT_LGUI);
-        } else {
-            if (record->event.pressed) {
-                register_mods(MOD_BIT_LALT);
-                tap_code16(KC_F4);
-            } else
-                unregister_mods(MOD_BIT_LALT);
+                unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+            return false;
         }
-        return false;
 
 #ifdef SELECT_WORD_ENABLE
     case SELWBAK:  // Backward word selection.
@@ -838,18 +840,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
       }
       break;
-    */
     case BS_CW:
       if (record->tap.count && record->event.pressed) {
           caps_word_toggle();
           return false;
       }
       return true;
+    */
 
     /* when both shift are held => shift + del
        when one shift is held => del
      */
-    /*
     case KC_BSPC:
       {
           static uint16_t registered_key = KC_NO;
@@ -874,7 +875,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_code(registered_key);
           }
       } return false;
-      */
   }
 
   if (record->event.pressed) {
