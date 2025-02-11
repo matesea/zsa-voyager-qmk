@@ -115,7 +115,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(TMUX, KC_Z)
+#define BS_Z      LT(SYM, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      KC_V
@@ -128,20 +128,20 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   LT(TMUX, KC_SLSH)
+#define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAV, KC_ENT)
-#define BS_UNDS   LT(SYM, KC_UNDS)
 #define BS_SPC    KC_SPC
 #define BS_BSPC   KC_BSPC
 
-// #define BS_REP    LT(SYM, QK_REP)
+#define BS_REP    QK_REP
 
 #define BS_TAB    KC_TAB
 #define BS_QUOT   KC_QUOT
 
-#define BS_CW     CW_TOGG
-#define BS_BSLS   KC_BSLS
+// #define BS_CW     CW_TOGG
+#define BS_BSLS   LT(TMUX, KC_BSLS)
+#define BS_UNDS   LT(TMUX, KC_UNDS)
 
 static bool isMacOS = false;
 #if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -161,8 +161,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
             KC_GRV,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_TAB,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
-            BS_CW,   BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, BS_UNDS,
+            BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
+                                             BS_ENT, BS_REP,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
@@ -263,7 +263,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                      KC_BRK,  KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      KC_PSCR, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
-                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
+                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
                      _______, _______
             ),
 
@@ -315,14 +315,14 @@ const uint16_t PROGMEM cv[] = {BS_C, BS_V, COMBO_END};
 const uint16_t PROGMEM xc[] = {BS_C, BS_X, COMBO_END};
 
 const uint16_t PROGMEM mc[] = {BS_M, BS_COMM, COMBO_END};
-// const uint16_t PROGMEM cd[] = {BS_COMM, BS_DOT, COMBO_END};
+const uint16_t PROGMEM cd[] = {BS_COMM, BS_DOT, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(xc, OSL(FN)),
 
     COMBO(mc, CW_TOGG),
-    // COMBO(cd, QK_AREP),
+    COMBO(cd, QK_AREP),
 };
 #endif
 
