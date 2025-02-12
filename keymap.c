@@ -173,9 +173,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, G(KC_A), G(KC_W), XXXXXXX, G(KC_R), G(KC_T),
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, G(KC_F),
-            _______, G(KC_Z), G(KC_X), G(KC_C), G(KC_V), G(KC_B),
+            _______, XXXXXXX, C(KC_W), XXXXXXX, G(KC_R), C(KC_T),
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
+            _______, C(KC_A), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
                      CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
@@ -198,9 +198,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
-              _______, C(KC_A), C(KC_W), XXXXXXX, C(KC_R), C(KC_T),
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
-              _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
@@ -397,7 +397,6 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
-    /*
     switch (tap_hold_keycode) {
       // same hand exceptions for GUI shortcut
       case BS_A:
@@ -411,13 +410,14 @@ bool get_chordal_hold(
               case KC_T:
                   if (isMacOS) return true;
                   break;
+                  /*
               case KC_R: // for win+r run on windows
                   if (!isMacOS) return true;
                   break;
+                  */
           }
           break;
     }
-    */
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
