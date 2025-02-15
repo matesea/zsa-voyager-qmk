@@ -143,6 +143,8 @@ enum {
 #define BS_BSLS   LT(TMUX, KC_BSLS)
 #define BS_UNDS   LT(TMUX, KC_UNDS)
 
+#define OSM_SFT   OSM(MOD_LSFT)
+
 static bool isMacOS = false;
 #if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
@@ -162,7 +164,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_GRV,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             BS_TAB,  BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
             BS_UNDS, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, BS_REP,
+                                             BS_ENT, OSM_SFT,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
@@ -173,15 +175,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, C(KC_W), XXXXXXX, G(KC_R), C(KC_T),
+            _______, XXXXXXX, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
             _______, C(KC_A), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
-                     CLOSAPP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY,
-                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  XXXXXXX,
-                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_VOLU,
-                     SELLINE, SELWBAK, SELWFWD, XXXXXXX, KC_APP,  KC_VOLD,
+                     CLOSAPP, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, KC_MPLY,
+                     KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
+                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
+                     SELLINE, SELWBAK, SELWFWD, XXXXXXX, KC_APP,  KC_SCRL,
                      QK_LLCK, _______
             ),
 
@@ -200,12 +202,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
               _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, XXXXXXX, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       XXXXXXX, USRNAME, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                        KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   _______,
-                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  UPDIR,   USRNAME,
+                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  UPDIR,   _______,
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   _______,
                        _______, _______
             ),
@@ -222,18 +224,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 _ X
                 */
     /*
-    [SYM1] = LAYOUT_LR(  // getreuer's symbol layer.
+    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
               _______, _______, _______, _______, _______, _______,
-              _______, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
-              _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
-              _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
-                                                  USRNAME, _______,
+              XXXXXXX, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
+              XXXXXXX, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
+              XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
+                                                  _______, _______,
 
                        _______, _______,  _______, _______, _______, _______,
-                       KC_CIRC, KC_LCBR,  KC_RCBR, KC_DLR,  ARROW,   _______,
-                       KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, _______,
-                       KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, _______,
-                       _______, UPDIR
+                       KC_CIRC, KC_LCBR,  KC_RCBR, KC_DLR,  ARROW,   XXXXXXX,
+                       KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, USRNAME,
+                       KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, UPDIR,
+                       _______, _______
             ),
     */
 
@@ -261,9 +263,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 _______, _______,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     KC_BRK,  KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
-                     KC_PSCR, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
-                     KC_SCRL, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
                      _______, _______
             ),
 
@@ -322,7 +324,9 @@ combo_t key_combos[] = {
     COMBO(xc, OSL(FN)),
 
     COMBO(mc, CW_TOGG),
+#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
     COMBO(cd, QK_AREP),
+#endif
 };
 #endif
 
@@ -334,9 +338,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         // longer tapping term for ALT
         case BS_S:
         case BS_L:
-            return TAPPING_TERM + 75; // 250ms
+            return TAPPING_TERM + 75;
     }
-    return TAPPING_TERM + 45; // 220ms
+    return TAPPING_TERM + 45;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
