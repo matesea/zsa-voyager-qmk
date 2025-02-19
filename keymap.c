@@ -18,8 +18,8 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
   CLOSAPP,  // close app
-  // SWAPFWD,  // switch foreground window forwardly
-  // SWAPBAK,  // switch foreground window backwardly
+  SWAPFWD,  // switch foreground window forwardly
+  SWAPBAK,  // switch foreground window backwardly
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
   SELWBAK,  // backward word selection
@@ -115,10 +115,10 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(SYM, KC_Z)
+#define BS_Z      KC_Z
 #define BS_X      KC_X
 #define BS_C      KC_C
-#define BS_V      KC_V
+#define BS_V      LT(SYM, KC_V)
 
 #define BS_J      RSFT_T(KC_J)
 #define BS_K      RCTL_T(KC_K)
@@ -128,7 +128,7 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   KC_SLSH
+#define BS_SLSH   LT(FN, KC_SLSH)
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
@@ -144,6 +144,9 @@ enum {
 #define BS_UNDS   LT(TMUX, KC_UNDS)
 
 #define OSM_SFT   OSM(MOD_LSFT)
+#define OSM_CTL   OSM(MOD_LCTL)
+#define OSM_ALT   OSM(MOD_LALT)
+#define OSM_GUI   OSM(MOD_LGUI)
 
 static bool isMacOS = false;
 #if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -174,17 +177,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, XXXXXXX, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, C(KC_F),
-            _______, C(KC_A), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            _______, OSM_GUI, OSM_ALT, OSM_CTL, OSM_SFT, SWAPFWD,
+            _______, C(KC_A), C(KC_X), C(KC_C), C(KC_V), SWAPBAK,
                                                 _______, _______,
 
                      CLOSAPP, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, KC_MPLY,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWFWD, XXXXXXX, KC_APP,  KC_SCRL,
-                     QK_LLCK, _______
+                     _______, _______
             ),
 
     /* my simplied right-handed symbol layer
@@ -202,7 +205,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
               _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, KC_LGUI, XXXXXXX, XXXXXXX, XXXXXXX,
+              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
                        XXXXXXX, USRNAME, XXXXXXX, XXXXXXX, XXXXXXX, _______,
@@ -256,16 +259,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 
     [FN] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+            _______, KC_F12,  KC_F9,   KC_F8,   KC_F7,   UG_TOGG,
+            _______, KC_F11,  KC_F6,   KC_F5,   KC_F4,   MAC_TOG,
+            _______, KC_F10,  KC_F3,   KC_F2,   KC_F1,   XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
-                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
+                     _______, _______, _______, _______, _______, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 
@@ -314,18 +317,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BS_C, BS_V, COMBO_END};
-const uint16_t PROGMEM xc[] = {BS_C, BS_X, COMBO_END};
+// const uint16_t PROGMEM xc[] = {BS_C, BS_X, COMBO_END};
 
 const uint16_t PROGMEM mc[] = {BS_M, BS_COMM, COMBO_END};
-const uint16_t PROGMEM cd[] = {BS_COMM, BS_DOT, COMBO_END};
+const uint16_t PROGMEM nm[] = {BS_M, KC_N, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
-    COMBO(xc, OSL(FN)),
+    // COMBO(xc, OSL(FN)),
 
     COMBO(mc, CW_TOGG),
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-    COMBO(cd, QK_AREP),
+    COMBO(nm, QK_AREP),
 #endif
 };
 #endif
@@ -354,6 +357,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
+    case BS_DOT:
     // case BS_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
@@ -403,7 +407,7 @@ bool get_chordal_hold(
         uint16_t other_keycode, keyrecord_t* other_record) {
     switch (tap_hold_keycode) {
       // same hand exceptions for GUI shortcut
-      case BS_A:
+      case BS_A: // gui
           switch (other_keycode) {
               case BS_X:
               case BS_C:
@@ -414,13 +418,25 @@ bool get_chordal_hold(
               case KC_T:
                   if (isMacOS) return true;
                   break;
-                  /*
               case KC_R: // for win+r run on windows
+              case KC_E:
                   if (!isMacOS) return true;
                   break;
-                  */
           }
           break;
+      case BS_D: // ctrl
+          switch (other_keycode) {
+              case BS_F:
+              case KC_B:
+              case KC_W:
+              case KC_T:
+                  if (!isMacOS) return true;
+                  break;
+              case KC_R:
+                  return true;
+          }
+          break;
+
     }
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
@@ -760,9 +776,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t layer = read_source_layers_cache(record->event.key);
 
   // hold alt/gui for alt+tab/gui+tab to switching app
-  // define A(KC_TAB) or G(KC_TAB) to use
-  /*
-  if ((keycode == BS_COMM || keycode == BS_DOT) && record->tap.count == 0 && !record->event.pressed) {
+  if (keycode == BS_ENT && record->tap.count == 0 && !record->event.pressed) {
       unregister_mods(isMacOS ? MOD_BIT_LGUI: MOD_BIT_LALT);
   } else if (keycode == SWAPFWD || keycode == SWAPBAK) {
       if (record->event.pressed) {
@@ -771,13 +785,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
   }
-  */
 
   // WA to address unintended shift
   if (record->event.pressed) {
       switch (layer) {
           case SYM:
-          // case SYM1:
               clear_weak_mods();
               send_keyboard_report();
               break;
@@ -941,160 +953,3 @@ bool caps_word_press_user(uint16_t keycode) {
   }
 }
 #endif  // CAPS_WORD_ENABLE
-
-#ifdef RGB_MATRIX_CUSTOM_KB
-extern rgb_config_t rgb_matrix_config;
-
-const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
-    [NAV] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
-
-            {184,218,204},{29,239,251}, {0,0,0},      {0,0,0},      {0,0,0},       {19,255,255},
-            {29,239,251}, {29,239,251}, {29,239,251}, {0,0,0},      {127,234,222}, {0,0,0},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {19,255,255},
-            {83,193,218}, {83,193,218}, {83,193,218}, {83,193,218}, {127,234,222}, {19,255,255},
-            {0,0,0},      {184,218,204}
-    },
-
-    [SYM] = {
-        {0,0,0}, {0,0,0}, {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
-        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
-        {0,0,0}, {0,0,0}, {29,239.251}, {127,234,222}, {127,234,222}, {0,0,0},
-                                                       {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
-    /*
-    [SYM1] = {
-        {0,0,0}, {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},       {0,0,0},
-        {0,0,0}, {44,255,255},  {184,218,204}, {184,218,204}, {83,193,218},  {83,193,218},
-        {0,0,0}, {184,218,204}, {83,193,218},  {83,193,218},  {184,218,204}, {83,193,218},
-        {0,0,0}, {83,193,218},  {83,193,218},  {127,234,222}, {127,234,222}, {44,255,255},
-                                                              {19,255,255}, {0,0,0},
-
-            {0,0,0},      {0,0,0},      {0,0,0},       {0,0,0},       {0,0,0},      {0,0,0},
-            {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {6,255,255},  {0,0,0},
-            {44,255,255}, {127,234,222}, {127,234,222}, {44,255,255}, {44,255,255}, {0,0,0},
-            {44,255,255}, {44,255,255},  {44,255,255},  {44,255,255}, {44,255,255}, {0,0,0},
-            {0,0,0},      {19,255,255}
-    },
-    */
-
-    /*
-    [NUM] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
-
-            {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},      {0,0,0},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {89,255,255},
-            {89,255,255}, {19,255,255}, {19,255,255}, {19,255,255}, {89,255,255}, {184,218,204},
-            {19,255,255}, {184,218,204},
-    },
-    */
-
-    [FN] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-                                            {0,0,0}, {0,0,0},
-
-            {0,0,0},       {0,0,0},      {0,0,0},       {0,0,0},      {0,0,0},      {6,255,255},
-            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {44,255,255},
-            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {184,218,204},
-            {127,234,222}, {83,193,218}, {83,193,218},  {83,193,218}, {83,193,218}, {0,0,0},
-            {0,0,0},       {184,218,204}
-    },
-
-    [TMUX] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
-    [BAK] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-
-    [FWD] = {
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-        {0,0,0}, {0,0,0},
-
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},
-            {0,0,0}, {0,0,0}
-    },
-};
-
-void set_layer_color(int layer) {
-  for (int i = 0; i < RGB_MATRIX_LED_COUNT; i++) {
-    HSV hsv = {
-      .h = pgm_read_byte(&ledmap[layer][i][0]),
-      .s = pgm_read_byte(&ledmap[layer][i][1]),
-      .v = pgm_read_byte(&ledmap[layer][i][2]),
-    };
-    if (!hsv.h && !hsv.s && !hsv.v) {
-        rgb_matrix_set_color( i, 0, 0, 0 );
-    } else {
-        RGB rgb = hsv_to_rgb( hsv );
-        float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );
-    }
-  }
-}
-
-bool rgb_matrix_indicators_user(void) {
-  if (rawhid_state.rgb_control) {
-      return false;
-  }
-  if (keyboard_config.disable_layer_led) { return false; }
-  int layout = biton32(layer_state);
-  switch (layout) {
-   case 1 ... LAYER_MAX:
-      set_layer_color(layout);
-      break;
-   default:
-    if (rgb_matrix_get_flags() == LED_FLAG_NONE)
-      rgb_matrix_set_color_all(0, 0, 0);
-    break;
-  }
-  return true;
-}
-#endif
