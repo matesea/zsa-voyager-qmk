@@ -33,6 +33,7 @@ enum custom_keycodes {
   BOLD,
   FIND,
   NEWTAB,
+  CLOSTAB,
 
   KEYSTR_MIN,
   UPDIR = KEYSTR_MIN,    // input ../ per press
@@ -187,7 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, NEWTAB,
+            _______, XXXXXXX, CLOSTAB, G(KC_E), G(KC_R), NEWTAB,
             _______, OSM_GUI, OSM_ALT, OSM_CTL, OSM_SFT, FIND,
             _______, UNDO,    CUT,     COPY,    PASTE,   BOLD,
                                                 _______, _______,
@@ -339,12 +340,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_F:
         case BS_J:
             return TAPPING_TERM;
-        // longer tapping term for ALT
-        case BS_S:
-        case BS_L:
-            return TAPPING_TERM + 75;
     }
-    return TAPPING_TERM + 45;
+    return TAPPING_TERM + 120;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
@@ -391,45 +388,22 @@ void keyboard_post_init_user(void) {
 // Handedness for Chordal Hold (https://github.com/qmk/qmk_firmware/pull/24560)
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
   LAYOUT_LR(
-  '*'    , '*'    , '*'    , '*'    , '*'    , '*'    ,
-  '*'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-  '*'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-  '*'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
                                                '*'    , '*'    ,
 
-                    '*'    , '*'    , '*'    , '*'    , '*'    , '*'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , '*'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , '*'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , '*'    ,
+                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
            '*'    , '*'
 );
 // Callback for Chordal Hold (https://github.com/qmk/qmk_firmware/pull/24560)
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
-    switch (tap_hold_keycode) {
-      // same hand exceptions for GUI shortcut
-      case BS_A: // gui
-          switch (other_keycode) {
-              case KC_W:
-                  if (isMacOS) return true;
-                  break;
-              case KC_R: // for win+r run on windows
-              case KC_E:
-                  if (!isMacOS) return true;
-                  break;
-          }
-          break;
-      case BS_D: // ctrl
-          switch (other_keycode) {
-              case KC_W:
-                  if (!isMacOS) return true;
-                  break;
-              case KC_R:
-                  return true;
-          }
-          break;
-    }
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
@@ -730,6 +704,7 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
+/*
 // process keycode with shift when tapped
 bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
     if (record->tap.count) {
@@ -761,6 +736,7 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
     }
     return true;
 }
+*/
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef ACHORDION_ENABLE
@@ -855,11 +831,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       break;
 #endif
+    /*
     case BS_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
-    /*
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
@@ -968,6 +944,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case NEWTAB:
             clear_mods();
             SEND_STRING_DELAY(isMacOS ? SS_LGUI(SS_TAP(X_T)) : SS_LCTL(SS_TAP(X_T)) , TAP_CODE_DELAY);
+            set_mods(mods);
+            return false;
+
+        case CLOSTAB:
+            clear_mods();
+            SEND_STRING_DELAY(isMacOS ? SS_LGUI(SS_TAP(X_W)) : SS_LCTL(SS_TAP(X_W)) , TAP_CODE_DELAY);
             set_mods(mods);
             return false;
 
