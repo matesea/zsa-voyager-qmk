@@ -29,13 +29,7 @@ UCIS_ENABLE = no
 UNICODE_COMMON = no
 OS_DETECTION_ENABLE = yes
 
-# use userspace version achordion
-ACHORDION_ENABLE ?= no
-ifeq ($(strip $(ACHORDION_ENABLE)), yes)
-	OPT_DEFS += -DACHORDION_ENABLE -DACHORDION_STREAK
-	SRC += features/achordion.c
-endif
-
+# import from getreuer
 CUSTOM_SHIFT_KEYS_ENABLE ?= yes
 ifeq ($(strip $(CUSTOM_SHIFT_KEYS_ENABLE)), yes)
 	OPT_DEFS += -DCUSTOM_SHIFT_KEYS_ENABLE

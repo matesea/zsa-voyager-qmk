@@ -1,9 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 #include "layout.h"
-#ifdef ACHORDION_ENABLE
-#include "features/achordion.h"
-#endif
 #ifdef CUSTOM_SHIFT_KEYS_ENABLE
 #include "features/custom_shift_keys.h"
 #endif  // CUSTOM_SHIFT_KEYS_ENABLE
@@ -18,8 +15,6 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
   IME,      // switch ime
   CLOSAPP,  // close app
-  // SWAPFWD,  // switch foreground window forwardly
-  // SWAPBAK,  // switch foreground window backwardly
   MAC_TOG,  // toggle mac os
   SELLINE,  // select entire line
   SELWBAK,  // backward word selection
@@ -218,7 +213,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                       _______, _______, _______, _______, _______, _______,
                        KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   KC_GRV,
                        KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  UPDIR,   USRNAME,
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_TILD,
@@ -341,7 +336,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_J:
             return TAPPING_TERM;
     }
-    return TAPPING_TERM + 120;
+    return TAPPING_TERM + 170;
 }
 
 #ifdef QUICK_TAP_TERM_PER_KEY
@@ -362,18 +357,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
   }
-}
-#endif
-
-#ifdef PERMISSIVE_HOLD_PER_KEY
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-    // disable permissive hold for ALT
-    if (IS_QK_MODS(keycode)) {
-        uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(keycode));
-        if (mod & MOD_LALT)
-            return false;
-    }
-    return true;
 }
 #endif
 
@@ -409,128 +392,10 @@ bool get_chordal_hold(
 #endif  // CHORDAL_HOLD
 
 void housekeeping_task_user(void) {
-#ifdef ACHORDION_ENABLE
-    achordion_task();
-#endif
 #ifdef SELECT_WORD_ENABLE
     select_word_task();
 #endif
 }
-
-#ifdef ACHORDION_ENABLE
-// https://getreuer.info/posts/keyboards/achordion/index.html
-
-bool achordion_chord(uint16_t tap_hold_keycode,
-                     keyrecord_t* tap_hold_record,
-                     uint16_t other_keycode,
-                     keyrecord_t* other_record) {
-    uint8_t hold_row = tap_hold_record->event.key.row % (MATRIX_ROWS / 2);
-    uint8_t other_row = other_record->event.key.row % (MATRIX_ROWS / 2);
-
-    // allow same-hand shortcut when tap/hold in thumb
-    if (other_row > 4 || hold_row > 4)
-        return true;
-
-    switch (tap_hold_keycode) {
-        // same hand exceptions for GUI shortcut
-        case BS_A:
-            switch (other_keycode) {
-                case KC_W:
-                    if (isMacOS) return true;
-                    break;
-                case KC_R: // for win+r run on windows
-                case KC_E: // for win+e open explorer on windows
-                    if (!isMacOS) return true;
-                    break;
-            }
-            break;
-        case BS_D:
-            switch (other_keycode) {
-                case KA_W:
-                    if (!isMacOS) return true;
-                    break;
-                case KC_R:
-                    return true;
-                    break;
-            }
-            break;
-    }
-
-    // allow hold key at first column and last column
-    /*
-    if ((tap_hold_record->event.key.row <= 3 && tap_hold_record->event.key.col == 1) ||
-            (6 <= tap_hold_record->event.key.row && tap_hold_record->event.key.row <= 9 &&
-            tap_hold_record->event.key.col == 5))
-        return true;
-    */
-
-    return achordion_opposite_hands(tap_hold_record, other_record);
-}
-
-uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    if (IS_QK_MODS(tap_hold_keycode)) {
-        const uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-        if (mod & MOD_MASK_CS)
-            return 300;
-    }
-    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
-        switch (layer) {
-            case NAV:
-            case SYM:
-                return 300;
-        }
-    }
-    return 500;
-}
-
-#ifdef ACHORDION_STREAK
-uint16_t achordion_streak_chord_timeout(
-    uint16_t tap_hold_keycode, uint16_t next_keycode) {
-
-    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        const uint16_t layer = QK_LAYER_TAP_GET_LAYER(tap_hold_keycode);
-        switch (layer) {
-            case NAV:
-            case SYM:
-                return 150;
-        }
-    }
-
-    // shortcut not blocked by streak detection
-    switch (tap_hold_keycode) {
-        case BS_A:
-            // for cut/copy/paste/new tab on MAC OS
-            switch (next_keycode) {
-                case KC_W:
-                    if (isMacOS) return 0;
-                    break;
-                case KC_R: // for win+r run on windows
-                case KC_E:
-                    if (!isMacOS) return 0;
-                    break;
-            }
-            break;
-        case BS_D:
-            switch (next_keycode) {
-                case KC_W:
-                    if (!isMacOS)
-                        return 0;
-                    break;
-                case KC_R:
-                    return 0;
-            }
-            break;
-    }
-
-  // Otherwise, tap_hold_keycode is a mod-tap key.
-  uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-    if (mod & MOD_MASK_CS)
-    return 150;  // A shorter streak timeout for Shift or Ctrl mod-tap keys.
-  return 240;  // A longer timeout otherwise.
-}
-#endif
-#endif
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -758,19 +623,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const bool alt = all_mods & MOD_BIT(KC_LALT);
   const uint8_t layer = read_source_layers_cache(record->event.key);
-
-  // hold alt/gui for alt+tab/gui+tab to switching app
-  /*
-  if (keycode == BS_ENT && record->tap.count == 0 && !record->event.pressed) {
-      unregister_mods(isMacOS ? MOD_BIT_LGUI: MOD_BIT_LALT);
-  } else if (keycode == SWAPFWD || keycode == SWAPBAK) {
-      if (record->event.pressed) {
-          register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-          tap_code16(keycode == SWAPFWD ? KC_TAB : S(KC_TAB));
-      }
-      return false;
-  }
-  */
 
   // WA to address unintended shift
   if (record->event.pressed) {
