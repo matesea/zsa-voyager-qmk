@@ -7,6 +7,9 @@
 #ifdef SELECT_WORD_ENABLE
 #include "features/select_word.h"
 #endif  // SELECT_WORD_ENABLE
+#ifdef RGB_MATRIX_CUSTOM_USER
+#include "features/palettefx.h"
+#endif  // RGB_MATRIX_CUSTOM_USER
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
@@ -350,7 +353,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
-    case BS_DOT:
+    // case BS_DOT:
     // case BS_REP:
     case BS_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
@@ -361,8 +364,22 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
+void lighting_set_palette(uint8_t idx) {
+  // Set the effect.
+  rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PALETTEFX_REACTIVE);
+  // Set the palette and maximize saturation and brightness.
+  rgb_matrix_sethsv_noeeprom(RGB_MATRIX_HUE_STEP * idx, 255, 255);
+  // Set speed to default.
+  rgb_matrix_set_speed_noeeprom(128);
+}
+
 void keyboard_post_init_user(void) {
+#ifdef RGB_MATRIX_CUSTOM_USER
+    lighting_set_palette(PALETTEFX_CARNIVAL);
+#else
   rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
+#endif
+  // Make sure RGB Matrix is on.
   rgb_matrix_enable_noeeprom();
 }
 #endif
@@ -604,9 +621,6 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
 */
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-#ifdef ACHORDION_ENABLE
-    if (!process_achordion(keycode, record)) return false;
-#endif
 #ifdef SELECT_WORD_ENABLE
   if (!process_select_word(keycode, record)) { return false; }
 #endif  // SELECT_WORD_ENABLE
