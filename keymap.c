@@ -333,6 +333,7 @@ combo_t key_combos[] = {
 };
 #endif
 
+#ifdef TAPPING_TERM_PER_KEY
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case BS_F:
@@ -341,6 +342,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
     return TAPPING_TERM + 170;
 }
+#endif
 
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
@@ -408,11 +410,11 @@ bool get_chordal_hold(
 }
 #endif  // CHORDAL_HOLD
 
-void housekeeping_task_user(void) {
 #ifdef SELECT_WORD_ENABLE
+void housekeeping_task_user(void) {
     select_word_task();
-#endif
 }
+#endif
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -586,7 +588,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
-/*
 // process keycode with shift when tapped
 bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
     if (record->tap.count) {
@@ -618,7 +619,6 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
     }
     return true;
 }
-*/
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef SELECT_WORD_ENABLE
