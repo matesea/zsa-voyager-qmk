@@ -7,9 +7,6 @@
 #ifdef SELECT_WORD_ENABLE
 #include "features/select_word.h"
 #endif  // SELECT_WORD_ENABLE
-#ifdef RGB_MATRIX_CUSTOM_USER
-#include "features/palettefx.h"
-#endif  // RGB_MATRIX_CUSTOM_USER
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
@@ -205,9 +202,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-                * { } # X
-                ^ ( ) $ X X
-                : [ ] % @
+                X X
+                * { } # X `
+                ^ ( ) $ ;
+                : [ ] % @ ~
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
@@ -216,9 +214,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                   _______, _______,
 
-                       _______, _______, _______, _______, _______, _______,
+                       USRNAME, UPDIR,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                        KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   KC_GRV,
-                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  UPDIR,   USRNAME,
+                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  KC_SCLN, XXXXXXX,
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_TILD,
                        _______, _______
             ),
@@ -366,22 +364,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-void lighting_set_palette(uint8_t idx) {
-  // Set the effect.
-  rgb_matrix_mode_noeeprom(RGB_MATRIX_CUSTOM_PALETTEFX_REACTIVE);
-  // Set the palette and maximize saturation and brightness.
-  rgb_matrix_sethsv_noeeprom(RGB_MATRIX_HUE_STEP * idx, 255, 255);
-  // Set speed to default.
-  rgb_matrix_set_speed_noeeprom(128);
-}
-
 void keyboard_post_init_user(void) {
-#ifdef RGB_MATRIX_CUSTOM_USER
-    lighting_set_palette(PALETTEFX_CARNIVAL);
-#else
   rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
-#endif
-  // Make sure RGB Matrix is on.
   rgb_matrix_enable_noeeprom();
 }
 #endif
