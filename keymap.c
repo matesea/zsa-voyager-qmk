@@ -1,12 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 #include "layout.h"
-#ifdef CUSTOM_SHIFT_KEYS_ENABLE
-#include "features/custom_shift_keys.h"
-#endif  // CUSTOM_SHIFT_KEYS_ENABLE
-#ifdef SELECT_WORD_ENABLE
-#include "features/select_word.h"
-#endif  // SELECT_WORD_ENABLE
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
@@ -16,9 +10,6 @@ enum custom_keycodes {
   IME,      // switch ime
   CLOSAPP,  // close app
   MAC_TOG,  // toggle mac os
-  SELLINE,  // select entire line
-  SELWBAK,  // backward word selection
-  SELWFWD,  // forward word selection
 
   SELALL,
   UNDO,
@@ -137,7 +128,7 @@ enum {
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
-#define BS_BSPC   LT(FN, KC_BSPC)
+#define BS_BSPC   KC_BSPC
 
 #define BS_REP    QK_REP
 
@@ -154,7 +145,7 @@ enum {
 #define OSM_GUI   OSM(MOD_LGUI)
 
 static bool isMacOS = false;
-#if defined(SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
+#if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
     return isMacOS;
 }
@@ -191,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      CLOSAPP, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, KC_MPLY,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     SELLINE, SELWBAK, SELWFWD, SELALL,  KC_APP,  KC_SCRL,
+                     SELLINE, SELWBAK, SELWORD, SELALL,  KC_APP,  KC_SCRL,
                      _______, _______
             ),
 
@@ -324,10 +315,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM cv[] = {BS_C, BS_V, COMBO_END};
 const uint16_t PROGMEM mc[] = {BS_M, BS_COMM, COMBO_END};
+const uint16_t PROGMEM hj[] = {KC_H, BS_J, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(mc, QK_AREP),
+    COMBO(hj, OSL(FN)),
+
 };
 #endif
 
@@ -393,12 +387,6 @@ bool get_chordal_hold(
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
-
-#ifdef SELECT_WORD_ENABLE
-void housekeeping_task_user(void) {
-    select_word_task();
-}
-#endif
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -497,9 +485,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             /* previous/next layout */
             case TMUX_SPC: return TMUX_BSPC;
             case TMUX_BSPC: return TMUX_SPC;
-
-            case SELWBAK: return SELWFWD;
-            case SELWFWD: return SELWBAK;
         }
     }
     return KC_TRNS;
@@ -605,12 +590,6 @@ bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-#ifdef SELECT_WORD_ENABLE
-  if (!process_select_word(keycode, record)) { return false; }
-#endif  // SELECT_WORD_ENABLE
-#ifdef CUSTOM_SHIFT_KEYS_ENABLE
-  if (!process_custom_shift_keys(keycode, record)) { return false; }
-#endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
   const uint8_t mods = get_mods();
   const uint8_t all_mods = (mods | get_weak_mods()
@@ -656,7 +635,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
 
-#ifdef SELECT_WORD_ENABLE
     case SELWBAK:  // Backward word selection.
       if (record->event.pressed) {
         select_word_register('B');
@@ -665,7 +643,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       break;
 
-    case SELWFWD:  // Forward word selection.
+    case SELWORD:  // Forward word selection.
       if (record->event.pressed) {
         select_word_register('W');
       } else {
@@ -680,7 +658,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         select_word_unregister();
       }
       break;
-#endif
     /*
     case BS_UNDS: {
         static bool registered = false;
@@ -814,12 +791,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
-#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+#ifdef COMMUNITY_MODULE_CUSTOM_SHIFT_KEYS_ENABLE
 const custom_shift_key_t custom_shift_keys[] = {
     {KC_ESC, KC_TILD},
 };
-uint8_t NUM_CUSTOM_SHIFT_KEYS =
-    sizeof(custom_shift_keys) / sizeof(custom_shift_key_t);
 #endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
 ///////////////////////////////////////////////////////////////////////////////

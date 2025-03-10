@@ -29,15 +29,6 @@ UCIS_ENABLE = no
 UNICODE_COMMON = no
 OS_DETECTION_ENABLE = yes
 
-# import from getreuer
+# import from getreuer module
 CUSTOM_SHIFT_KEYS_ENABLE ?= yes
-ifeq ($(strip $(CUSTOM_SHIFT_KEYS_ENABLE)), yes)
-	OPT_DEFS += -DCUSTOM_SHIFT_KEYS_ENABLE
-	SRC += features/custom_shift_keys.c
-endif
-
 SELECT_WORD_ENABLE ?= yes
-ifeq ($(strip $(SELECT_WORD_ENABLE)), yes)
-	OPT_DEFS += -DSELECT_WORD_ENABLE -DSELECT_WORD_OS_DYNAMIC
-	SRC += features/select_word.c
-endif
