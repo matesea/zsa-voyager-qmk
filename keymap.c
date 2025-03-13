@@ -174,12 +174,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, CLOSTAB, G(KC_E), G(KC_R), NEWTAB,
-            _______, OSM_GUI, OSM_ALT, OSM_CTL, OSM_SFT, FIND,
-            _______, UNDO,    CUT,     COPY,    PASTE,   BOLD,
+            XXXXXXX, CLOSAPP, CLOSTAB, G(KC_E), G(KC_R), NEWTAB,
+            SELALL,  KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, FIND,
+            XXXXXXX, UNDO,    CUT,     COPY,    PASTE,   BOLD,
                                                 _______, _______,
 
-                     CLOSAPP, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, KC_MPLY,
+                     KC_MPLY, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWORD, SELALL,  KC_APP,  KC_SCRL,
@@ -321,7 +321,6 @@ combo_t key_combos[] = {
     COMBO(cv, IME),
     COMBO(mc, QK_AREP),
     COMBO(hj, OSL(FN)),
-
 };
 #endif
 
@@ -349,7 +348,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_ENT:
     // case BS_DOT:
     // case BS_REP:
-    case BS_BSPC:
+    // case BS_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -365,7 +364,6 @@ void keyboard_post_init_user(void) {
 #endif
 
 #ifdef CHORDAL_HOLD
-// Handedness for Chordal Hold (https://github.com/qmk/qmk_firmware/pull/24560)
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
   LAYOUT_LR(
   'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
@@ -635,29 +633,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
 
-    case SELWBAK:  // Backward word selection.
-      if (record->event.pressed) {
-        select_word_register('B');
-      } else {
-        select_word_unregister();
-      }
-      break;
-
-    case SELWORD:  // Forward word selection.
-      if (record->event.pressed) {
-        select_word_register('W');
-      } else {
-        select_word_unregister();
-      }
-      break;
-
-    case SELLINE:  // Line selection.
-      if(record->event.pressed) {
-        select_word_register('L');
-      } else {
-        select_word_unregister();
-      }
-      break;
     /*
     case BS_UNDS: {
         static bool registered = false;
@@ -675,36 +650,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
       }
       return true;
-    */
-
-    /* when both shift are held => shift + del
-       when one shift is held => del
-     */
-    /*
-    case KC_BSPC:
-      {
-          static uint16_t registered_key = KC_NO;
-          if (record->event.pressed) {  // On key press.
-            if (shift_mods) {  // At least one shift key is held.
-              registered_key = KC_DEL;
-              // If one shift is held, clear it from the mods. But if both
-              // shifts are held, leave as is to send Shift + Del.
-              if (shift_mods != MOD_MASK_SHIFT) {
-#ifndef NO_ACTION_ONESHOT
-                del_oneshot_mods(MOD_MASK_SHIFT);
-#endif  // NO_ACTION_ONESHOT
-                unregister_mods(MOD_MASK_SHIFT);
-              }
-            } else {
-              registered_key = KC_BSPC;
-            }
-
-            register_code(registered_key);
-            set_mods(mods);
-          } else {  // On key release.
-            unregister_code(registered_key);
-          }
-      } return false;
     */
   }
 
