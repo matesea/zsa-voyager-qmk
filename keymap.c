@@ -97,13 +97,11 @@ enum {
     BASE = 0,
     SYM,
     NAV,
-    // SYM1, // getreuer's symbol layer
-    // NUM,
+    EXT,
     FN,
-    TMUX,
     BAK,
     FWD,
-    LAYER_MAX = FWD,
+    TMUX,
 };
 
 #define BS_A      LGUI_T(KC_A)
@@ -111,7 +109,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(TMUX, KC_Z)
+#define BS_Z      LT(EXT, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      LT(SYM, KC_V)
@@ -124,25 +122,17 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   LT(TMUX, KC_SLSH)
+#define BS_SLSH   KC_SLSH
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
 #define BS_BSPC   KC_BSPC
-
 #define BS_REP    QK_REP
 
-#define BS_TAB    KC_TAB
-#define BS_QUOT   KC_QUOT
-
+#define BS_QUOT   LT(TMUX, KC_QUOT)
 #define BS_CW     CW_TOGG
 #define BS_BSLS   KC_BSLS
-#define BS_UNDS   KC_UNDS
-
-#define OSM_SFT   OSM(MOD_LSFT)
-#define OSM_CTL   OSM(MOD_LCTL)
-#define OSM_ALT   OSM(MOD_LALT)
-#define OSM_GUI   OSM(MOD_LGUI)
+#define BS_UNDS   LT(TMUX, KC_UNDS)
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -179,10 +169,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX, UNDO,    CUT,     COPY,    PASTE,   BOLD,
                                                 _______, _______,
 
-                     KC_MPLY, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX,
+                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWORD, SELALL,  KC_APP,  KC_SCRL,
+                     _______, _______
+            ),
+
+     [EXT] = LAYOUT_LR(  // Mouse and extras.
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, OM_SLOW, XXXXXXX, XXXXXXX, XXXXXXX,
+                                                _______, _______,
+
+                     _______, _______, _______, _______, _______, _______,
+                     OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
+                     OM_W_D , OM_L   , OM_D   , OM_R   , OM_SLOW, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 
@@ -195,8 +199,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                 X X
                 * { } # X `
-                ^ ( ) $ ;
-                : [ ] % @ ~
+                ^ ( ) $ ; ~
+                : [ ] % @ ENT
                 */
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
@@ -207,8 +211,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                        USRNAME, UPDIR,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                        KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   KC_GRV,
-                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  KC_SCLN, XXXXXXX,
-                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_TILD,
+                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  KC_SCLN, KC_TILD,
+                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_ENT,
                        _______, _______
             ),
 
@@ -216,12 +220,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        ` < > - |
        ! * / = &
        ~ + [ ] %
-             X _
 
                 ^ { } $ X
                 # ( ) ; "
                 @ : , . '
-                _ X
                 */
     /*
     [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
@@ -236,22 +238,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, USRNAME,
                        KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, UPDIR,
                        _______, _______
-            ),
-    */
-
-    /*
-    [NUM] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     KC_EQL,  KC_7,    KC_8,    KC_9,    KC_PLUS, KC_SLSH,
-                     KC_COLN, KC_4,    KC_5,    KC_6,    KC_MINS, KC_ASTR,
-                     KC_COMM, KC_1,    KC_2,    KC_3,    KC_DOT,  KC_BSPC,
-                     KC_0, QK_LLCK
             ),
     */
 
@@ -623,21 +609,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     /* close app */
-    case CLOSAPP:
-        {
+    case CLOSAPP: {
             if (record->event.pressed) {
                 register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
                 tap_code16(isMacOS ? KC_Q : KC_F4);
             } else
                 unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
             return false;
-        }
+    }
 
-    /*
     case BS_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
+    /*
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
