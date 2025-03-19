@@ -377,8 +377,10 @@ bool get_chordal_hold(
 
 static uint16_t get_tap_keycode(uint16_t keycode) {
   switch (keycode) {
+#ifndef NO_ACTION_TAPPING
     case QK_MOD_TAP ... QK_MOD_TAP_MAX:
       return QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+#endif
 #ifndef NO_ACTION_LAYER
     case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
       return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
@@ -413,11 +415,17 @@ uint16_t get_tap_flow(
         case BS_F:
         case BS_J:
             return 0; // disable tap flow for shift
+
+        // ctrl
         case BS_D:
         case BS_K:
+        // layer switch
+        case BS_DOT:
+        case BS_COMM:
+        // gui
         case BS_A:
         case BS_SCLN:
-            return g_tap_flow_term; // shorter timeout for ctrl/gui
+            return g_tap_flow_term;
     }
     if (!is_typing(keycode) || !is_typing(prev_keycode)) {
       return 0;

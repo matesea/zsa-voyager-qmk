@@ -1,29 +1,21 @@
 # zsa-voyager-qmk
 
-Personal ZSA voyager keyboard config
+Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0
 
-## Configuration
-* Homerow mod: GACS
-* Thumb
+## configuration
+* homerow mod: GACS
+* thumbs
     * left: enter, repeat
     * right: backspace, space
-* Layers
+* layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * SYM: symbol layer
     * FN: Fn
     * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
-* Combo:
+* combo:
     * cv = IME
-    * xc = OSL(FN)
-    * m, = CW_TOGG
-    * ,. = alternative repeat
-* Key Override/Custom Shift
-    * shift + backspace = delete
-    * both shift + backspace = shift + delete
+    * hj = OSL(FN)
+    * ,. = QK_AREP
+* custom shift
     * shift + esc = ~
-
-## Additional features
-* [Achordion](https://getreuer.info/posts/keyboards/achordion/index.html)
-* [Key Override](https://docs.qmk.fm/#/feature_key_overrides)
-* [Caps word](https://docs.qmk.fm/features/caps_word)
