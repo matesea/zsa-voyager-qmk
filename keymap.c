@@ -30,6 +30,8 @@ enum custom_keycodes {
   LBRC_B,
   LBRC_C,
   LBRC_D,
+  LBRC_F,
+  LBRC_G,
   LBRC_Q,
   LBRC_T,
 
@@ -37,6 +39,8 @@ enum custom_keycodes {
   RBRC_B,
   RBRC_C,
   RBRC_D,
+  RBRC_F,
+  RBRC_G,
   RBRC_Q,
   RBRC_T,
 
@@ -97,7 +101,7 @@ enum {
     BASE = 0,
     SYM,
     NAV,
-    EXT,
+    // EXT,
     FN,
     BAK,
     FWD,
@@ -109,7 +113,7 @@ enum {
 #define BS_D      LCTL_T(KC_D)
 #define BS_F      LSFT_T(KC_F)
 
-#define BS_Z      LT(EXT, KC_Z)
+#define BS_Z      LT(TMUX, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
 #define BS_V      LT(SYM, KC_V)
@@ -122,17 +126,17 @@ enum {
 #define BS_M      KC_M
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
-#define BS_SLSH   KC_SLSH
+#define BS_SLSH   LT(TMUX, KC_SLSH)
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
 #define BS_BSPC   KC_BSPC
 #define BS_REP    QK_REP
 
-#define BS_QUOT   LT(TMUX, KC_QUOT)
+#define BS_QUOT   KC_QUOT
 #define BS_CW     CW_TOGG
 #define BS_BSLS   KC_BSLS
-#define BS_UNDS   LT(TMUX, KC_UNDS)
+#define BS_UNDS   KC_UNDS
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -176,6 +180,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, _______
             ),
 
+    /*
      [EXT] = LAYOUT_LR(  // Mouse and extras.
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -189,6 +194,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
+    */
 
     /* my simplied right-handed symbol layer
 
@@ -272,7 +278,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BAK] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, LBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, LBRC_T,
-            _______, LBRC_A,  XXXXXXX, LBRC_D,  XXXXXXX, XXXXXXX,
+            _______, LBRC_A,  XXXXXXX, LBRC_D,  LBRC_F,  LBRC_G,
             _______, XXXXXXX, TMUX_P,  LBRC_C,  XXXXXXX, LBRC_B,
                                                 _______, _______,
 
@@ -286,7 +292,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [FWD] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
-            _______, RBRC_A,  XXXXXXX, RBRC_D,  XXXXXXX, XXXXXXX,
+            _______, RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
                                                 _______, _______,
 
@@ -332,9 +338,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
-    // case BS_DOT:
-    // case BS_REP:
-    // case BS_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -371,6 +374,56 @@ bool get_chordal_hold(
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
+
+static uint16_t get_tap_keycode(uint16_t keycode) {
+  switch (keycode) {
+    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+      return QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+#ifndef NO_ACTION_LAYER
+    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+      return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+#endif  // NO_ACTION_LAYER
+  }
+  return keycode;
+}
+static bool is_typing(uint16_t keycode) {
+  switch (get_tap_keycode(keycode)) {
+    case KC_SPC:
+    case KC_A ... KC_Z:
+    case KC_1 ... KC_0:
+    case KC_DOT:
+    case KC_COMM:
+    case KC_SCLN:
+    case KC_SLSH:
+    case KC_MINS:
+    case KC_UNDS:
+    case KC_EQL:
+    case KC_PLUS:
+    case KC_TILD:
+    case KC_QUOT:
+    case KC_BSLS:
+      return true;
+  }
+  return false;
+}
+
+uint16_t get_tap_flow(
+    uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
+    switch (keycode) {
+        case BS_F:
+        case BS_J:
+            return 0; // disable tap flow for shift
+        case BS_D:
+        case BS_K:
+        case BS_A:
+        case BS_SCLN:
+            return g_tap_flow_term; // shorter timeout for ctrl/gui
+    }
+    if (!is_typing(keycode) || !is_typing(prev_keycode)) {
+      return 0;
+    }
+    return g_tap_flow_term + 20;
+}
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -436,6 +489,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case LBRC_B: return RBRC_B;
             case LBRC_C: return RBRC_C;
             case LBRC_D: return RBRC_D;
+            case LBRC_F: return RBRC_F;
+            case LBRC_G: return RBRC_G;
             case LBRC_Q: return RBRC_Q;
             case LBRC_T: return RBRC_T;
 
@@ -443,6 +498,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             case RBRC_B: return LBRC_B;
             case RBRC_C: return LBRC_C;
             case RBRC_D: return LBRC_D;
+            case RBRC_F: return LBRC_F;
+            case RBRC_G: return LBRC_G;
             case RBRC_Q: return LBRC_Q;
             case RBRC_T: return LBRC_T;
 
@@ -486,6 +543,8 @@ static const struct keystring_t keystrings[] = {
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
     [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
+    [LBRC_F - KEYSTR_MIN]   = {"[f", TAP_CODE_DELAY},
+    [LBRC_G - KEYSTR_MIN]   = {"[g", TAP_CODE_DELAY},
     [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
     [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
 
@@ -493,6 +552,8 @@ static const struct keystring_t keystrings[] = {
     [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
     [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
     [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
+    [RBRC_F - KEYSTR_MIN]   = {"]f", TAP_CODE_DELAY},
+    [RBRC_G - KEYSTR_MIN]   = {"]g", TAP_CODE_DELAY},
     [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
     [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
 
@@ -618,11 +679,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
     }
 
+    /*
     case BS_UNDS: {
         static bool registered = false;
         return process_shifted_tap(keycode, record, &registered);
     }
-    /*
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
