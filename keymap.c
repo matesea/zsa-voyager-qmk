@@ -22,8 +22,8 @@ enum custom_keycodes {
   CLOSTAB,
 
   KEYSTR_MIN,
-  UPDIR = KEYSTR_MIN,    // input ../ per press
-  USRNAME,  // input username
+  UPDIR = KEYSTR_MIN, // input ../ per press
+  USRNAME, // input username
 
   /* vim navigation */
   LBRC_A,
@@ -53,7 +53,7 @@ enum custom_keycodes {
   TMUX_P,    // C-A p, prev window
   TMUX_SLSH, // C-A /, search backward
   TMUX_SCLN, // C-A ;, last pane
-  TMUX_QUES,  // C-A ?, search backward with tmux plugin tmux-fuzzback
+  TMUX_QUES, // C-A ?, search backward with tmux plugin tmux-fuzzback
   TMUX_W,    // C-A w, window preview
   TMUX_N,    // C-A n, next window
   TMUX_S,    // C-A s, show all sessions
@@ -76,7 +76,7 @@ enum custom_keycodes {
   TMUX_9,   // C-A 9, select window
   TMUX_0,   // C-A 0, select window
 
-  TMUX_SPC, // C-A space, next layout
+  TMUX_SPC,  // C-A space, next layout
   TMUX_BSPC, // C-A backspace, previous layout
 
   TMUX_ML,   // C-A M-left, resize
@@ -86,8 +86,8 @@ enum custom_keycodes {
 
   TMUX_LBRC, // C-A [, enter copy mode
   TMUX_RBRC, // C-A ], paste
-  TMUX_LCBR,   // C-A {, swap pane
-  TMUX_RCBR,   // C-A }, swap pane
+  TMUX_LCBR, // C-A {, swap pane
+  TMUX_RCBR, // C-A }, swap pane
 
   KEYSTR_MAX = TMUX_RCBR,
 };
@@ -222,6 +222,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        _______, _______
             ),
 
+    /* simplied left-handed symbol layer
+
+       ^$ vim navigation, jump to start/end of the current line
+       *# vim navigation, search behind/ahead for word under cursor
+       :% enter vim command mode, % for whole buffer
+       @: repeat last command in vim command mode
+
+                    X X
+              X * { } #
+              ` ^ ( ) $
+              @ % [ ] :
+    */
+    /*
+    [SYM] = LAYOUT_LR(
+              _______, XXXXXXX, XXXXXXX, ARROW,   UPDIR,   USRNAME,
+              _______, KC_GRV,  KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
+              _______, KC_TILD, KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
+              _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
+                                                  _______, _______,
+
+                       _______, _______, _______, _______, _______, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       _______, _______
+            ),
+    */
+
     /* getreuer's symbol layer
        ` < > - |
        ! * / = &
@@ -355,19 +383,19 @@ void keyboard_post_init_user(void) {
 #ifdef CHORDAL_HOLD
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
   LAYOUT_LR(
-  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-  'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
-                                               '*'    , '*'    ,
+        'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+        'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+        'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+        'L'    , 'L'    , 'L'    , 'L'    , 'L'    , 'L'    ,
+                                            '*'    , '*'    ,
 
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
-                    'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
-           '*'    , '*'
+                 'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                 'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                 'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                 'R'    , 'R'    , 'R'    , 'R'    , 'R'    , 'R'    ,
+                 '*'    , '*'
 );
-// Callback for Chordal Hold (https://github.com/qmk/qmk_firmware/pull/24560)
+
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
@@ -375,6 +403,7 @@ bool get_chordal_hold(
 }
 #endif  // CHORDAL_HOLD
 
+#ifdef COMMUNITY_MODULE_TAP_FLOW_ENABLE
 static uint16_t get_tap_keycode(uint16_t keycode) {
   switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -388,50 +417,43 @@ static uint16_t get_tap_keycode(uint16_t keycode) {
   }
   return keycode;
 }
+
 static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
     case KC_SPC:
     case KC_A ... KC_Z:
-    case KC_1 ... KC_0:
     case KC_DOT:
     case KC_COMM:
     case KC_SCLN:
     case KC_SLSH:
-    case KC_MINS:
     case KC_UNDS:
-    case KC_EQL:
-    case KC_PLUS:
-    case KC_TILD:
-    case KC_QUOT:
-    case KC_BSLS:
       return true;
   }
   return false;
 }
 
-uint16_t get_tap_flow(
-    uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
-    switch (keycode) {
-        case BS_F:
-        case BS_J:
-            return 0; // disable tap flow for shift
+uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
+    if (is_typing(prev_keycode)) {
+        switch (keycode) {
+            // ctrl
+            case BS_D:
+            case BS_K:
+            // gui
+            case BS_A:
+            case BS_SCLN:
+                return g_tap_flow_term;
 
-        // ctrl
-        case BS_D:
-        case BS_K:
-        // layer switch
-        case BS_DOT:
-        case BS_COMM:
-        // gui
-        case BS_A:
-        case BS_SCLN:
-            return g_tap_flow_term;
+            case BS_L:
+            case BS_S:
+            case BS_Z:
+            case BS_SLSH:
+            case BS_V:
+                return g_tap_flow_term + 40;
+        }
     }
-    if (!is_typing(keycode) || !is_typing(prev_keycode)) {
-      return 0;
-    }
-    return g_tap_flow_term + 20;
+    return 0;
 }
+#endif
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -679,12 +701,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     /* close app */
     case CLOSAPP: {
-            if (record->event.pressed) {
-                register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-                tap_code16(isMacOS ? KC_Q : KC_F4);
-            } else
-                unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-            return false;
+        if (record->event.pressed) {
+            register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+            tap_code16(isMacOS ? KC_Q : KC_F4);
+        } else
+            unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+        return false;
     }
 
     /*
