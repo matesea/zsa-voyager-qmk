@@ -116,7 +116,7 @@ enum {
 #define BS_Z      LT(TMUX, KC_Z)
 #define BS_X      KC_X
 #define BS_C      KC_C
-#define BS_V      LT(SYM, KC_V)
+#define BS_V      KC_V
 
 #define BS_J      RSFT_T(KC_J)
 #define BS_K      RCTL_T(KC_K)
@@ -130,7 +130,7 @@ enum {
 
 #define BS_ENT    LT(NAV, KC_ENT)
 #define BS_SPC    KC_SPC
-#define BS_BSPC   KC_BSPC
+#define BS_BSPC   LT(SYM, KC_BSPC)
 #define BS_REP    QK_REP
 
 #define BS_QUOT   KC_QUOT
@@ -176,7 +176,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     SELLINE, SELWBAK, SELWORD, SELALL,  KC_APP,  KC_SCRL,
+                     SELLINE, SELWBAK, SELWORD, KC_ENT,  KC_APP,  KC_SCRL,
                      _______, _______
             ),
 
@@ -208,6 +208,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 ^ ( ) $ ; ~
                 : [ ] % @ ENT
                 */
+    /*
     [SYM] = LAYOUT_LR(
               _______, _______, _______, _______, _______, _______,
               _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -221,6 +222,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_ENT,
                        _______, _______
             ),
+    */
 
     /* simplied left-handed symbol layer
 
@@ -234,21 +236,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               ` ^ ( ) $
               @ % [ ] :
     */
-    /*
     [SYM] = LAYOUT_LR(
-              _______, XXXXXXX, XXXXXXX, ARROW,   UPDIR,   USRNAME,
-              _______, KC_GRV,  KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
-              _______, KC_TILD, KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
+              _______, _______, _______, _______, _______, _______,
+              _______, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
+              KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
               _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
                                                   _______, _______,
 
                        _______, _______, _______, _______, _______, _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       USRNAME, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       UPDIR,   KC_SPC,  KC_BSPC, KC_ENT,  KC_SCLN, _______,
+                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_SLSH, _______,
                        _______, _______
             ),
-    */
 
     /* getreuer's symbol layer
        ` < > - |
@@ -275,6 +275,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
     */
 
+    /*
     [FN] = LAYOUT_LR(
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
             _______, KC_F12,  KC_F9,   KC_F8,   KC_F7,   UG_TOGG,
@@ -286,6 +287,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     _______, _______
+            ),
+    */
+
+    [FN] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                                _______, _______,
+
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
                      _______, _______
             ),
 
@@ -333,14 +349,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
-const uint16_t PROGMEM cv[] = {BS_C, BS_V, COMBO_END};
-const uint16_t PROGMEM mc[] = {BS_M, BS_COMM, COMBO_END};
-const uint16_t PROGMEM hj[] = {KC_H, BS_J, COMBO_END};
+const uint16_t PROGMEM ime[] = {BS_C, BS_V, COMBO_END};
+const uint16_t PROGMEM arep[] = {BS_M, BS_COMM, COMBO_END};
+const uint16_t PROGMEM fn[] = {KC_G, BS_F, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(cv, IME),
-    COMBO(mc, QK_AREP),
-    COMBO(hj, OSL(FN)),
+    COMBO(ime, IME),
+    COMBO(arep, QK_AREP),
+    COMBO(fn, OSL(FN)),
 };
 #endif
 
@@ -365,7 +381,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_J:
     case BS_K:
     case BS_L:
-    case BS_ENT:
+    // case BS_ENT:
+    // case BS_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -403,7 +420,6 @@ bool get_chordal_hold(
 }
 #endif  // CHORDAL_HOLD
 
-#ifdef COMMUNITY_MODULE_TAP_FLOW_ENABLE
 static uint16_t get_tap_keycode(uint16_t keycode) {
   switch (keycode) {
 #ifndef NO_ACTION_TAPPING
@@ -418,6 +434,7 @@ static uint16_t get_tap_keycode(uint16_t keycode) {
   return keycode;
 }
 
+#ifdef COMMUNITY_MODULE_TAP_FLOW_ENABLE
 static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
     case KC_SPC:
@@ -447,7 +464,6 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
             case BS_S:
             case BS_Z:
             case BS_SLSH:
-            case BS_V:
                 return g_tap_flow_term + 40;
         }
     }
@@ -464,18 +480,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
     */
 
     // Unpack tapping keycode for tap-hold keys.
-    switch (keycode) {
-#ifndef NO_ACTION_TAPPING
-        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-          keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-          break;
-#ifndef NO_ACTION_LAYER
-        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-          keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-          break;
-#endif  // NO_ACTION_LAYER
-#endif  // NO_ACTION_TAPPING
-    }
+    keycode = get_tap_keycode(keycode);
 
     // Forget Shift on most letters when Shift or AltGr are the only mods. Some
     // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
@@ -635,19 +640,7 @@ static const struct keystring_t keystrings[] = {
 // process keycode with shift when tapped
 bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
     if (record->tap.count) {
-        switch (keycode) {
-#ifndef NO_ACTION_TAPPING
-            case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-              keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-              break;
-#ifndef NO_ACTION_LAYER
-            case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-              keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-              break;
-#endif  // NO_ACTION_LAYER
-#endif  // NO_ACTION_TAPPING
-        }
-        keycode = S(keycode);
+        keycode = S(get_tap_keycode(keycode));
 
         if (record->event.pressed) {
             process_caps_word(keycode, record);
