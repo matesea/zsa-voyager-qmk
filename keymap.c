@@ -101,7 +101,6 @@ enum {
     BASE = 0,
     SYM,
     NAV,
-    // EXT,
     FN,
     BAK,
     FWD,
@@ -177,24 +176,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWORD, KC_ENT,  KC_APP,  KC_SCRL,
-                     _______, _______
+                     KC_BSPC, _______
             ),
-
-    /*
-     [EXT] = LAYOUT_LR(  // Mouse and extras.
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, OM_SLOW, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
-                     OM_W_D , OM_L   , OM_D   , OM_R   , OM_SLOW, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, _______
-            ),
-    */
 
     /* my simplied right-handed symbol layer
 
@@ -231,9 +214,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-                    X X
               X * { } #
-              ` ^ ( ) $
+            ~ ` ^ ( ) $
               @ % [ ] :
     */
     [SYM] = LAYOUT_LR(
@@ -241,7 +223,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               _______, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
               _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
-                                                  _______, _______,
+                                                  _______, MO(FN),
 
                        _______, _______, _______, _______, _______, _______,
                        USRNAME, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
@@ -351,12 +333,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM ime[] = {BS_C, BS_V, COMBO_END};
 const uint16_t PROGMEM arep[] = {BS_M, BS_COMM, COMBO_END};
-const uint16_t PROGMEM fn[] = {KC_G, BS_F, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(ime, IME),
     COMBO(arep, QK_AREP),
-    COMBO(fn, OSL(FN)),
 };
 #endif
 
@@ -381,8 +361,8 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_J:
     case BS_K:
     case BS_L:
-    // case BS_ENT:
-    // case BS_BSPC:
+    case BS_ENT:
+    case BS_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
@@ -455,10 +435,11 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
             // ctrl
             case BS_D:
             case BS_K:
+                return g_tap_flow_term;
             // gui
             case BS_A:
             case BS_SCLN:
-                return g_tap_flow_term;
+                return g_tap_flow_term + 20;
 
             case BS_L:
             case BS_S:
