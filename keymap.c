@@ -128,14 +128,8 @@ enum {
 #define BS_SLSH   LT(TMUX, KC_SLSH)
 
 #define BS_ENT    LT(NAV, KC_ENT)
-#define BS_SPC    KC_SPC
 #define BS_BSPC   LT(SYM, KC_BSPC)
 #define BS_REP    QK_REP
-
-#define BS_QUOT   KC_QUOT
-#define BS_CW     CW_TOGG
-#define BS_BSLS   KC_BSLS
-#define BS_UNDS   KC_UNDS
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -154,15 +148,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
             KC_ESC,  KC_1,   KC_2,   KC_3,   KC_4,   KC_5,
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
-            BS_UNDS, BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
-            BS_CW,   BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
+            KC_UNDS, BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
+            CW_TOGG, BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
                                              BS_ENT, BS_REP,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
-                      KC_H,   BS_J,   BS_K,    BS_L,   BS_SCLN, BS_QUOT,
-                      KC_N,   BS_M,   BS_COMM, BS_DOT, BS_SLSH, BS_BSLS,
-                      BS_BSPC, BS_SPC
+                      KC_H,   BS_J,   BS_K,    BS_L,   BS_SCLN, KC_QUOT,
+                      KC_N,   BS_M,   BS_COMM, BS_DOT, BS_SLSH, KC_BSLS,
+                      BS_BSPC, KC_SPC
             ),
 
     [NAV] = LAYOUT_LR(
@@ -178,34 +172,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      SELLINE, SELWBAK, SELWORD, KC_ENT,  KC_APP,  KC_SCRL,
                      KC_BSPC, _______
             ),
-
-    /* my simplied right-handed symbol layer
-
-       ^$ vim navigation, jump to start/end of the current line
-       *# vim navigation, search behind/ahead for word under cursor
-       :% enter vim command mode, % for whole buffer
-       @: repeat last command in vim command mode
-
-                X X
-                * { } # X `
-                ^ ( ) $ ; ~
-                : [ ] % @ ENT
-                */
-    /*
-    [SYM] = LAYOUT_LR(
-              _______, _______, _______, _______, _______, _______,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                  _______, _______,
-
-                       USRNAME, UPDIR,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                       KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH, ARROW,   KC_GRV,
-                       KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,  KC_SCLN, KC_TILD,
-                       KC_COLN, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_ENT,
-                       _______, _______
-            ),
-    */
 
     /* simplied left-handed symbol layer
 
@@ -231,47 +197,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_SLSH, _______,
                        _______, _______
             ),
-
-    /* getreuer's symbol layer
-       ` < > - |
-       ! * / = &
-       ~ + [ ] %
-
-                ^ { } $ X
-                # ( ) ; "
-                @ : , . '
-                */
-    /*
-    [SYM] = LAYOUT_LR(  // getreuer's symbol layer.
-              _______, _______, _______, _______, _______, _______,
-              XXXXXXX, KC_GRV,  KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
-              XXXXXXX, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
-              XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
-                                                  _______, _______,
-
-                       _______, _______,  _______, _______, _______, _______,
-                       KC_CIRC, KC_LCBR,  KC_RCBR, KC_DLR,  ARROW,   XXXXXXX,
-                       KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, USRNAME,
-                       KC_AT,   KC_COLN , KC_COMM, KC_DOT,  KC_QUOT, UPDIR,
-                       _______, _______
-            ),
-    */
-
-    /*
-    [FN] = LAYOUT_LR(
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-            _______, KC_F12,  KC_F9,   KC_F8,   KC_F7,   UG_TOGG,
-            _______, KC_F11,  KC_F6,   KC_F5,   KC_F4,   MAC_TOG,
-            _______, KC_F10,  KC_F3,   KC_F2,   KC_F1,   XXXXXXX,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, _______
-            ),
-    */
 
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
@@ -419,11 +344,13 @@ static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
     case KC_SPC:
     case KC_A ... KC_Z:
+    case KC_1 ... KC_0:
     case KC_DOT:
     case KC_COMM:
     case KC_SCLN:
     case KC_SLSH:
     case KC_UNDS:
+    case KC_QUOT: case KC_DQUO:
       return true;
   }
   return false;
@@ -439,8 +366,8 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
             // gui
             case BS_A:
             case BS_SCLN:
-                return g_tap_flow_term + 20;
-
+                if (isMacOS)
+                    return g_tap_flow_term;
             case BS_L:
             case BS_S:
             case BS_Z:
@@ -618,26 +545,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
-// process keycode with shift when tapped
-bool process_shifted_tap(uint16_t keycode, keyrecord_t *record, bool *registered) {
-    if (record->tap.count) {
-        keycode = S(get_tap_keycode(keycode));
-
-        if (record->event.pressed) {
-            process_caps_word(keycode, record);
-            if (*registered)
-                unregister_code16(keycode);
-            register_code16(keycode);
-            *registered = true;
-        } else {
-            unregister_code16(keycode);
-            *registered = false;
-        }
-        return false;
-    }
-    return true;
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -684,22 +591,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     /*
-    case BS_UNDS: {
-        static bool registered = false;
-        return process_shifted_tap(keycode, record, &registered);
-    }
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
           return false;
       }
       break;
-    case BS_CW:
-      if (record->tap.count && record->event.pressed) {
-          caps_word_toggle();
-          return false;
-      }
-      return true;
     */
   }
 
