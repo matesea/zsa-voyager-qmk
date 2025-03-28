@@ -208,7 +208,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
-                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  XXXXXXX,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  DB_TOGG,
                      _______, _______
             ),
 
@@ -349,8 +349,11 @@ static bool is_typing(uint16_t keycode) {
     case KC_COMM:
     case KC_SCLN:
     case KC_SLSH:
-    case KC_UNDS:
-    case KC_QUOT: case KC_DQUO:
+    case KC_MINS: case KC_UNDS:
+    case KC_QUOT:
+    case KC_BSLS:
+    case BS_BSPC:
+    case CW_TOGG:
       return true;
   }
   return false;
@@ -401,6 +404,10 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
           *remembered_mods &= ~MOD_MASK_SHIFT;
         }
         break;
+
+      case KC_TAB: // only remember shift when tab pressed
+        *remembered_mods &= MOD_MASK_SHIFT;
+        break;
     }
 
     return true;
@@ -408,19 +415,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
 
 #ifndef NO_ALT_REPEAT_KEY
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    if (mods == MOD_BIT_RCTRL || mods == MOD_BIT_LCTRL) {
-        switch (keycode) {
-          case KC_TAB: return C(S(KC_TAB));
-        }
-    } else if (mods == MOD_BIT_LGUI || mods == MOD_BIT_RGUI) {
-        switch (keycode) {
-          case KC_TAB: return G(S(KC_TAB));
-        }
-    } else if (mods == MOD_BIT_LALT) {
-        switch (keycode) {
-          case KC_TAB: return A(S(KC_TAB));
-        }
-    } else if ((mods & ~MOD_MASK_SHIFT) == 0) {
+    if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
             case KC_N:
                 if ((mods & MOD_MASK_SHIFT) == 0)
@@ -475,7 +470,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 }
 #endif
 #endif
-
 
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
@@ -570,8 +564,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     /* switch IME */
     case IME: {
-        static int8_t hold_mod;
-        hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
+        const int8_t hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
         if (record->event.pressed) {
             register_mods(hold_mod);
             tap_code16(KC_SPC);

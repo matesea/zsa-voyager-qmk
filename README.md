@@ -3,6 +3,7 @@
 Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0
 
 ## configuration
+* qwerty keyboard layout
 * homerow mod: GACS
 * thumbs
     * left: enter, repeat
@@ -10,12 +11,11 @@ Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0
 * layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * SYM: symbol layer
-    * FN: Fn
-    * FORWARD, BACKWARD: prefix keystroke with [ or ] for vim, or other directional navigation
+    * FN: Function keys
+    * FWD, BAK: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
 * combo:
     * cv = IME
-    * hj = OSL(FN)
     * ,. = QK_AREP
 * custom shift
     * shift + esc = ~

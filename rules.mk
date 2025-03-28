@@ -29,7 +29,7 @@ UCIS_ENABLE = no
 UNICODE_COMMON = no
 OS_DETECTION_ENABLE = yes
 
-# import from getreuer module
+# community modules
 CUSTOM_SHIFT_KEYS_ENABLE ?= yes
 SELECT_WORD_ENABLE ?= yes
 TAP_FLOW ?= yes
