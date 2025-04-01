@@ -6,7 +6,8 @@
 #define ML_SAFE_RANGE SAFE_RANGE
 
 enum custom_keycodes {
-  ARROW = ML_SAFE_RANGE,    // -> => <-> <=>
+  ARROW = ML_SAFE_RANGE,    // -> =>
+  DARROW,   // <-> <=>
   IME,      // switch ime
   CLOSAPP,  // close app
   MAC_TOG,  // toggle mac os
@@ -131,6 +132,11 @@ enum {
 #define BS_BSPC   LT(SYM, KC_BSPC)
 #define BS_REP    QK_REP
 
+#define SYM_SPC   LSFT_T(KC_SPC)
+#define SYM_BSPC  LCTL_T(KC_BSPC)
+#define SYM_ENT   LALT_T(KC_ENT)
+#define SYM_SCLN  LGUI_T(KC_SCLN)
+
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
@@ -185,16 +191,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               @ % [ ] :
     */
     [SYM] = LAYOUT_LR(
-              _______, _______, _______, _______, _______, _______,
+              _______, DARROW,  XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
               _______, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
               _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
                                                   _______, MO(FN),
 
-                       _______, _______, _______, _______, _______, _______,
-                       USRNAME, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                       UPDIR,   KC_SPC,  KC_BSPC, KC_ENT,  KC_SCLN, _______,
-                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_SLSH, _______,
+                       _______, _______, _______,  _______, _______,  _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,  _______,
+                       XXXXXXX, SYM_SPC, SYM_BSPC, SYM_ENT, SYM_SCLN, _______,
+                       XXXXXXX, XXXXXXX, KC_COMM,  KC_DOT,  KC_SLSH,  _______,
                        _______, _______
             ),
 
@@ -548,7 +554,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif  // NO_ACTION_ONESHOT
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
-  const bool alt = all_mods & MOD_BIT(KC_LALT);
   const uint8_t layer = read_source_layers_cache(record->event.key);
 
   // WA to address unintended shift
@@ -600,14 +605,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         case ARROW:
-#ifndef NO_ACTION_ONESHOT
-            del_oneshot_mods(MOD_MASK_SHIFT);
-#endif  // NO_ACTION_ONESHOT
-            unregister_mods(MOD_MASK_SA);
-            if (shift_mods)
-                SEND_STRING_DELAY(alt ? "<=>" : "=>", TAP_CODE_DELAY);
-            else
-                SEND_STRING_DELAY(alt ? "<->" : "->", TAP_CODE_DELAY);
+            clear_mods();
+            SEND_STRING_DELAY(shift_mods? "=>" : "->", TAP_CODE_DELAY);
+            set_mods(mods);
+            return false;
+
+        case DARROW:
+            clear_mods();
+            SEND_STRING_DELAY(shift_mods? "<=>" : "<->", TAP_CODE_DELAY);
             set_mods(mods);
             return false;
 
