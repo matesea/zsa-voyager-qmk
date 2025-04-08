@@ -191,10 +191,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               @ % [ ] :
     */
     [SYM] = LAYOUT_LR(
-              _______, DARROW,  XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
-              _______, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
+              XXXXXXX, DARROW,  XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
+              XXXXXXX, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
-              _______, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
+              XXXXXXX, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
                                                   _______, MO(FN),
 
                        _______, _______, _______,  _______, _______,  _______,
@@ -211,7 +211,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     TFLOW_P, TFLOW_D, TFLOW_U, XXXXXXX, XXXXXXX, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOG,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  DB_TOGG,
@@ -294,10 +294,11 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_L:
     case BS_ENT:
     case BS_BSPC:
+    case SYM_SPC:
+    case SYM_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
-    default:
-      return 0;  // Otherwise, force hold and disable key repeating.
   }
+  return 0;
 }
 #endif
 
@@ -377,11 +378,12 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
             case BS_SCLN:
                 if (isMacOS)
                     return g_tap_flow_term;
+                return g_tap_flow_term + 45;
             case BS_L:
             case BS_S:
             case BS_Z:
             case BS_SLSH:
-                return g_tap_flow_term + 40;
+                return g_tap_flow_term + 45;
         }
     }
     return 0;
@@ -391,7 +393,7 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-    /*
+    /* // do not remember repeat key
     if (keycode == BS_REP)
         return false;
     */
@@ -403,9 +405,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
     // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
     // NN, SS, ZZ are excluded
     switch (keycode) {
-      case KC_A ... KC_M:
-      case KC_O ... KC_R:
-      case KC_T ... KC_Y:
+      case KC_A ... KC_Z:
         if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
           *remembered_mods &= ~MOD_MASK_SHIFT;
         }
@@ -423,11 +423,6 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
-            case KC_N:
-                if ((mods & MOD_MASK_SHIFT) == 0)
-                    return S(KC_N);
-                return KC_N;
-
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
             case LBRC_B: return RBRC_B;

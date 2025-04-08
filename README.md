@@ -1,6 +1,6 @@
 # zsa-voyager-qmk
 
-Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0
+Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0 with community modules
 
 ## configuration
 * qwerty keyboard layout
