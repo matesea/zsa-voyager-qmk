@@ -347,7 +347,7 @@ static uint16_t get_tap_keycode(uint16_t keycode) {
 }
 
 #ifdef COMMUNITY_MODULE_TAP_FLOW_ENABLE
-static bool is_typing(uint16_t keycode) {
+bool is_tap_flow_key(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
     case KC_SPC:
     case KC_A ... KC_Z:
@@ -359,7 +359,7 @@ static bool is_typing(uint16_t keycode) {
     case KC_MINS: case KC_UNDS:
     case KC_QUOT:
     case KC_BSLS:
-    case BS_BSPC:
+    case KC_BSPC:
     case CW_TOGG:
       return true;
   }
@@ -367,7 +367,7 @@ static bool is_typing(uint16_t keycode) {
 }
 
 uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
-    if (is_typing(prev_keycode)) {
+    if (is_tap_flow_key(prev_keycode)) {
         switch (keycode) {
             // ctrl
             case BS_D:
@@ -378,7 +378,6 @@ uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keyco
             case BS_SCLN:
                 if (isMacOS)
                     return g_tap_flow_term;
-                return g_tap_flow_term + 45;
             case BS_L:
             case BS_S:
             case BS_Z:
@@ -540,6 +539,30 @@ static const struct keystring_t keystrings[] = {
     [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
+#ifndef NO_DEBUG
+#pragma message "dlog_record enabled."
+#include "print.h"
+
+static void dlog_record(uint16_t keycode, keyrecord_t* record) {
+  if (!debug_enable) { return; }
+  uint8_t layer = read_source_layers_cache(record->event.key);
+  bool is_tap_hold = IS_QK_MOD_TAP(keycode) || IS_QK_LAYER_TAP(keycode);
+  xprintf("L%-2u ", layer);  // Log the layer.
+  if (IS_COMBOEVENT(record->event)) {  // Combos don't have a position.
+    xprintf("combo   ");
+  } else {  // Log the "(row,col)" position.
+    xprintf("(%2u,%2u) ", record->event.key.row, record->event.key.col);
+  }
+  xprintf("%-4s %-7s %s\n",  // "(tap|hold) (press|release) <keycode>".
+      is_tap_hold ? (record->tap.count ? "tap" : "hold") : "",
+      record->event.pressed ? "press" : "release",
+      get_keycode_string(keycode));
+}
+#else
+#pragma message "dlog_record disabled."
+#define dlog_record(keycode, record)
+#endif  // NO_DEBUG
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -550,6 +573,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   );
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t layer = read_source_layers_cache(record->event.key);
+
+  dlog_record(keycode, record);
 
   // WA to address unintended shift
   if (record->event.pressed) {
