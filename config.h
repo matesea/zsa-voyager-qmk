@@ -55,7 +55,4 @@
 // #define OS_DETECTION_SINGLE_REPORT
 // #endif
 
-#define TAP_FLOW_TERM 75
-#ifdef CONSOLE_ENABLE
-#define TAP_FLOW_DEBUG
-#endif
+#define FLOW_TAP_TERM 60

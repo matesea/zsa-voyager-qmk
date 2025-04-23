@@ -331,22 +331,8 @@ bool get_chordal_hold(
 }
 #endif  // CHORDAL_HOLD
 
-static uint16_t get_tap_keycode(uint16_t keycode) {
-  switch (keycode) {
-#ifndef NO_ACTION_TAPPING
-    case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-      return QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-#endif
-#ifndef NO_ACTION_LAYER
-    case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-      return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-#endif  // NO_ACTION_LAYER
-  }
-  return keycode;
-}
-
-#ifdef COMMUNITY_MODULE_TAP_FLOW_ENABLE
-bool is_tap_flow_key(uint16_t keycode) {
+#ifdef FLOW_TAP_TERM
+static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
     case KC_SPC:
     case KC_A ... KC_Z:
@@ -359,29 +345,30 @@ bool is_tap_flow_key(uint16_t keycode) {
     case KC_QUOT:
     case KC_BSLS:
     case KC_BSPC:
-    case CW_TOGG: case SWIME:
+    case SWIME:
       return true;
   }
   return false;
 }
 
-uint16_t get_tap_flow(uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
-    if (is_tap_flow_key(prev_keycode)) {
+uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
+                           uint16_t prev_keycode) {
+    if (is_typing(prev_keycode)) {
         switch (keycode) {
             // ctrl
             case BS_D:
             case BS_K:
-                return g_tap_flow_term;
+                return FLOW_TAP_TERM;
             // gui
             case BS_A:
             case BS_SCLN:
                 if (isMacOS)
-                    return g_tap_flow_term;
+                    return FLOW_TAP_TERM + 20;
             case BS_L:
             case BS_S:
             case BS_Z:
             case BS_SLSH:
-                return g_tap_flow_term + 45;
+                return FLOW_TAP_TERM + 60;
         }
     }
     return 0;
