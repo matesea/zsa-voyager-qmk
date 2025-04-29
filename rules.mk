@@ -1,6 +1,9 @@
 # Set any rules.mk overrides for your specific keymap here.
 # See rules at https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
-CONSOLE_ENABLE = no
+
+CONSOLE_ENABLE ?= no
+KEYCODE_STRING_ENABLE ?= no
+
 COMMAND_ENABLE = no
 MOUSEKEY_ENABLE = no
 SPACE_CADET_ENABLE = no
@@ -32,4 +35,3 @@ OS_DETECTION_ENABLE = yes
 # community modules
 CUSTOM_SHIFT_KEYS_ENABLE ?= yes
 SELECT_WORD_ENABLE ?= yes
-TAP_FLOW ?= yes

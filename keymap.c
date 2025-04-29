@@ -26,14 +26,14 @@ enum custom_keycodes {
   USRNAME, // input username
 
   /* vim navigation */
-  LBRC_A,
-  LBRC_B,
-  LBRC_C,
-  LBRC_D,
-  LBRC_F,
-  LBRC_G,
-  LBRC_Q,
-  LBRC_T,
+  LBRC_A, // previous functon with aerial.nvim
+  LBRC_B, // previous buffer
+  LBRC_C, // previous hunk
+  LBRC_D, // previous diagnostics
+  LBRC_F, // jump to highlight under cursor backward
+  LBRC_G, // jump to any highlight backward
+  LBRC_Q, // previous item in quickfix
+  LBRC_T, // previous tab
 
   RBRC_A,
   RBRC_B,
@@ -358,17 +358,19 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             // ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM;
+                return FLOW_TAP_TERM - 40;
             // gui
             case BS_A:
             case BS_SCLN:
                 if (isMacOS)
-                    return FLOW_TAP_TERM + 20;
+                    return FLOW_TAP_TERM - 40;
             case BS_L:
             case BS_S:
             case BS_Z:
             case BS_SLSH:
-                return FLOW_TAP_TERM + 60;
+            case BS_COMM:
+            case BS_DOT:
+                return FLOW_TAP_TERM;
         }
     }
     return 0;
