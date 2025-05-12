@@ -277,7 +277,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_J:
             return TAPPING_TERM;
     }
-    return TAPPING_TERM + 170;
+    return TAPPING_TERM + 180;
 }
 #endif
 
@@ -334,19 +334,16 @@ bool get_chordal_hold(
 #ifdef FLOW_TAP_TERM
 static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
-    case KC_SPC:
-    case KC_A ... KC_Z:
-    case KC_1 ... KC_0:
-    case KC_DOT:
-    case KC_COMM:
-    case KC_SCLN:
-    case KC_SLSH:
-    case KC_MINS: case KC_UNDS:
-    case KC_QUOT:
-    case KC_BSLS:
-    case KC_BSPC:
-    case SWIME:
-      return true;
+      case KC_A ... KC_Z:
+      case KC_COMM:
+      case KC_DOT:
+      case KC_SCLN:
+      case KC_SLSH:
+      case KC_UNDS:
+      case KC_QUOT:
+      // thumb
+      case KC_SPC: case KC_BSPC:
+          return true;
   }
   return false;
 }
@@ -358,12 +355,12 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             // ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 40;
+                return FLOW_TAP_TERM - 25;
             // gui
             case BS_A:
             case BS_SCLN:
                 if (isMacOS)
-                    return FLOW_TAP_TERM - 40;
+                    return FLOW_TAP_TERM - 25;
             case BS_L:
             case BS_S:
             case BS_Z:
