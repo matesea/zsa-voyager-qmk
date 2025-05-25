@@ -8,18 +8,8 @@
 enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
   SWIME,      // switch ime
-  CLOSAPP,  // close app
+  CLOSAPP,  // close app, alt-f4/gui-q according to OS
   MAC_TOGG,  // toggle mac os
-
-  SELALL,
-  UNDO,
-  CUT,
-  COPY,
-  PASTE,
-  BOLD,
-  FIND,
-  NEWTAB,
-  CLOSTAB,
 
   KEYSTR_MIN,
   UPDIR = KEYSTR_MIN, // input ../ per press
@@ -136,18 +126,25 @@ enum {
 #define SYM_ENT   LALT_T(KC_ENT)
 #define SYM_SCLN  LGUI_T(KC_SCLN)
 
+#define NAV_A     LT(0, KC_A)
+#define NAV_S     LT(0, KC_S)
+#define NAV_D     LT(0, KC_D)
+#define NAV_F     LT(0, KC_F)
+
+#define OSM_SFT   OSM(MOD_LSFT)
+
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
     return isMacOS;
 }
-#endif
+#endif /* defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC) */
 #ifdef OS_DETECTION_ENABLE
 bool process_detected_host_os_user(os_variant_t os) {
     isMacOS = (os == OS_MACOS || os == OS_IOS);
     return true;
 }
-#endif
+#endif /* OS_DETECTION_ENABLE */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_LR(
@@ -165,13 +162,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            XXXXXXX, CLOSAPP, CLOSTAB, G(KC_E), G(KC_R), NEWTAB,
-            SELALL,  KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, FIND,
-            CW_TOGG, UNDO,    CUT,     COPY,    PASTE,   BOLD,
-                                                _______, _______,
+            XXXXXXX, G(KC_Z), G(KC_W), G(KC_C), G(KC_R), XXXXXXX,
+            XXXXXXX, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
+            CW_TOGG, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
+            XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+                                                XXXXXXX, _______,
 
-                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
+                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_LLCK,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWORD, KC_ENT,  KC_APP,  KC_SCRL,
@@ -190,7 +187,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               @ % [ ] :
     */
     [SYM] = LAYOUT_LR(
-              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
+              QK_LLCK, XXXXXXX, XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
               XXXXXXX, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
               XXXXXXX, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
@@ -200,7 +197,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,  _______,
                        XXXXXXX, SYM_SPC, SYM_BSPC, SYM_ENT, SYM_SCLN, _______,
                        XXXXXXX, XXXXXXX, KC_COMM,  KC_DOT,  KC_SLSH,  _______,
-                       _______, _______
+                       XXXXXXX, _______
             ),
 
     [FN] = LAYOUT_LR(
@@ -210,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOGG,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  DB_TOGG,
@@ -266,9 +263,11 @@ const uint16_t PROGMEM arep[] = {BS_M, BS_COMM, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
+#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
     COMBO(arep, QK_AREP),
+#endif /* defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY) */
 };
-#endif
+#endif /* COMBO_ENABLE */
 
 #ifdef TAPPING_TERM_PER_KEY
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
@@ -279,7 +278,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
     return TAPPING_TERM + 180;
 }
-#endif
+#endif /* TAPPING_TERM_PER_KEY */
 
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
@@ -299,14 +298,14 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
   }
   return 0;
 }
-#endif
+#endif /* QUICK_TAP_TERM_PER_KEY */
 
 #ifdef RGB_MATRIX_ENABLE
 void keyboard_post_init_user(void) {
   rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
   rgb_matrix_enable_noeeprom();
 }
-#endif
+#endif /* RGB_MATRIX_ENABLE */
 
 #ifdef CHORDAL_HOLD
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
@@ -342,7 +341,9 @@ static bool is_typing(uint16_t keycode) {
       case KC_UNDS:
       case KC_QUOT:
       // thumb
-      case KC_SPC: case KC_BSPC:
+      case KC_SPC:
+      // case OSM_SFT:
+      // case KC_BSPC:
           return true;
   }
   return false;
@@ -355,12 +356,12 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             // ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 25;
+                return FLOW_TAP_TERM - 20;
             // gui
             case BS_A:
             case BS_SCLN:
                 if (isMacOS)
-                    return FLOW_TAP_TERM - 25;
+                    return FLOW_TAP_TERM - 20;
             case BS_L:
             case BS_S:
             case BS_Z:
@@ -372,7 +373,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
     }
     return 0;
 }
-#endif
+#endif /* FLOW_TAP_TERM */
 
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
@@ -453,8 +454,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     }
     return KC_TRNS;
 }
-#endif
-#endif
+#endif /* NO_ALT_REPEAT_KEY */
+#endif /* REPEAT_KEY_ENABLE */
 
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
@@ -548,6 +549,25 @@ static void dlog_record(uint16_t keycode, keyrecord_t* record) {
 #define dlog_record(keycode, record)
 #endif  // NO_DEBUG
 
+/* customize tap/hold behavior */
+static void process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
+    if (record->tap.count) {
+        /* tap */
+        if (record->event.pressed) {
+            tap_code16_delay(tap, TAP_CODE_DELAY);
+#ifdef REPEAT_KEY_ENABLE
+            set_last_keycode(tap);
+#endif /* REPEAT_KEY_ENABLE */
+        }
+    } else if (mod) {
+        /* hold */
+        if (record->event.pressed)
+            register_mods(mod);
+        else
+            unregister_mods(mod);
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -577,6 +597,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case SWIME: {
         const int8_t hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
         if (record->event.pressed) {
+#ifdef CAPS_WORD_ENABLE
+            caps_word_off();
+#endif /* CAPS_WORD_ENABLE */
             register_mods(hold_mod);
             tap_code16(KC_SPC);
         } else
@@ -593,6 +616,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
         return false;
     }
+
+    case NAV_A:
+         process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), MOD_BIT_LGUI);
+         return false;
+    case NAV_S:
+         process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), MOD_BIT_LALT);
+        return false;
+    case NAV_D:
+         process_mod_tap(record, C(KC_D), MOD_BIT_LCTRL);
+        return false;
+    case NAV_F:
+         process_mod_tap(record, C(KC_F), MOD_BIT_LSHIFT);
+        return false;
+
+    case C(KC_T):
+    // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell
+    case C(KC_X):
+    // case C(KC_C): /* reserve ctrl-c to interrupt current input
+    case C(KC_V):
+    case C(KC_B):
+        /* press gui-<key> on MacOS */
+        if (isMacOS && layer == NAV && record->event.pressed) {
+            keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
+            tap_code16_delay(G(keycode), TAP_CODE_DELAY);
+#ifdef REPEAT_KEY_ENABLE
+            set_last_keycode(G(keycode));
+#endif /* REPEAT_KEY_ENABLE */
+            return false;
+        }
 
     /*
     case BS_REP:
@@ -619,87 +671,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     (shift_mods ?
                         "<->" :
                         "->"));
-            set_mods(mods);
-            return false;
-
-        case UNDO:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_Z)) :
-                    SS_LCTL(SS_TAP(X_Z)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case SELALL:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_A)) :
-                    SS_LCTL(SS_TAP(X_A)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case CUT:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_X)) :
-                    SS_LCTL(SS_TAP(X_X)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case COPY:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_C)) :
-                    SS_LCTL(SS_TAP(X_C)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case PASTE:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_V)) :
-                    SS_LCTL(SS_TAP(X_V)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case BOLD:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_B)) :
-                    SS_LCTL(SS_TAP(X_B)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case FIND:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_F)) :
-                    SS_LCTL(SS_TAP(X_F)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case NEWTAB:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_T)) :
-                    SS_LCTL(SS_TAP(X_T)),
-                    TAP_CODE_DELAY);
-            set_mods(mods);
-            return false;
-
-        case CLOSTAB:
-            clear_mods();
-            SEND_STRING_DELAY(isMacOS ?
-                    SS_LGUI(SS_TAP(X_W)) :
-                    SS_LCTL(SS_TAP(X_W)),
-                    TAP_CODE_DELAY);
             set_mods(mods);
             return false;
 
