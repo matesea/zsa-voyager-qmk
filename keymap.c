@@ -162,7 +162,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
-            XXXXXXX, G(KC_Z), G(KC_W), G(KC_C), G(KC_R), XXXXXXX,
+            XXXXXXX, G(KC_Z), G(KC_W), G(KC_C), G(KC_V), G(KC_R),
             XXXXXXX, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
             CW_TOGG, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
             XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
@@ -634,7 +634,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell
     case C(KC_X):
     // case C(KC_C): /* reserve ctrl-c to interrupt current input
-    case C(KC_V):
+    // case C(KC_V): /* reserve ctrl-v for vim block mode */
     case C(KC_B):
         /* press gui-<key> on MacOS */
         if (isMacOS && layer == NAV && record->event.pressed) {
