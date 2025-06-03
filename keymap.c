@@ -10,6 +10,8 @@ enum custom_keycodes {
   SWIME,      // switch ime
   CLOSAPP,  // close app, alt-f4/gui-q according to OS
   MAC_TOGG,  // toggle mac os
+  APPPREV,
+  APPNEXT,
 
   KEYSTR_MIN,
   UPDIR = KEYSTR_MIN, // input ../ per press
@@ -163,9 +165,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [NAV] = LAYOUT_LR(
             XXXXXXX, G(KC_Z), G(KC_W), G(KC_C), G(KC_V), G(KC_R),
-            XXXXXXX, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
-            CW_TOGG, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
-            XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            APPPREV, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
+            APPNEXT, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
+            CW_TOGG, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 XXXXXXX, _______,
 
                      KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_LLCK,
@@ -326,6 +328,24 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
 bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
+    switch (tap_hold_keycode) {
+        case BS_A: // one-handed gui-* shortcut
+            switch (other_keycode) {
+                 // gui+r to launch app on windows
+                case KC_R:
+                    return true;
+                 // mac os only, gui+* shortcuts
+                case KC_T:
+                case BS_F:
+                case BS_C:
+                case BS_V:
+                case KC_B:
+                    if (isMacOS)
+                        return true;
+                    break;
+            }
+            break;
+    }
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
 #endif  // CHORDAL_HOLD
@@ -356,12 +376,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             // ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 20;
+                return FLOW_TAP_TERM - 50;
             // gui
             case BS_A:
             case BS_SCLN:
-                if (isMacOS)
-                    return FLOW_TAP_TERM - 20;
             case BS_L:
             case BS_S:
             case BS_Z:
@@ -579,22 +597,41 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t ctrl_mods = all_mods & MOD_MASK_CTRL;
   const uint8_t layer = read_source_layers_cache(record->event.key);
+  static uint8_t swapp_mod = 0;
 
   dlog_record(keycode, record);
 
   // WA to address unintended shift
-  if (record->event.pressed) {
-      switch (layer) {
-          case SYM:
-              clear_weak_mods();
-              send_keyboard_report();
-              break;
-      }
+  if (layer == SYM && record->event.pressed) {
+      clear_weak_mods();
+      send_keyboard_report();
+  }
+
+  if (swapp_mod) {
+    // release swapp mod when LT(NAV) hold being released
+    // or any tap/hold key pressed other than APPPREV/APPNEXT
+    if ((QK_LAYER_TAP_GET_LAYER(keycode) == NAV && !record->event.pressed && !record->tap.count) ||
+            (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
+        unregister_mods(swapp_mod);
+        wait_ms(TAP_CODE_DELAY);
+        swapp_mod = 0;
+    }
   }
 
   switch (keycode) {
+      case APPPREV:
+      case APPNEXT:
+          if (record->event.pressed) {
+            if (!swapp_mod) {
+                swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+                register_mods(swapp_mod);
+                wait_ms(TAP_CODE_DELAY);
+            }
+            tap_code16((keycode == APPNEXT ? KC_TAB : S(KC_TAB)));
+          }
+          return false;
     /* switch IME */
-    case SWIME: {
+    case SWIME:
         const int8_t hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
         if (record->event.pressed) {
 #ifdef CAPS_WORD_ENABLE
@@ -605,17 +642,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else
             unregister_mods(hold_mod);
         return false;
-    }
 
     /* close app */
-    case CLOSAPP: {
+    case CLOSAPP:
         if (record->event.pressed) {
             register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+            wait_ms(TAP_CODE_DELAY);
             tap_code16(isMacOS ? KC_Q : KC_F4);
         } else
             unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
         return false;
-    }
 
     case NAV_A:
          process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), MOD_BIT_LGUI);
@@ -630,12 +666,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          process_mod_tap(record, C(KC_F), MOD_BIT_LSHIFT);
         return false;
 
-    case C(KC_T):
+    // case C(KC_T): /* reverse ctrl-t for vim tab back */
     // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell
-    case C(KC_X):
     // case C(KC_C): /* reserve ctrl-c to interrupt current input
     // case C(KC_V): /* reserve ctrl-v for vim block mode */
-    case C(KC_B):
+    // case C(KC_B): /* reserve ctrl-b for page up in vim
+    case C(KC_X):
         /* press gui-<key> on MacOS */
         if (isMacOS && layer == NAV && record->event.pressed) {
             keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
