@@ -19,10 +19,10 @@
 
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
-#define NO_ACTION_ONESHOT
+// #define NO_ACTION_ONESHOT
 #define ONESHOT_TIMEOUT 2000
 
-// #define NO_ALT_REPEAT_KEY
+#define NO_ALT_REPEAT_KEY
 
 #ifdef COMBO_ENABLE
 #define COMBO_TERM 35
@@ -55,5 +55,5 @@
 // #define OS_DETECTION_SINGLE_REPORT
 // #endif
 
-#define FLOW_TAP_TERM 150
+#define FLOW_TAP_TERM 120
 // #define ACTION_DEBUG

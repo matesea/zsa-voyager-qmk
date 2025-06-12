@@ -1,13 +1,14 @@
 # zsa-voyager-qmk
 
-Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0 with community modules
+Personal ZSA voyager keyboard config
+qmk firmware version >= 0.28.0 with community modules
 
 ## configuration
 * qwerty keyboard layout
 * homerow mod: GACS
 * thumbs
-    * left: enter, repeat
-    * right: backspace, space
+    * left: Enter, OSM_SFT
+    * right: Backspace, Space
 * layers
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * SYM: symbol layer
@@ -16,6 +17,5 @@ Personal ZSA voyager keyboard config with qmk_firmware >= 0.28.0 with community 
     * TMUX: tmux shortcuts
 * combo:
     * cv = CW_TOGG
-    * ,. = QK_AREP
 * custom shift
     * shift + esc = ~

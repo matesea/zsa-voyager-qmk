@@ -9,9 +9,9 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
   SWIME,      // switch ime
   CLOSAPP,  // close app, alt-f4/gui-q according to OS
-  MAC_TOGG,  // toggle mac os
   APPPREV,
   APPNEXT,
+  OSM_SFT, // cancelable OSM(SFT)
 
   KEYSTR_MIN,
   UPDIR = KEYSTR_MIN, // input ../ per press
@@ -133,8 +133,6 @@ enum {
 #define NAV_D     LT(0, KC_D)
 #define NAV_F     LT(0, KC_F)
 
-#define OSM_SFT   OSM(MOD_LSFT)
-
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
@@ -154,7 +152,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,
             KC_UNDS, BS_A,   BS_S,   BS_D,   BS_F,   KC_G,
             SWIME,   BS_Z,   BS_X,   BS_C,   BS_V,   KC_B,
-                                             BS_ENT, BS_REP,
+                                             BS_ENT, OSM_SFT,
 
                       KC_6,   KC_7,   KC_8,    KC_9,   KC_0,    KC_MINS,
                       KC_Y,   KC_U,   KC_I,    KC_O,   KC_P,    KC_EQL,
@@ -168,7 +166,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             APPPREV, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
             APPNEXT, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
             CW_TOGG, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
-                                                XXXXXXX, _______,
+                                                _______, _______,
 
                      KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_LLCK,
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
@@ -193,13 +191,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               XXXXXXX, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
               XXXXXXX, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
-                                                  _______, MO(FN),
+                                                  _______, _______,
 
                        _______, _______, _______,  _______, _______,  _______,
                        XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,  _______,
                        XXXXXXX, SYM_SPC, SYM_BSPC, SYM_ENT, SYM_SCLN, _______,
                        XXXXXXX, XXXXXXX, KC_COMM,  KC_DOT,  KC_SLSH,  _______,
-                       XXXXXXX, _______
+                       _______, _______
             ),
 
     [FN] = LAYOUT_LR(
@@ -209,9 +207,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  UG_TOGG,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  MAC_TOGG,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_BOOT,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  DB_TOGG,
                      _______, _______
             ),
@@ -262,9 +260,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM capsword[] = {BS_C, BS_V, COMBO_END};
 const uint16_t PROGMEM arep[] = {BS_M, BS_COMM, COMBO_END};
+const uint16_t PROGMEM fn[] = {BS_F, KC_G, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
+#ifndef NO_ACTION_ONESHOT
+    COMBO(fn, OSL(FN)),
+#endif
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
     COMBO(arep, QK_AREP),
 #endif /* defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY) */
@@ -294,6 +296,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_L:
     case BS_ENT:
     case BS_BSPC:
+    case BS_DOT:
     case SYM_SPC:
     case SYM_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
@@ -360,6 +363,8 @@ static bool is_typing(uint16_t keycode) {
       case KC_SLSH:
       case KC_UNDS:
       case KC_QUOT:
+      case SWIME:
+      case KC_BSLS:
       // thumb
       case KC_SPC:
       // case OSM_SFT:
@@ -371,12 +376,17 @@ static bool is_typing(uint16_t keycode) {
 
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                            uint16_t prev_keycode) {
+
+    if (get_oneshot_mods() & MOD_MASK_SHIFT)
+        return FLOW_TAP_TERM;
     if (is_typing(prev_keycode)) {
         switch (keycode) {
-            // ctrl
+            /*
+             * cancel flow tap for ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 50;
+                return FLOW_TAP_TERM - 40;
+            */
             // gui
             case BS_A:
             case BS_SCLN:
@@ -608,9 +618,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   if (swapp_mod) {
-    // release swapp mod when LT(NAV) hold being released
+    // release swapp mod when LT(NAV) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((QK_LAYER_TAP_GET_LAYER(keycode) == NAV && !record->event.pressed && !record->tap.count) ||
+    if ((QK_LAYER_TAP_GET_LAYER(keycode) == NAV && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -637,6 +647,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CAPS_WORD_ENABLE
             caps_word_off();
 #endif /* CAPS_WORD_ENABLE */
+#ifndef NO_ACTION_ONESHOT
+            // clear_oneshot_mods();
+#endif /* NO_ACTION_ONESHOT */
             register_mods(hold_mod);
             tap_code16(KC_SPC);
         } else
@@ -694,10 +707,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   if (record->event.pressed) {
     switch (keycode) {
-        case MAC_TOGG:
-            isMacOS = !isMacOS;
+#ifndef NO_ACTION_ONESHOT
+        case OSM_SFT:
+            if (get_oneshot_mods() & MOD_MASK_SHIFT)
+                del_oneshot_mods(MOD_MASK_SHIFT);
+            else
+                add_oneshot_mods(MOD_BIT_LSHIFT);
             return false;
-
+#endif
         case ARROW:
             clear_mods();
             SEND_STRING(ctrl_mods ?
