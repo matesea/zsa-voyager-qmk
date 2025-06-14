@@ -280,9 +280,26 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_J:
             return TAPPING_TERM;
     }
-    return TAPPING_TERM + 180;
+    return TAPPING_TERM + 80;
 }
 #endif /* TAPPING_TERM_PER_KEY */
+
+#ifdef PERMISSIVE_HOLD_PER_KEY
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // disable permissive hold for gui on windows
+        // ; is frequently used in vim as leader key
+        case BS_A: case BS_SCLN:
+            if (!isMacOS)
+                return false;
+            break;
+        // disable permissive hold for alt
+        case BS_S: case BS_L:
+            return false;
+    }
+    return true;
+}
+#endif /* PERMISSIVE_HOLD_PER_KEY */
 
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
@@ -381,12 +398,9 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
         return FLOW_TAP_TERM;
     if (is_typing(prev_keycode)) {
         switch (keycode) {
-            /*
-             * cancel flow tap for ctrl
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 40;
-            */
+                return FLOW_TAP_TERM - 80; // 40ms, better than nothing
             // gui
             case BS_A:
             case BS_SCLN:
@@ -577,6 +591,25 @@ static void dlog_record(uint16_t keycode, keyrecord_t* record) {
 #define dlog_record(keycode, record)
 #endif  // NO_DEBUG
 
+// cancel OSM SHIFT if no key pressed within timeout
+#define OSM_SHIFT_TIMEOUT 5000
+#ifdef OSM_SHIFT_TIMEOUT
+static uint32_t osm_shift_timer;
+static void osm_shift_refresh(void) {
+    osm_shift_timer = timer_read32();
+}
+
+static void osm_shift_timer_check(void) {
+    if ((get_oneshot_mods() & MOD_MASK_SHIFT) &&
+            (timer_elapsed32(osm_shift_timer) >= OSM_SHIFT_TIMEOUT))
+        del_oneshot_mods(MOD_MASK_SHIFT);
+}
+
+void housekeeping_task_user(void) {
+    osm_shift_timer_check();
+}
+#endif
+
 /* customize tap/hold behavior */
 static void process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
     if (record->tap.count) {
@@ -713,8 +746,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 del_oneshot_mods(MOD_MASK_SHIFT);
             else
                 add_oneshot_mods(MOD_BIT_LSHIFT);
+#ifdef OSM_SHIFT_TIMEOUT
+            osm_shift_refresh();
+#endif /* OSM_SHIFT_TIMEOUT */
             return false;
-#endif
+#endif /* NO_ACTION_ONESHOT */
         case ARROW:
             clear_mods();
             SEND_STRING(ctrl_mods ?
