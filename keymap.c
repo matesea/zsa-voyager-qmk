@@ -182,15 +182,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        :% enter vim command mode, % for whole buffer
        @: repeat last command in vim command mode
 
-              X * { } #
+            ! X * { } #
             ~ ` ^ ( ) $
-              @ % [ ] :
+            & @ % [ ] :
     */
     [SYM] = LAYOUT_LR(
               QK_LLCK, XXXXXXX, XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
-              XXXXXXX, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
+              KC_EXLM, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
               KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
-              XXXXXXX, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
+              KC_AMPR, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
                                                   _______, _______,
 
                        _______, _______, _______,  _______, _______,  _______,
@@ -207,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
+                     QK_RBT,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_BOOT,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  DB_TOGG,
@@ -266,7 +266,7 @@ combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
 #ifndef NO_ACTION_ONESHOT
     COMBO(fn, OSL(FN)),
-#endif
+#endif /* NO_ACTION_ONESHOT */
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
     COMBO(arep, QK_AREP),
 #endif /* defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY) */
@@ -280,7 +280,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_J:
             return TAPPING_TERM;
     }
-    return TAPPING_TERM + 80;
+    return TAPPING_TERM + 180;
 }
 #endif /* TAPPING_TERM_PER_KEY */
 
@@ -290,9 +290,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         // disable permissive hold for gui on windows
         // ; is frequently used in vim as leader key
         case BS_A: case BS_SCLN:
-            if (!isMacOS)
-                return false;
-            break;
+            return isMacOS;
         // disable permissive hold for alt
         case BS_S: case BS_L:
             return false;
@@ -314,8 +312,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_ENT:
     case BS_BSPC:
     case BS_DOT:
-    case SYM_SPC:
-    case SYM_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -400,7 +396,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
         switch (keycode) {
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 80; // 40ms, better than nothing
+                return FLOW_TAP_TERM - 50; // 70ms
             // gui
             case BS_A:
             case BS_SCLN:
@@ -680,23 +676,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef CAPS_WORD_ENABLE
             caps_word_off();
 #endif /* CAPS_WORD_ENABLE */
-#ifndef NO_ACTION_ONESHOT
-            // clear_oneshot_mods();
-#endif /* NO_ACTION_ONESHOT */
             register_mods(hold_mod);
             tap_code16(KC_SPC);
         } else
             unregister_mods(hold_mod);
         return false;
 
-    /* close app */
+    /*
+     * close app
+     * gui+q in MacOS
+     * alt+f4 in Windows
+     */
     case CLOSAPP:
-        if (record->event.pressed) {
-            register_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-            wait_ms(TAP_CODE_DELAY);
-            tap_code16(isMacOS ? KC_Q : KC_F4);
-        } else
-            unregister_mods(isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+        {
+            uint8_t hold_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+            uint16_t tap_key = (isMacOS ? KC_Q : KC_F4);
+            if (record->event.pressed) {
+                register_mods(hold_mod);
+                wait_ms(TAP_CODE_DELAY);
+                tap_code16(tap_key);
+            } else
+                unregister_mods(hold_mod);
+        }
         return false;
 
     case NAV_A:
@@ -744,11 +745,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case OSM_SFT:
             if (get_oneshot_mods() & MOD_MASK_SHIFT)
                 del_oneshot_mods(MOD_MASK_SHIFT);
-            else
+            else {
                 add_oneshot_mods(MOD_BIT_LSHIFT);
 #ifdef OSM_SHIFT_TIMEOUT
-            osm_shift_refresh();
+                osm_shift_refresh();
 #endif /* OSM_SHIFT_TIMEOUT */
+            }
             return false;
 #endif /* NO_ACTION_ONESHOT */
         case ARROW:

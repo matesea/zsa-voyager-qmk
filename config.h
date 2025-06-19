@@ -2,11 +2,6 @@
   Set any config.h overrides for your specific keymap here.
   See config.h options at https://docs.qmk.fm/#/config_options?id=the-configh-file
 */
-
-#if !defined(ORYX_CONFIGURATOR) && defined(ORYX_ENABLE)
-    #define ORYX_CONFIGURATOR
-#endif
-
 #define TAP_CODE_DELAY 5
 
 #define TAPPING_TERM 170
@@ -21,7 +16,6 @@
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
 // #define NO_ACTION_ONESHOT
-// #define ONESHOT_TIMEOUT 2000
 
 #define NO_ALT_REPEAT_KEY
 
