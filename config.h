@@ -4,7 +4,7 @@
 */
 #define TAP_CODE_DELAY 5
 
-#define TAPPING_TERM 170
+#define TAPPING_TERM 180
 #define TAPPING_TERM_PER_KEY
 #define PERMISSIVE_HOLD
 #define PERMISSIVE_HOLD_PER_KEY
@@ -50,5 +50,5 @@
 // #define OS_DETECTION_SINGLE_REPORT
 // #endif
 
-#define FLOW_TAP_TERM 120
+#define FLOW_TAP_TERM 125
 // #define ACTION_DEBUG

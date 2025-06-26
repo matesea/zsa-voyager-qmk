@@ -114,19 +114,13 @@ enum {
 #define BS_L      LALT_T(KC_L)
 #define BS_SCLN   RGUI_T(KC_SCLN)
 
-#define BS_M      KC_M
+#define BS_M      LT(SYM, KC_M)
 #define BS_COMM   LT(BAK, KC_COMM)
 #define BS_DOT    LT(FWD, KC_DOT)
 #define BS_SLSH   LT(TMUX, KC_SLSH)
 
 #define BS_ENT    LT(NAV, KC_ENT)
-#define BS_BSPC   LT(SYM, KC_BSPC)
-#define BS_REP    QK_REP
-
-#define SYM_SPC   LSFT_T(KC_SPC)
-#define SYM_BSPC  LCTL_T(KC_BSPC)
-#define SYM_ENT   LALT_T(KC_ENT)
-#define SYM_SCLN  LGUI_T(KC_SCLN)
+#define BS_BSPC   KC_BSPC
 
 #define NAV_A     LT(0, KC_A)
 #define NAV_S     LT(0, KC_S)
@@ -172,7 +166,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_HOME, KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      SELLINE, SELWBAK, SELWORD, KC_ENT,  KC_APP,  KC_SCRL,
-                     KC_BSPC, _______
+                     _______, _______
             ),
 
     /* simplied left-handed symbol layer
@@ -193,10 +187,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
               KC_AMPR, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
                                                   _______, _______,
 
-                       _______, _______, _______,  _______, _______,  _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,  _______,
-                       XXXXXXX, SYM_SPC, SYM_BSPC, SYM_ENT, SYM_SCLN, _______,
-                       XXXXXXX, XXXXXXX, KC_COMM,  KC_DOT,  KC_SLSH,  _______,
+                       _______, _______, _______, _______, _______, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                        _______, _______
             ),
 
@@ -269,6 +263,8 @@ combo_t key_combos[] = {
 #endif /* NO_ACTION_ONESHOT */
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
     COMBO(arep, QK_AREP),
+#else
+    COMBO(arep, SWIME),
 #endif /* defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY) */
 };
 #endif /* COMBO_ENABLE */
@@ -280,7 +276,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case BS_J:
             return TAPPING_TERM;
     }
-    return TAPPING_TERM + 180;
+    return TAPPING_TERM + 170;
 }
 #endif /* TAPPING_TERM_PER_KEY */
 
@@ -310,7 +306,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case BS_K:
     case BS_L:
     case BS_ENT:
-    case BS_BSPC:
+    // case BS_BSPC:
     case BS_DOT:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
@@ -394,9 +390,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
         return FLOW_TAP_TERM;
     if (is_typing(prev_keycode)) {
         switch (keycode) {
+            // shift
             case BS_D:
             case BS_K:
-                return FLOW_TAP_TERM - 50; // 70ms
+            case BS_M:
+                return FLOW_TAP_TERM - 25; /* 100ms */
             // gui
             case BS_A:
             case BS_SCLN:
@@ -406,7 +404,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             case BS_SLSH:
             case BS_COMM:
             case BS_DOT:
-                return FLOW_TAP_TERM;
+                return FLOW_TAP_TERM; /* 125ms */
         }
     }
     return 0;
@@ -416,10 +414,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-    /* // do not remember repeat key
+#ifdef BS_REP
+    // do not remember repeat key
     if (keycode == BS_REP)
         return false;
-    */
+#endif
 
     // Unpack tapping keycode for tap-hold keys.
     keycode = get_tap_keycode(keycode);
@@ -729,14 +728,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
 
-    /*
+#if defined(REPEAT_KEY_ENABLE) && defined(BS_REP)
     case BS_REP:
       if (record->tap.count) {
           repeat_key_invoke(&record->event);
           return false;
       }
       break;
-    */
+#endif
   }
 
   if (record->event.pressed) {
@@ -747,9 +746,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 del_oneshot_mods(MOD_MASK_SHIFT);
             else {
                 add_oneshot_mods(MOD_BIT_LSHIFT);
-#ifdef OSM_SHIFT_TIMEOUT
                 osm_shift_refresh();
-#endif /* OSM_SHIFT_TIMEOUT */
             }
             return false;
 #endif /* NO_ACTION_ONESHOT */
