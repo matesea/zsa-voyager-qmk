@@ -50,5 +50,5 @@
 // #define OS_DETECTION_SINGLE_REPORT
 // #endif
 
-#define FLOW_TAP_TERM 120
+#define FLOW_TAP_TERM 100
 // #define ACTION_DEBUG
