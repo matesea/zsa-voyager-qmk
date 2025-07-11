@@ -79,7 +79,6 @@ struct keystring_t {
 
 enum {
     QWERTY = 0,
-    CDH, // colemak dh
     SYM,
     NAV,
     FN,
@@ -113,17 +112,6 @@ enum {
 
 #define NAV_SFT   LT(NAV, OSM_SFT)
 
-#define CDH_R     LALT_T(KC_R)
-#define CDH_S     LCTL_T(KC_S)
-#define CDH_T     LSFT_T(KC_T)
-#define CDH_D     LT(SYM, KC_D)
-
-#define CDH_N     RSFT_T(KC_N)
-#define CDH_E     RCTL_T(KC_E)
-#define CDH_I     LALT_T(KC_I)
-#define CDH_O     RGUI_T(KC_O)
-#define CDH_H     LT(SYM, KC_H)
-
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
@@ -150,20 +138,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_H,   HRM_J,  HRM_K,    HRM_L,   HRM_SCLN, KC_QUOT,
                       KC_N,   HRM_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
                       KC_BSPC, KC_SPC
-            ),
-
-    [CDH] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, KC_F,    KC_P,    KC_B,
-            _______, _______, CDH_R,   CDH_S,   CDH_T,   _______,
-            _______, _______, _______, _______, CDH_D,   KC_V,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, _______,
-                     KC_M,    CDH_N,   CDH_E,   CDH_I,   CDH_O,   _______,
-                     KC_K,    CDH_H,   _______, _______, _______, _______,
-                     _______, _______
             ),
 
     [NAV] = LAYOUT_LR(
@@ -239,10 +213,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, DF(QWERTY), DF(CDH), XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,      KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
-                     XXXXXXX, KC_F4,      KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
-                     XXXXXXX, KC_F1,      KC_F2,   KC_F3,   KC_F10,  QK_RBT,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
                      _______, QK_LLCK
             ),
 
@@ -292,14 +266,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM capsword[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM fn[] = {HRM_F, KC_G, COMBO_END};
-const uint16_t PROGMEM capsword_cdh[] = {KC_C, CDH_D, COMBO_END};
-const uint16_t PROGMEM fn_cdh[] = {CDH_T, KC_G, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
     COMBO(fn, OSL(FN)),
-    COMBO(capsword_cdh, CW_TOGG),
-    COMBO(fn_cdh, OSL(FN)),
 };
 #endif /* COMBO_ENABLE */
 
@@ -307,7 +277,6 @@ combo_t key_combos[] = {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_F: case HRM_J:
-        case CDH_T: case CDH_N:
             return TAPPING_TERM; /* 180ms */
     }
     return TAPPING_TERM + 70; /* 250ms */
@@ -320,11 +289,9 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         // disable permissive hold for gui on windows
         // ; is frequently used in vim as leader key
         case HRM_A: case HRM_SCLN:
-        case CDH_O:
             return isMacOS;
         // disable permissive hold for alt
         case HRM_S: case HRM_L:
-        case CDH_R: case CDH_I:
             return false;
     }
     return true;
@@ -342,7 +309,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HRM_K:
     case HRM_L:
     case HRM_DOT:
-    case CDH_E:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -427,13 +393,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
-            case CDH_T: case CDH_N: // shift colemak dh
             case NAV_SFT:           // NAV
                 return 0;
             case HRM_D: case HRM_K: // ctrl
             case HRM_M: case HRM_V: // SYM
-            case CDH_S: case CDH_E: // ctrl on colemak dh
-            case CDH_D: case CDH_H: // SYM on cokemak dh
                 return FLOW_TAP_TERM - 40; /* 60ms */
             default:
                 return FLOW_TAP_TERM; /* 100ms */
@@ -642,6 +605,16 @@ static void process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
     }
 }
 
+#ifdef STATUS_LED_4
+// LED indicate if OSM_SFT status
+void oneshot_mods_changed_user(uint8_t mods) {
+  if (mods & MOD_MASK_SHIFT)
+      STATUS_LED_4(1);
+  else
+      STATUS_LED_4(0);
+}
+#endif
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -663,7 +636,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (swapp_mod) {
     // release swapp mod when LT(NAV) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((QK_LAYER_TAP_GET_LAYER(keycode) == NAV && !record->event.pressed) ||
+    if ((keycode == NAV_SFT && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -760,11 +733,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 #if defined(REPEAT_KEY_ENABLE) && defined(HRM_REP)
     case HRM_REP:
-      if (record->tap.count) {
-          repeat_key_invoke(&record->event);
-          return false;
-      }
-      break;
+        if (record->tap.count) {
+            repeat_key_invoke(&record->event);
+            return false;
+        }
+        break;
 #endif
   }
 
