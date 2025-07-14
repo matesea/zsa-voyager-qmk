@@ -13,7 +13,7 @@ qmk firmware version >= 0.28.0 with community modules
     * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
     * SYM: symbol layer
     * FN: Function keys
-    * FWD, BAK: prefix keystroke with [ or ] for vim, or other directional navigation
+    * DIR: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
 * combo:
     * cv = CW_TOGG

@@ -18,6 +18,7 @@ enum custom_keycodes {
   USRNAME, // input username
 
   /* vim navigation */
+  /* the LBRC/RBRC keys must be equal and mapping in same order */
   LBRC_A, // previous functon with aerial.nvim
   LBRC_B, // previous buffer
   LBRC_C, // previous hunk
@@ -79,12 +80,12 @@ struct keystring_t {
 
 enum {
     QWERTY = 0,
+    CDH, // colemak
     SYM,
     NAV,
     EXT,
     FN,
-    BAK,
-    FWD,
+    DIR,
     TMUX,
 };
 
@@ -103,8 +104,8 @@ enum {
 #define HRM_SCLN   RGUI_T(KC_SCLN)
 
 #define HRM_M      LT(SYM, KC_M)
-#define HRM_COMM   LT(BAK, KC_COMM)
-#define HRM_DOT    LT(FWD, KC_DOT)
+#define HRM_COMM   LT(DIR, KC_COMM)
+#define HRM_DOT    LT(DIR, KC_DOT)
 #define HRM_SLSH   LT(TMUX, KC_SLSH)
 
 #define NAV_A     LT(0, KC_A)
@@ -113,6 +114,17 @@ enum {
 #define NAV_F     LT(0, KC_F)
 
 #define NAV_SFT   LT(NAV, OSM_SFT)
+
+#define CDH_R     LALT_T(KC_R)
+#define CDH_S     LCTL_T(KC_S)
+#define CDH_T     LSFT_T(KC_T)
+#define CDH_D     LT(SYM, KC_D)
+
+#define CDH_N     RSFT_T(KC_N)
+#define CDH_E     RCTL_T(KC_E)
+#define CDH_I     LALT_T(KC_I)
+#define CDH_O     RGUI_T(KC_O)
+#define CDH_H     LT(SYM, KC_H)
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -142,11 +154,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_BSPC, KC_SPC
             ),
 
+    [CDH] = LAYOUT_LR(
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, KC_F,    KC_P,    KC_B,
+            _______, _______, CDH_R,   CDH_S,   CDH_T,   _______,
+            _______, _______, _______, _______, CDH_D,   KC_V,
+                                                _______, _______,
+
+                     _______, _______, _______, _______, _______, _______,
+                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, _______,
+                     KC_M,    CDH_N,   CDH_E,   CDH_I,   CDH_O,   _______,
+                     KC_K,    CDH_H,   _______, _______, _______, _______,
+                     _______, _______
+            ),
+
     [NAV] = LAYOUT_LR(
             XXXXXXX, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
             APPPREV, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
             APPNEXT, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
-            XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            CW_TOGG, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, XXXXXXX,
@@ -213,12 +239,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
+                                                XXXXXXX, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
-                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
+                     XXXXXXX, DF(QWERTY), DF(CDH), XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,      KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
+                     XXXXXXX, KC_F4,      KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
+                     XXXXXXX, KC_F1,      KC_F2,   KC_F3,   KC_F10,  QK_RBT,
                      _______, QK_LLCK
             ),
 
@@ -236,30 +262,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        TMUX_BSPC, TMUX_SPC
             ),
 
-    [BAK] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, LBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, LBRC_T,
-            _______, LBRC_A,  XXXXXXX, LBRC_D,  LBRC_F,  LBRC_G,
-            _______, XXXXXXX, TMUX_P,  LBRC_C,  XXXXXXX, LBRC_B,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     _______, _______
-            ),
-
-    [FWD] = LAYOUT_LR(
+    [DIR] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
             _______, RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
             _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
-                                                _______, _______,
+                                                XXXXXXX, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
@@ -268,8 +280,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              _______, _______, _______, _______, _______, _______,
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-             _______, XXXXXXX, XXXXXXX, OM_SLOW, XXXXXXX, XXXXXXX,
-                                                 XXXXXXX, XXXXXXX,
+             _______, XXXXXXX, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
+                                                 OM_SLOW, XXXXXXX,
 
                       _______, _______, _______, _______, _______, _______,
                       OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
@@ -282,10 +294,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM capsword[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM fn[] = {HRM_F, KC_G, COMBO_END};
+const uint16_t PROGMEM capsword_cdh[] = {KC_C, CDH_D, COMBO_END};
+const uint16_t PROGMEM fn_cdh[] = {CDH_T, KC_G, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
     COMBO(fn, OSL(FN)),
+    COMBO(capsword_cdh, CW_TOGG),
+    COMBO(fn_cdh, OSL(FN)),
 };
 #endif /* COMBO_ENABLE */
 
@@ -293,6 +309,7 @@ combo_t key_combos[] = {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_F: case HRM_J:
+        case CDH_T: case CDH_N:
             return TAPPING_TERM; /* 180ms */
     }
     return TAPPING_TERM + 70; /* 250ms */
@@ -305,9 +322,11 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         // disable permissive hold for gui on windows
         // ; is frequently used in vim as leader key
         case HRM_A: case HRM_SCLN:
+        case CDH_O:
             return isMacOS;
         // disable permissive hold for alt
         case HRM_S: case HRM_L:
+        case CDH_R: case CDH_I:
             return false;
     }
     return true;
@@ -325,6 +344,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HRM_K:
     case HRM_L:
     case HRM_DOT:
+    case CDH_H:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -374,6 +394,14 @@ bool get_chordal_hold(
                     break;
             }
             break;
+        case HRM_X:
+            switch (other_keycode) {
+                case KC_C:
+                case CDH_D:
+                case HRM_V:
+                    return true;
+            }
+            break;
     }
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
@@ -409,10 +437,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
+            case CDH_T: case CDH_N: // shift colemak dh
             case NAV_SFT:           // NAV
                 return 0;
             case HRM_D: case HRM_K: // ctrl
             case HRM_M: case HRM_V: // SYM
+            case CDH_S: case CDH_E: // ctrl on colemak dh
+            case CDH_D: case CDH_H: // SYM on cokemak dh
                 return FLOW_TAP_TERM - 40; /* 60ms */
             default:
                 return FLOW_TAP_TERM; /* 100ms */
@@ -651,9 +682,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   if (swapp_mod) {
-    // release swapp mod when LT(NAV) being released
+    // release swapp mod when LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((keycode == NAV_SFT && !record->event.pressed) ||
+    if ((keycode == HRM_X && !record->tap.count && !record->event.pressed) ||
+            (keycode == NAV_SFT && !record->tap.count && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -756,9 +788,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
 #endif
+    case HRM_COMM: // HRM_COMM = press shift + LT(DIR) when held
+        if (!record->tap.count) {
+            if (record->event.pressed) {
+                register_mods(MOD_BIT_LSHIFT);
+                wait_ms(TAP_CODE_DELAY);
+            } else
+                unregister_mods(MOD_BIT_LSHIFT);
+        }
+        break;
   }
 
   if (record->event.pressed) {
+    // opposite directional movement when shift pressed
+    if (shift_mods) {
+        switch (keycode) {
+          case RBRC_A ... RBRC_T:
+              keycode += LBRC_A - RBRC_A ;
+              break;
+          case TMUX_N:
+              keycode = TMUX_P;
+              break;
+      }
+    }
+
     switch (keycode) {
         case ARROW:
             clear_mods();
