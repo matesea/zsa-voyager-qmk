@@ -169,11 +169,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
-            XXXXXXX, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
-            APPPREV, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
-            APPNEXT, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
-            CW_TOGG, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
-                                                _______, _______,
+            _______, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
+            _______, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
+            XXXXXXX, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
+            XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+                                                XXXXXXX, _______,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, XXXXXXX,
                      KC_PGUP,   KC_HOME, KC_UP,   KC_END,  KC_INS,  KC_BRK,
@@ -181,32 +181,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      G(KC_TAB), SELLINE, KC_APP,  XXXXXXX, XXXXXXX, KC_SCRL,
                      _______,   QK_LLCK
             ),
-
-    /* simplied left-handed symbol layer
-
-       ^$ vim navigation, jump to start/end of the current line
-       *# vim navigation, search behind/ahead for word under cursor
-       :% enter vim command mode, % for whole buffer
-       @: repeat last command in vim command mode
-
-            ! X * { } #
-            ~ ` ^ ( ) $
-            & @ % [ ] :
-
-    [SYM] = LAYOUT_LR(
-              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, UPDIR,   USRNAME,
-              KC_EXLM, ARROW,   KC_ASTR, KC_LCBR, KC_RCBR, KC_HASH,
-              KC_TILD, KC_GRV,  KC_CIRC, KC_LPRN, KC_RPRN, KC_DLR,
-              KC_AMPR, KC_AT,   KC_PERC, KC_LBRC, KC_RBRC, KC_COLN,
-                                                  _______, _______,
-
-                       _______, _______, _______, _______, _______, _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                       _______, _______
-            ),
-    */
 
     /* getreuer's symbol layer
        ' < > - |
@@ -222,8 +196,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [SYM] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            XXXXXXX, KC_GRV , KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
-            KC_UNDS, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
+            _______, KC_GRV , KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
+            _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
             XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
                                                 USRNAME, _______,
 
@@ -263,10 +237,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [DIR] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
-            _______, RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
-            _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
+            _______,   _______, _______, _______, _______, _______,
+            C(KC_TAB), RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
+            XXXXXXX,   RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
+            XXXXXXX,   XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
                                                 XXXXXXX, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -294,14 +268,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM capsword[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM fn[] = {HRM_F, KC_G, COMBO_END};
+const uint16_t PROGMEM swime[] = {HRM_M, HRM_COMM, COMBO_END};
 const uint16_t PROGMEM capsword_cdh[] = {KC_C, CDH_D, COMBO_END};
 const uint16_t PROGMEM fn_cdh[] = {CDH_T, KC_G, COMBO_END};
+const uint16_t PROGMEM swime_cdh[] = {CDH_H, HRM_COMM, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
     COMBO(fn, OSL(FN)),
+    COMBO(swime, SWIME),
     COMBO(capsword_cdh, CW_TOGG),
     COMBO(fn_cdh, OSL(FN)),
+    COMBO(swime_cdh, SWIME),
 };
 #endif /* COMBO_ENABLE */
 
@@ -670,12 +648,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   dlog_record(keycode, record);
 
-  // limit osm shift only effective on typing layer
+  // XXX: limit osm shift only effective on typing layer
   if ((get_oneshot_mods() & MOD_MASK_SHIFT) &&
-          layer != QWERTY)
+          layer >= SYM)
       del_oneshot_mods(MOD_MASK_SHIFT);
 
-  // WA to address unintended shift
+  // XXX: WA to address unintended shift
   if (layer == SYM && record->event.pressed) {
       clear_weak_mods();
       send_keyboard_report();
@@ -685,7 +663,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // release swapp mod when LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
     if ((keycode == HRM_X && !record->tap.count && !record->event.pressed) ||
-            (keycode == NAV_SFT && !record->tap.count && !record->event.pressed) ||
+            // (keycode == NAV_SFT && !record->tap.count && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
