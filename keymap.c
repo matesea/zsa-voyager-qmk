@@ -9,6 +9,7 @@ enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
   SWIME,      // switch ime
   CLOSAPP,  // close app, alt-f4/gui-q according to OS
+  SELLINE, // import from select_word.c, select line
   APPPREV,
   APPNEXT,
   OSM_SFT, // cancelable OSM(SFT)
@@ -18,7 +19,8 @@ enum custom_keycodes {
   USRNAME, // input username
 
   /* vim navigation */
-  /* the LBRC/RBRC keys must be equal and mapping in same order */
+  /* the LBRC/RBRC keys must be both defined and in same order */
+  /* shift + RBRC_* = LBRC_* */
   LBRC_A, // previous functon with aerial.nvim
   LBRC_B, // previous buffer
   LBRC_C, // previous hunk
@@ -46,7 +48,7 @@ enum custom_keycodes {
   TMUX_P,    // C-A p, prev window
   TMUX_SLSH, // C-A /, search backward
   TMUX_QUES, // C-A ?, search backward with tmux plugin tmux-fuzzback
-  TMUX_W,    // C-A w, window preview
+  TMUX_W,    // C-A w, select window with preview
   TMUX_N,    // C-A n, next window
   TMUX_S,    // C-A s, show all sessions
   TMUX_F,    // C-A f, select pane with fzf
@@ -80,7 +82,6 @@ struct keystring_t {
 
 enum {
     QWERTY = 0,
-    CDH, // colemak
     SYM,
     NAV,
     EXT,
@@ -115,17 +116,6 @@ enum {
 
 #define NAV_SFT   LT(NAV, OSM_SFT)
 
-#define CDH_R     LALT_T(KC_R)
-#define CDH_S     LCTL_T(KC_S)
-#define CDH_T     LSFT_T(KC_T)
-#define CDH_D     LT(SYM, KC_D)
-
-#define CDH_N     RSFT_T(KC_N)
-#define CDH_E     RCTL_T(KC_E)
-#define CDH_I     LALT_T(KC_I)
-#define CDH_O     RGUI_T(KC_O)
-#define CDH_H     LT(SYM, KC_H)
-
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
 bool select_word_host_is_mac(void) {
@@ -154,20 +144,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       KC_BSPC, KC_SPC
             ),
 
-    [CDH] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, KC_F,    KC_P,    KC_B,
-            _______, _______, CDH_R,   CDH_S,   CDH_T,   _______,
-            _______, _______, _______, _______, CDH_D,   KC_V,
-                                                _______, _______,
-
-                     _______, _______, _______, _______, _______, _______,
-                     KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN, _______,
-                     KC_M,    CDH_N,   CDH_E,   CDH_I,   CDH_O,   _______,
-                     KC_K,    CDH_H,   _______, _______, _______, _______,
-                     _______, _______
-            ),
-
     [NAV] = LAYOUT_LR(
             _______, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
             _______, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
@@ -176,8 +152,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                 XXXXXXX, _______,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, XXXXXXX,
-                     KC_PGUP,   KC_HOME, KC_UP,   KC_END,  KC_INS,  KC_BRK,
-                     KC_PGDN,   KC_LEFT, KC_DOWN, KC_RGHT, KC_DEL,  KC_PSCR,
+                     KC_HOME,   KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
+                     KC_LEFT,   KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      G(KC_TAB), SELLINE, KC_APP,  XXXXXXX, XXXXXXX, KC_SCRL,
                      _______,   QK_LLCK
             ),
@@ -215,10 +191,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 XXXXXXX, _______,
 
-                     XXXXXXX, DF(QWERTY), DF(CDH), XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,      KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
-                     XXXXXXX, KC_F4,      KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
-                     XXXXXXX, KC_F1,      KC_F2,   KC_F3,   KC_F10,  QK_RBT,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
                      _______, QK_LLCK
             ),
 
@@ -269,17 +245,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM capsword[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM fn[] = {HRM_F, KC_G, COMBO_END};
 const uint16_t PROGMEM swime[] = {HRM_M, HRM_COMM, COMBO_END};
-const uint16_t PROGMEM capsword_cdh[] = {KC_C, CDH_D, COMBO_END};
-const uint16_t PROGMEM fn_cdh[] = {CDH_T, KC_G, COMBO_END};
-const uint16_t PROGMEM swime_cdh[] = {CDH_H, HRM_COMM, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(capsword, CW_TOGG),
     COMBO(fn, OSL(FN)),
     COMBO(swime, SWIME),
-    COMBO(capsword_cdh, CW_TOGG),
-    COMBO(fn_cdh, OSL(FN)),
-    COMBO(swime_cdh, SWIME),
 };
 #endif /* COMBO_ENABLE */
 
@@ -287,7 +257,6 @@ combo_t key_combos[] = {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_F: case HRM_J:
-        case CDH_T: case CDH_N:
             return TAPPING_TERM; /* 180ms */
     }
     return TAPPING_TERM + 70; /* 250ms */
@@ -300,11 +269,9 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         // disable permissive hold for gui on windows
         // ; is frequently used in vim as leader key
         case HRM_A: case HRM_SCLN:
-        case CDH_O:
             return isMacOS;
         // disable permissive hold for alt
         case HRM_S: case HRM_L:
-        case CDH_R: case CDH_I:
             return false;
     }
     return true;
@@ -322,7 +289,6 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HRM_K:
     case HRM_L:
     case HRM_DOT:
-    case CDH_H:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -375,7 +341,6 @@ bool get_chordal_hold(
         case HRM_X:
             switch (other_keycode) {
                 case KC_C:
-                case CDH_D:
                 case HRM_V:
                     return true;
             }
@@ -415,13 +380,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
-            case CDH_T: case CDH_N: // shift colemak dh
             case NAV_SFT:           // NAV
                 return 0;
             case HRM_D: case HRM_K: // ctrl
             case HRM_M: case HRM_V: // SYM
-            case CDH_S: case CDH_E: // ctrl on colemak dh
-            case CDH_D: case CDH_H: // SYM on cokemak dh
                 return FLOW_TAP_TERM - 40; /* 60ms */
             default:
                 return FLOW_TAP_TERM; /* 100ms */
@@ -782,7 +744,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (shift_mods) {
         switch (keycode) {
           case RBRC_A ... RBRC_T:
-              keycode += LBRC_A - RBRC_A ;
+              keycode += LBRC_A - RBRC_A;
               break;
           case TMUX_N:
               keycode = TMUX_P;
@@ -792,21 +754,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
         case ARROW:
-            clear_mods();
-            SEND_STRING(ctrl_mods ?
-                    (shift_mods ?
-                        "<=>" :
-                        "=>") :
-                    (shift_mods ?
-                        "<->" :
-                        "->"));
-            set_mods(mods);
-            return false;
+          SEND_STRING(ctrl_mods ?
+                  (shift_mods ?
+                      "<=>" :
+                      "=>") :
+                  (shift_mods ?
+                      "<->" :
+                      "->"));
+          set_mods(mods);
+          return false;
 
         case KEYSTR_MIN ... KEYSTR_MAX:
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
           clear_mods();
           SEND_STRING_DELAY(p->str, p->delay);
+          set_mods(mods);
+          return false;
+
+        case SELLINE:
+          clear_mods();
+          send_keyboard_report();
+          send_string_with_delay_P(
+              isMacOS ? PSTR(SS_LGUI(SS_TAP(X_LEFT) SS_LSFT(SS_TAP(X_RGHT))))
+                     : PSTR(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END))),
+              TAP_CODE_DELAY);
           set_mods(mods);
           return false;
     }
