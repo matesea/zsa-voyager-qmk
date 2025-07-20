@@ -114,7 +114,8 @@ enum {
 #define NAV_D     LT(0, KC_D)
 #define NAV_F     LT(0, KC_F)
 
-#define NAV_SFT   LT(NAV, OSM_SFT)
+// #define NAV_SFT   LT(NAV, OSM_SFT)
+#define HRM_REP   LT(NAV, QK_REP)
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -135,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,    KC_T,
             KC_UNDS, HRM_A,  HRM_S,  HRM_D,  HRM_F,   KC_G,
             SWIME,   HRM_Z,  HRM_X,  KC_C,   HRM_V,   KC_B,
-                                             NAV_SFT, KC_ENT,
+                                             HRM_REP, KC_ENT,
 
                       KC_6,   KC_7,   KC_8,     KC_9,    KC_0,     KC_EQL,
                       KC_Y,   KC_U,   KC_I,     KC_O,    KC_P,     KC_MINS,
@@ -242,14 +243,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
-const uint16_t PROGMEM capsword[] = {KC_C, HRM_V, COMBO_END};
-const uint16_t PROGMEM fn[] = {HRM_F, KC_G, COMBO_END};
-const uint16_t PROGMEM swime[] = {HRM_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
+const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo_m_comm[] = {HRM_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_nm[] = {HRM_M, KC_N, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(capsword, CW_TOGG),
-    COMBO(fn, OSL(FN)),
-    COMBO(swime, SWIME),
+    COMBO(combo_cv, CW_TOGG),
+    COMBO(combo_fg, OSL(FN)),
+    COMBO(combo_m_comm, SWIME),
+#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
+    COMBO(combo_nm, QK_AREP),
+#endif
 };
 #endif /* COMBO_ENABLE */
 
@@ -289,6 +294,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HRM_K:
     case HRM_L:
     case HRM_DOT:
+    case HRM_REP:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -339,9 +345,10 @@ bool get_chordal_hold(
             }
             break;
         case HRM_X:
-            switch (other_keycode) {
+            switch (get_tap_keycode(other_keycode)) {
+                // for APPPREV/APPNEXT
                 case KC_C:
-                case HRM_V:
+                case KC_V:
                     return true;
             }
             break;
@@ -380,7 +387,8 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
-            case NAV_SFT:           // NAV
+            // case NAV_SFT:           // NAV
+            case HRM_REP:
                 return 0;
             case HRM_D: case HRM_K: // ctrl
             case HRM_M: case HRM_V: // SYM
@@ -396,11 +404,14 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 #if defined(REPEAT_KEY_ENABLE)
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
                             uint8_t* remembered_mods) {
-#ifdef HRM_REP
     // do not remember repeat key
-    if (keycode == HRM_REP)
-        return false;
-#endif
+    // APPPREV/APPNEXT won't be repeated, no need to remember
+    switch (keycode) {
+        case HRM_REP:
+        case APPPREV:
+        case APPNEXT:
+            return false;
+    }
 
     // Unpack tapping keycode for tap-hold keys.
     keycode = get_tap_keycode(keycode);
@@ -416,7 +427,12 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
         break;
 
       case KC_TAB: // only remember shift when tab pressed
+      case C(KC_TAB):
         *remembered_mods &= MOD_MASK_SHIFT;
+        break;
+
+      case KEYSTR_MIN ... KEYSTR_MAX: // forget all mods
+        *remembered_mods = 0;
         break;
     }
 
@@ -427,6 +443,17 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
+            case KC_TAB:
+                if (mods & MOD_MASK_SHIFT)
+                    return KC_TAB;
+                else
+                    return S(KC_TAB);
+            case C(KC_TAB):
+                if (mods & MOD_MASK_SHIFT)
+                    return C(KC_TAB);
+                else
+                    return LCS(KC_TAB);
+
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
             case LBRC_B: return RBRC_B;
@@ -599,6 +626,22 @@ void oneshot_mods_changed_user(uint8_t mods) {
 }
 #endif
 
+static bool toggle_osm_shift_for_next_repeat_key(keyrecord_t *record)
+{
+    // don't change for alt repeat key
+    if (get_repeat_key_count() <= 0)
+        return false;
+    if (record->event.pressed) {
+        if (get_oneshot_mods() & MOD_MASK_SHIFT) {
+            del_oneshot_mods(MOD_MASK_SHIFT);
+        } else {
+            add_oneshot_mods(MOD_LSFT);
+            osm_shift_refresh();
+        }
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -625,7 +668,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // release swapp mod when LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
     if ((keycode == HRM_X && !record->tap.count && !record->event.pressed) ||
-            // (keycode == NAV_SFT && !record->tap.count && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -633,18 +675,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
   }
 
+  /* change repeat key as oneshot shift if following these keys */
   switch (keycode) {
+      case KC_ENT:
+      case KC_BSPC:
+      case KC_SPC:
+      case KC_TAB:
+      case KC_MINS:
       case APPPREV:
       case APPNEXT:
-          if (record->event.pressed) {
-            if (!swapp_mod) {
-                swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-                register_mods(swapp_mod);
-                wait_ms(TAP_CODE_DELAY);
-            }
-            tap_code16((keycode == APPNEXT ? KC_TAB : S(KC_TAB)));
+      case SWIME:
+          if (toggle_osm_shift_for_next_repeat_key(record))
+              return false;
+          break;
+  }
+
+  switch (keycode) {
+    case APPPREV:
+    case APPNEXT:
+        if (record->event.pressed) {
+          if (!swapp_mod) {
+              swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
+              register_mods(swapp_mod);
+              wait_ms(TAP_CODE_DELAY);
           }
-          return false;
+          tap_code16((keycode == APPNEXT ? KC_TAB : S(KC_TAB)));
+        }
+        return false;
+
     /* switch IME */
     case SWIME:
         const int8_t hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
@@ -706,6 +764,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
 
+    /*
     case NAV_SFT:
         if (record->tap.count) {
             if (record->event.pressed) {
@@ -719,15 +778,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         }
         break;
+    */
 
-#if defined(REPEAT_KEY_ENABLE) && defined(HRM_REP)
     case HRM_REP:
         if (record->tap.count) {
             repeat_key_invoke(&record->event);
             return false;
         }
         break;
-#endif
+
     case HRM_COMM: // HRM_COMM = press shift + LT(DIR) when held
         if (!record->tap.count) {
             if (record->event.pressed) {
@@ -745,11 +804,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
           case RBRC_A ... RBRC_T:
               keycode += LBRC_A - RBRC_A;
+#ifdef REPEAT_KEY_ENABLE
+              set_last_keycode(keycode);
+#endif
               break;
           case TMUX_N:
               keycode = TMUX_P;
+#ifdef REPEAT_KEY_ENABLE
+              set_last_keycode(keycode);
+#endif
               break;
-      }
+        }
     }
 
     switch (keycode) {
