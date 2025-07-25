@@ -153,7 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, KC_ENT,
 
-                     KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, XXXXXXX,
+                     KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
                      KC_HOME,   KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT,   KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      G(KC_TAB), SELLINE, KC_APP,  XXXXXXX, XXXXXXX, KC_SCRL,
@@ -247,12 +247,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_m_comm[] = {HRM_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_hj[] = {HRM_J, KC_H, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(combo_cv, CW_TOGG),
     COMBO(combo_fg, OSL(FN)),
+    COMBO(combo_m_comm, SWIME),
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-    COMBO(combo_m_comm, QK_AREP),
+    COMBO(combo_hj, QK_AREP),
 #endif
 };
 #endif /* COMBO_ENABLE */
@@ -391,7 +393,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                 return 0;
             case HRM_M: case HRM_V: // SYM
             case HRM_D: case HRM_K: // ctrl
-                return FLOW_TAP_TERM - 50; // 50ms
+                return FLOW_TAP_TERM - 25; // 75ms
             default:
                 return FLOW_TAP_TERM; // 100ms
         }
@@ -648,6 +650,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t all_mods = (mods | get_weak_mods() | get_oneshot_mods());
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t ctrl_mods = all_mods & MOD_MASK_CTRL;
+  const uint8_t alt_mods = all_mods & MOD_MASK_ALT;
   const uint8_t layer = read_source_layers_cache(record->event.key);
   static uint8_t swapp_mod = 0;
 
@@ -821,11 +824,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
         case ARROW:
+          clear_mods();
           SEND_STRING(ctrl_mods ?
-                  (shift_mods ?
+                  (alt_mods ?
                       "<=>" :
                       "=>") :
-                  (shift_mods ?
+                  (alt_mods ?
                       "<->" :
                       "->"));
           set_mods(mods);
