@@ -14,6 +14,12 @@ enum custom_keycodes {
   APPNEXT, // swap forground app to next
   // OSM_SFT, // cancelable OSM(SFT)
 
+  /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
+  CA,
+  CS,
+  CD,
+  CF,
+
   KEYSTR_MIN,
   UPDIR = KEYSTR_MIN, // input ../ per press
   USRNAME, // input username
@@ -109,10 +115,20 @@ enum {
 #define HRM_DOT    LT(DIR, KC_DOT)
 #define HRM_SLSH   LT(TMUX, KC_SLSH)
 
-#define NAV_A     LT(0, KC_A)
-#define NAV_S     LT(0, KC_S)
-#define NAV_D     LT(0, KC_D)
-#define NAV_F     LT(0, KC_F)
+#define NAV_A      LGUI_T(CA)
+#define NAV_S      LALT_T(CS)
+#define NAV_D      LCTL_T(CD)
+#define NAV_F      LSFT_T(CF)
+
+#define SYM_EXLM   LGUI_T(KC_EXLM)
+#define SYM_ASTR   LALT_T(KC_ASTR)
+#define SYM_SLSH   LCTL_T(KC_SLSH)
+#define SYM_USR    LSFT_T(USRNAME)
+
+#define SYM_SPC    RSFT_T(KC_SPC)
+#define SYM_RPRN   RCTL_T(KC_RPRN)
+#define SYM_SCLN   LALT_T(KC_SCLN)
+#define SYM_DQUO   RGUI_T(KC_DQUO)
 
 // #define NAV_SFT   LT(NAV, OSM_SFT)
 // #define HRM_REP   LT(NAV, QK_REP)
@@ -173,17 +189,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        split symbol layer to two hands to reduce finger travel distance
      */
     [SYM] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, KC_GRV , KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
-            _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
-            XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
-                                                USRNAME, _______,
+            _______, _______,  _______,  _______,  _______, _______,
+            _______, KC_GRV ,  KC_LABK,  KC_RABK,  KC_MINS, KC_PIPE,
+            _______, SYM_EXLM, SYM_ASTR, SYM_SLSH, KC_EQL,  KC_AMPR,
+            XXXXXXX, KC_TILD,  KC_PLUS,  KC_LBRC,  KC_RBRC, KC_PERC,
+                                                   SYM_USR, _______,
 
-                     _______, _______, _______, _______, _______, _______,
-                     KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW  , _______,
-                     KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, UPDIR,
-                     KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, KC_BSLS,
-                     _______, _______
+                     _______, _______, _______,  _______,  _______,  _______,
+                     KC_CIRC, KC_LCBR, KC_RCBR,  KC_DLR,   ARROW  ,  _______,
+                     KC_HASH, KC_LPRN, SYM_RPRN, SYM_SCLN, SYM_DQUO, UPDIR,
+                     KC_AT,   KC_COLN, KC_COMM,  KC_DOT,   KC_QUOT,  KC_BSLS,
+                     _______, SYM_SPC
             ),
 
     [FN] = LAYOUT_LR(
@@ -388,10 +404,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
-            // case NAV_SFT:           // NAV
+            // case NAV_SFT:        // NAV
             case HRM_ENT:
                 return 0;
             case HRM_M: case HRM_V: // SYM
+                return FLOW_TAP_TERM - 40; // 60ms
             case HRM_D: case HRM_K: // ctrl
                 return FLOW_TAP_TERM - 25; // 75ms
             default:
@@ -420,7 +437,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
     // letters are excluded, e.g. for "NN" and "ZZ" in Vim.
     // NN, SS, ZZ are excluded
     switch (keycode) {
-      case KC_A ... KC_Z:
+      case KC_A ... KC_Y:
         if ((*remembered_mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
           *remembered_mods &= ~MOD_MASK_SHIFT;
         }
@@ -601,7 +618,8 @@ void housekeeping_task_user(void) {
 }
 
 /* customize tap/hold behavior */
-static void process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
+// returning true means already handled
+static bool process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
     if (record->tap.count) {
         /* tap */
         if (record->event.pressed) {
@@ -610,13 +628,16 @@ static void process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
             set_last_keycode(tap);
 #endif /* REPEAT_KEY_ENABLE */
         }
+        return true;
     } else if (mod) {
         /* hold */
         if (record->event.pressed)
             register_mods(mod);
         else
             unregister_mods(mod);
+        return true;
     }
+    return false;
 }
 
 #ifdef STATUS_LED_4
@@ -650,7 +671,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t all_mods = (mods | get_weak_mods() | get_oneshot_mods());
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t ctrl_mods = all_mods & MOD_MASK_CTRL;
-  const uint8_t alt_mods = all_mods & MOD_MASK_ALT;
   const uint8_t layer = read_source_layers_cache(record->event.key);
   static uint8_t swapp_mod = 0;
 
@@ -740,17 +760,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
 
     case NAV_A:
-         process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), MOD_BIT_LGUI);
-         return false;
+         if (process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), 0))
+             return false;
+         break;
     case NAV_S:
-         process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), MOD_BIT_LALT);
-        return false;
+         if (process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), 0))
+             return false;
+         break;
     case NAV_D:
-         process_mod_tap(record, C(KC_D), MOD_BIT_LCTRL);
-        return false;
+         if (process_mod_tap(record, C(KC_D), 0))
+             return false;
+         break;
     case NAV_F:
-         process_mod_tap(record, C(KC_F), MOD_BIT_LSHIFT);
-        return false;
+         if (process_mod_tap(record, C(KC_F), 0))
+             return false;
+         break;
+
+    case SYM_EXLM:
+    case SYM_ASTR:
+    case SYM_RPRN:
+    case SYM_DQUO:
+         if (process_mod_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode)), 0))
+             return false;
+         break;
 
     // case C(KC_T): /* reverse ctrl-t for vim tab back */
     // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell
@@ -822,14 +854,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
+    if (keycode == SYM_USR) {
+        if (record->tap.count) {
+            keycode = USRNAME;
+#ifdef REPEAT_KEY_ENABLE
+            set_last_keycode(keycode);
+#endif
+        }
+    }
+
     switch (keycode) {
         case ARROW:
           clear_mods();
           SEND_STRING(ctrl_mods ?
-                  (alt_mods ?
+                  (shift_mods ?
                       "<=>" :
                       "=>") :
-                  (alt_mods ?
+                  (shift_mods ?
                       "<->" :
                       "->"));
           set_mods(mods);
