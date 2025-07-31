@@ -15,8 +15,8 @@ enum custom_keycodes {
   // OSM_SFT, // cancelable OSM(SFT)
 
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
+  CZ,
   CA,
-  CS,
   CD,
   CF,
 
@@ -97,42 +97,40 @@ enum {
 };
 
 #define HRM_A      LGUI_T(KC_A)
-#define HRM_S      LALT_T(KC_S)
+#define HRM_S      LT(SYM, KC_S)
 #define HRM_D      LCTL_T(KC_D)
 #define HRM_F      LSFT_T(KC_F)
 
-#define HRM_Z      LT(TMUX, KC_Z)
+#define HRM_Z      LALT_T(KC_Z)
 #define HRM_X      LT(EXT, KC_X)
-#define HRM_V      LT(SYM, KC_V)
 
 #define HRM_J      RSFT_T(KC_J)
 #define HRM_K      RCTL_T(KC_K)
-#define HRM_L      LALT_T(KC_L)
+#define HRM_L      LT(SYM, KC_L)
 #define HRM_SCLN   RGUI_T(KC_SCLN)
 
-#define HRM_M      LT(SYM, KC_M)
 #define HRM_COMM   LT(DIR, KC_COMM)
 #define HRM_DOT    LT(DIR, KC_DOT)
-#define HRM_SLSH   LT(TMUX, KC_SLSH)
+#define HRM_SLSH   LALT_T(KC_SLSH)
 
+#define HRM_UNDS   LT(TMUX, KC_UNDS)
+#define HRM_QUOT   LT(TMUX, KC_QUOT)
+
+// mod-tap at NAV layer
+// useful for mod is required when NAV layer is locked
+#define NAV_Z      LALT_T(CZ)
 #define NAV_A      LGUI_T(CA)
-#define NAV_S      LALT_T(CS)
 #define NAV_D      LCTL_T(CD)
 #define NAV_F      LSFT_T(CF)
-
-#define SYM_EXLM   LGUI_T(KC_EXLM)
-#define SYM_ASTR   LALT_T(KC_ASTR)
-#define SYM_SLSH   LCTL_T(KC_SLSH)
-#define SYM_USR    LSFT_T(USRNAME)
-
-#define SYM_SPC    RSFT_T(KC_SPC)
-#define SYM_RPRN   RCTL_T(KC_RPRN)
-#define SYM_SCLN   LALT_T(KC_SCLN)
-#define SYM_DQUO   RGUI_T(KC_DQUO)
 
 // #define NAV_SFT   LT(NAV, OSM_SFT)
 // #define HRM_REP   LT(NAV, QK_REP)
 #define HRM_ENT   LT(NAV, KC_ENT)
+#define HRM_V     LT(NAV, KC_V)
+
+// switch to NAV layer with modifier held
+#define NAV_EQL   LT(NAV, KC_EQL)  // shift
+#define NAV_SLSH  LT(NAV, KC_SLSH) // ctrl
 
 static bool isMacOS = false;
 #if defined(COMMUNITY_MODULE_SELECT_WORD_ENABLE) && defined(SELECT_WORD_OS_DYNAMIC)
@@ -149,24 +147,24 @@ bool process_detected_host_os_user(os_variant_t os) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [QWERTY] = LAYOUT_LR(
-            KC_ESC,  KC_1,   KC_2,   KC_3,   KC_4,    KC_5,
-            KC_TAB,  KC_Q,   KC_W,   KC_E,   KC_R,    KC_T,
-            KC_UNDS, HRM_A,  HRM_S,  HRM_D,  HRM_F,   KC_G,
-            SWIME,   HRM_Z,  HRM_X,  KC_C,   HRM_V,   KC_B,
-                                             QK_REP,  HRM_ENT,
+            KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,  KC_5,
+            KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,  KC_T,
+            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F, KC_G,
+            SWIME,    HRM_Z,  HRM_X,  KC_C,  HRM_V, KC_B,
+                                             QK_REP, HRM_ENT,
 
-                      KC_6,   KC_7,   KC_8,     KC_9,    KC_0,     KC_EQL,
-                      KC_Y,   KC_U,   KC_I,     KC_O,    KC_P,     KC_MINS,
-                      KC_H,   HRM_J,  HRM_K,    HRM_L,   HRM_SCLN, KC_QUOT,
-                      KC_N,   HRM_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
+                      KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
+                      KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
+                      KC_H,    HRM_J, HRM_K,    HRM_L,   HRM_SCLN, HRM_QUOT,
+                      KC_N,    KC_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
                       KC_BSPC, KC_SPC
             ),
 
     [NAV] = LAYOUT_LR(
             _______, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
             _______, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
-            XXXXXXX, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
-            XXXXXXX, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            XXXXXXX, NAV_A,   C(KC_S), NAV_D,   NAV_F,   C(KC_G),
+            XXXXXXX, NAV_Z,   C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, KC_ENT,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
@@ -189,24 +187,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        split symbol layer to two hands to reduce finger travel distance
      */
     [SYM] = LAYOUT_LR(
-            _______, _______,  _______,  _______,  _______, _______,
-            _______, KC_GRV ,  KC_LABK,  KC_RABK,  KC_MINS, KC_PIPE,
-            _______, SYM_EXLM, SYM_ASTR, SYM_SLSH, KC_EQL,  KC_AMPR,
-            XXXXXXX, KC_TILD,  KC_PLUS,  KC_LBRC,  KC_RBRC, KC_PERC,
-                                                   SYM_USR, _______,
+            _______, _______, _______, _______,  _______, _______,
+            _______, KC_GRV , KC_LABK, KC_RABK,  KC_MINS, KC_PIPE,
+            _______, KC_EXLM, KC_ASTR, NAV_SLSH, NAV_EQL, KC_AMPR,
+            XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
+                                                USRNAME, _______,
 
-                     _______, _______, _______,  _______,  _______,  _______,
-                     KC_CIRC, KC_LCBR, KC_RCBR,  KC_DLR,   ARROW  ,  _______,
-                     KC_HASH, KC_LPRN, SYM_RPRN, SYM_SCLN, SYM_DQUO, UPDIR,
-                     KC_AT,   KC_COLN, KC_COMM,  KC_DOT,   KC_QUOT,  KC_BSLS,
-                     _______, SYM_SPC
+                     _______, _______, _______, _______, _______, _______,
+                     KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW  , _______,
+                     KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, UPDIR,
+                     KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, KC_BSLS,
+                     _______, _______
             ),
 
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
@@ -248,7 +246,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              _______, _______, _______, _______, _______, _______,
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-             _______, XXXXXXX, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
+             _______, KC_LALT, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
                                                  OM_SLOW, XXXXXXX,
 
                       _______, _______, _______, _______, _______, _______,
@@ -262,15 +260,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
-const uint16_t PROGMEM combo_m_comm[] = {HRM_M, HRM_COMM, COMBO_END};
-const uint16_t PROGMEM combo_hj[] = {HRM_J, KC_H, COMBO_END};
+const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(combo_cv, CW_TOGG),
     COMBO(combo_fg, OSL(FN)),
-    COMBO(combo_m_comm, SWIME),
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-    COMBO(combo_hj, QK_AREP),
+    COMBO(combo_m_comm, QK_AREP),
 #endif
 };
 #endif /* COMBO_ENABLE */
@@ -293,7 +289,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         case HRM_A: case HRM_SCLN:
             return isMacOS;
         // disable permissive hold for alt
-        case HRM_S: case HRM_L:
+        case HRM_Z: case HRM_SLSH:
             return false;
     }
     return true;
@@ -360,6 +356,16 @@ bool get_chordal_hold(
                     break;
             }
             break;
+
+        case HRM_S:
+            switch(other_keycode) {
+                // for NAV + modifiers
+                case HRM_F:
+                case HRM_D:
+                    return true;
+            }
+            break;
+
         case HRM_X:
             switch (get_tap_keycode(other_keycode)) {
                 // for APPPREV/APPNEXT
@@ -396,21 +402,16 @@ static bool is_typing(uint16_t keycode) {
 
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                            uint16_t prev_keycode) {
-
-    if ((get_oneshot_mods() & MOD_MASK_SHIFT) || is_caps_word_on())
-        return FLOW_TAP_TERM;
-
     if (is_typing(prev_keycode) &&
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
-            // case NAV_SFT:        // NAV
-            case HRM_ENT:
+            case HRM_ENT:           // NAV
                 return 0;
-            case HRM_M: case HRM_V: // SYM
-                return FLOW_TAP_TERM - 40; // 60ms
+            case HRM_S: case HRM_L: // SYM
             case HRM_D: case HRM_K: // ctrl
-                return FLOW_TAP_TERM - 25; // 75ms
+            case HRM_V:             // NAV
+                return FLOW_TAP_TERM - 40; // 60ms
             default:
                 return FLOW_TAP_TERM; // 100ms
         }
@@ -617,20 +618,20 @@ void housekeeping_task_user(void) {
     osm_shift_timer_check();
 }
 
-/* customize tap/hold behavior */
+// customize tap/hold behavior
 // returning true means already handled
 static bool process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
     if (record->tap.count) {
-        /* tap */
+        // tap
         if (record->event.pressed) {
             tap_code16_delay(tap, TAP_CODE_DELAY);
 #ifdef REPEAT_KEY_ENABLE
             set_last_keycode(tap);
-#endif /* REPEAT_KEY_ENABLE */
+#endif // REPEAT_KEY_ENABLE
         }
         return true;
     } else if (mod) {
-        /* hold */
+        // hold
         if (record->event.pressed)
             register_mods(mod);
         else
@@ -638,6 +639,16 @@ static bool process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
         return true;
     }
     return false;
+}
+
+static bool add_mod_when_held(keyrecord_t *record, uint8_t mod) {
+    if (record->tap.count)
+        return false;
+    if (record->event.pressed)
+        register_mods(mod);
+    else
+        unregister_mods(mod);
+    return true;
 }
 
 #ifdef STATUS_LED_4
@@ -763,12 +774,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          if (process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), 0))
              return false;
          break;
-    case NAV_S:
-         if (process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), 0))
-             return false;
-         break;
     case NAV_D:
          if (process_mod_tap(record, C(KC_D), 0))
+             return false;
+         break;
+    case NAV_Z:
+         if (process_mod_tap(record, C(KC_Z), 0))
              return false;
          break;
     case NAV_F:
@@ -776,12 +787,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              return false;
          break;
 
-    case SYM_EXLM:
-    case SYM_ASTR:
-    case SYM_RPRN:
-    case SYM_DQUO:
+    case HRM_UNDS:
          if (process_mod_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode)), 0))
              return false;
+         break;
+
+    case NAV_SLSH:
+         add_mod_when_held(record, MOD_BIT_LCTRL);
+         break;
+    case NAV_EQL:
+         add_mod_when_held(record, MOD_BIT_LSHIFT);
          break;
 
     // case C(KC_T): /* reverse ctrl-t for vim tab back */
@@ -790,6 +805,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // case C(KC_V): /* reserve ctrl-v for vim block mode */
     // case C(KC_B): /* reserve ctrl-b for page up in vim
     case C(KC_X):
+    case C(KC_S):
         /* press gui-<key> on MacOS */
         if (isMacOS && layer == NAV && record->event.pressed) {
             keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
@@ -802,20 +818,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
 
     /*
-    case NAV_SFT:
-        if (record->tap.count) {
-            if (record->event.pressed) {
-                if (get_oneshot_mods() & MOD_MASK_SHIFT) {
-                    del_oneshot_mods(MOD_MASK_SHIFT);
-                } else {
-                    add_oneshot_mods(MOD_BIT_LSHIFT);
-                    osm_shift_refresh();
-                }
-            }
-            return false;
-        }
-        break;
-
     case HRM_REP:
         if (record->tap.count) {
             repeat_key_invoke(&record->event);
@@ -851,15 +853,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               set_last_keycode(keycode);
 #endif
               break;
-        }
-    }
-
-    if (keycode == SYM_USR) {
-        if (record->tap.count) {
-            keycode = USRNAME;
-#ifdef REPEAT_KEY_ENABLE
-            set_last_keycode(keycode);
-#endif
         }
     }
 
