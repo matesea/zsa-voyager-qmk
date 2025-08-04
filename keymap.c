@@ -17,6 +17,7 @@ enum custom_keycodes {
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
   CZ,
   CA,
+  CS,
   CD,
   CF,
 
@@ -120,6 +121,7 @@ enum {
 // useful for mod is required when NAV layer is locked
 #define NAV_Z      LALT_T(CZ)
 #define NAV_A      LGUI_T(CA)
+#define NAV_S      LALT_T(CS)
 #define NAV_D      LCTL_T(CD)
 #define NAV_F      LSFT_T(CF)
 
@@ -161,9 +163,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
-            _______, G(KC_Z), G(KC_W), XXXXXXX, G(KC_R), XXXXXXX,
+            _______, G(KC_Z), G(KC_W), XXXXXXX, XXXXXXX, XXXXXXX,
             _______, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
-            XXXXXXX, NAV_A,   C(KC_S), NAV_D,   NAV_F,   C(KC_G),
+            XXXXXXX, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
             XXXXXXX, NAV_Z,   C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, KC_ENT,
 
@@ -261,12 +263,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_hj[] = {KC_H, HRM_J, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(combo_cv, CW_TOGG),
     COMBO(combo_fg, OSL(FN)),
+    COMBO(combo_m_comm, SWIME),
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-    COMBO(combo_m_comm, QK_AREP),
+    COMBO(combo_hj, QK_AREP),
 #endif
 };
 #endif /* COMBO_ENABLE */
@@ -774,6 +778,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          if (process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), 0))
              return false;
          break;
+    case NAV_S:
+         if (process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), 0))
+             return false;
+         break;
     case NAV_D:
          if (process_mod_tap(record, C(KC_D), 0))
              return false;
@@ -800,14 +808,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     // case C(KC_T): /* reverse ctrl-t for vim tab back */
-    // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell
-    // case C(KC_C): /* reserve ctrl-c to interrupt current input
+    // case C(KC_Z): /* reserve ctrl-z to stop forground app in shell */
+    // case C(KC_C): /* reserve ctrl-c to interrupt current input */
     // case C(KC_V): /* reserve ctrl-v for vim block mode */
-    // case C(KC_B): /* reserve ctrl-b for page up in vim
+    // case C(KC_B): /* reserve ctrl-b for page up in vim */
     case C(KC_X):
-    case C(KC_S):
         /* press gui-<key> on MacOS */
-        if (isMacOS && layer == NAV && record->event.pressed) {
+        if (isMacOS && record->event.pressed) {
             keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
             tap_code16_delay(G(keycode), TAP_CODE_DELAY);
 #ifdef REPEAT_KEY_ENABLE
@@ -827,13 +834,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     */
 
     case HRM_COMM: // HRM_COMM = press shift + LT(DIR) when held
-        if (!record->tap.count) {
-            if (record->event.pressed) {
-                register_mods(MOD_BIT_LSHIFT);
-                wait_ms(TAP_CODE_DELAY);
-            } else
-                unregister_mods(MOD_BIT_LSHIFT);
-        }
+        add_mod_when_held(record, MOD_BIT_LSHIFT);
         break;
   }
 

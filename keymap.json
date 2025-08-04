@@ -1,6 +1,5 @@
 {
   "modules": [
-    "getreuer/orbital_mouse",
-    "getreuer/speculative_hold"
+    "getreuer/orbital_mouse"
   ]
 }
