@@ -13,6 +13,7 @@ enum custom_keycodes {
   APPPREV, // swap forground app to previous
   APPNEXT, // swap forground app to next
   // OSM_SFT, // cancelable OSM(SFT)
+  RGBHRND, // random select effect
 
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
   CZ,
@@ -193,7 +194,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_GRV , KC_LABK, KC_RABK,  KC_MINS, KC_PIPE,
             _______, KC_EXLM, KC_ASTR, NAV_SLSH, NAV_EQL, KC_AMPR,
             XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
-                                                USRNAME, _______,
+                                                 USRNAME, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW  , _______,
@@ -209,10 +210,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 _______, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  DB_TOGG,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  UG_TOGG,
-                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10,  QK_RBT,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_RBT, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11, LUMINO,
+                     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10, RGBHRND,
                      _______, QK_LLCK
             ),
 
@@ -317,12 +318,37 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
 }
 #endif /* QUICK_TAP_TERM_PER_KEY */
 
-#ifdef RGB_MATRIX_ENABLE
-void keyboard_post_init_user(void) {
-  rgb_matrix_mode_noeeprom(RGB_MATRIX_TYPING_HEATMAP);
-  rgb_matrix_enable_noeeprom();
+#ifdef COMMUNITY_MODULE_PALETTEFX_ENABLE
+static uint8_t myrand(void) {
+  static uint16_t state = 1;
+#ifdef __CHIBIOS__  // Use high-res timer on ChibiOS.
+  state += (uint16_t)chVTGetSystemTimeX();
+#else
+  state += timer_read();
+#endif
+  state *= UINT16_C(36563);
+  return state >> 8;
 }
-#endif /* RGB_MATRIX_ENABLE */
+
+static void lighting_set_palette(uint8_t palette) {
+  if (lumino_get_value() == 0) {
+    lumino_cycle_3_state();
+  }
+  rgb_matrix_enable_noeeprom();
+  rgb_matrix_sethsv_noeeprom(
+      RGB_MATRIX_HUE_STEP * palette, 255, rgb_matrix_get_val());
+}
+
+static void lighting_preset(uint8_t effect, uint8_t palette) {
+  lighting_set_palette(palette);
+  rgb_matrix_mode_noeeprom(effect);
+  rgb_matrix_set_speed_noeeprom(80);
+}
+
+void keyboard_post_init_user(void) {
+  lighting_preset(RGB_MATRIX_CUSTOM_PALETTEFX_FLOW + (myrand() % 4), myrand());
+}
+#endif /* COMMUNITY_MODULE_PALETTEFX_ENABLE */
 
 #ifdef CHORDAL_HOLD
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
@@ -411,11 +437,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
             case HRM_ENT:           // NAV
-                return 0;
+                // return 0;
             case HRM_S: case HRM_L: // SYM
             case HRM_D: case HRM_K: // ctrl
             case HRM_V:             // NAV
-                return FLOW_TAP_TERM - 40; // 60ms
+                return 0;
             default:
                 return FLOW_TAP_TERM; // 100ms
         }
@@ -886,6 +912,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               TAP_CODE_DELAY);
           set_mods(mods);
           return false;
+
+#ifdef COMMUNITY_MODULE_PALETTEFX_ENABLE
+        case RGBHRND:
+          lighting_preset(RGB_MATRIX_CUSTOM_PALETTEFX_FLOW + (myrand() % 4), myrand());
+          return false;
+#endif /* COMMUNITY_MODULE_PALETTEFX_ENABLE */
     }
   }
   return true;
