@@ -437,11 +437,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
         switch (keycode) {
             case HRM_F: case HRM_J: // shift
             case HRM_ENT:           // NAV
-                // return 0;
+                return 0;
             case HRM_S: case HRM_L: // SYM
             case HRM_D: case HRM_K: // ctrl
             case HRM_V:             // NAV
-                return 0;
+                return FLOW_TAP_TERM - 40;
             default:
                 return FLOW_TAP_TERM; // 100ms
         }
