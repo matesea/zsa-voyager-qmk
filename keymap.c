@@ -717,11 +717,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   dlog_record(keycode, record);
 
-  // XXX: limit osm shift only effective on typing layer
-  if ((get_oneshot_mods() & MOD_MASK_SHIFT) &&
-          layer >= SYM)
-      del_oneshot_mods(MOD_MASK_SHIFT);
-
   // XXX: WA to address unintended shift
   if (layer == SYM && record->event.pressed) {
       clear_weak_mods();
@@ -826,10 +821,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              return false;
          break;
 
-    case NAV_SLSH:
+    case NAV_SLSH: // NAV_SLSH = hold ctrl + LT(NAV)
          add_mod_when_held(record, MOD_BIT_LCTRL);
          break;
-    case NAV_EQL:
+
+    case NAV_EQL:  // NAV_EQL = hold shift + LT(NAV)
+    case HRM_COMM: // HRM_COMM = hold shift + LT(DIR)
          add_mod_when_held(record, MOD_BIT_LSHIFT);
          break;
 
@@ -858,10 +855,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
     */
-
-    case HRM_COMM: // HRM_COMM = press shift + LT(DIR) when held
-        add_mod_when_held(record, MOD_BIT_LSHIFT);
-        break;
   }
 
   if (record->event.pressed) {
