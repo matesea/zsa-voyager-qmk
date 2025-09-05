@@ -15,11 +15,13 @@ enum custom_keycodes {
   // OSM_SFT, // cancelable OSM(SFT)
   RGBHRND, // random select effect
 
+#ifdef POINTING_DEVICE_ENABLE
   DRAG_SCROLL,  TOGGLE_SCROLL,
   NAVIGATOR_INC_CPI,
   NAVIGATOR_DEC_CPI,
   NAVIGATOR_TURBO,
   NAVIGATOR_AIM,
+#endif
 
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
   CZ,
@@ -256,11 +258,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
              _______, KC_LALT, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
-                                                 XXXXXXX, XXXXXXX,
+                                                 OM_SLOW, XXXXXXX,
 
                       _______, _______, _______, _______, _______, _______,
-                      MS_WHLU, MS_BTN1, XXXXXXX, MS_BTN2, XXXXXXX, _______,
-                      MS_WHLD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                      OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
+                      OM_W_D , OM_L   , OM_D   , OM_R   , OM_SLOW, _______,
                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                       KC_WBAK, QK_LLCK
      ),
@@ -712,6 +714,7 @@ static bool toggle_osm_shift_for_next_repeat_key(keyrecord_t *record)
 }
 #endif /* REPEAT_KEY_ENABLE */
 
+#ifdef POINTING_DEVICE_ENABLE
 extern bool set_scrolling;
 extern bool navigator_turbo;
 extern bool navigator_aim;
@@ -727,6 +730,7 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
   }
   return is_mouse_record_user(keycode, record);
 }
+#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
@@ -748,7 +752,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (swapp_mod) {
     // release swapp mod when LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((keycode == HRM_X && !record->tap.count && !record->event.pressed) ||
+    if ((keycode == HRM_X && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -877,6 +881,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
     */
+#ifdef POINTING_DEVICE_ENABLE
     case DRAG_SCROLL:
       if (record->event.pressed) {
         set_scrolling = true;
@@ -914,6 +919,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         pointing_device_set_cpi(0);
     }
     return false;
+#endif
   }
 
   if (record->event.pressed) {

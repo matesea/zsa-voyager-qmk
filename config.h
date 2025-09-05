@@ -64,7 +64,9 @@
 //     |               |               |               |           |
 // t = 0.000           1.024           2.048           3.072       3.840 s
 
+#ifdef POINTING_DEVICE_ENABLE
 #define MOUSE_EXTENDED_REPORT
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 3
 #define NAVIGATOR_SCROLL_DIVIDER 24
+#endif
