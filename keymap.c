@@ -15,6 +15,14 @@ enum custom_keycodes {
   // OSM_SFT, // cancelable OSM(SFT)
   RGBHRND, // random select effect
 
+#ifdef POINTING_DEVICE_ENABLE
+  DRAG_SCROLL,  TOGGLE_SCROLL,
+  NAVIGATOR_INC_CPI,
+  NAVIGATOR_DEC_CPI,
+  NAVIGATOR_TURBO,
+  NAVIGATOR_AIM,
+#endif
+
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
   CZ,
   CA,
@@ -500,7 +508,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 if (mods & MOD_MASK_SHIFT)
                     return C(KC_TAB);
                 else
-                    return LCS(KC_TAB);
+                    return C(S(KC_TAB));
 
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
@@ -706,6 +714,24 @@ static bool toggle_osm_shift_for_next_repeat_key(keyrecord_t *record)
 }
 #endif /* REPEAT_KEY_ENABLE */
 
+#ifdef POINTING_DEVICE_ENABLE
+extern bool set_scrolling;
+extern bool navigator_turbo;
+extern bool navigator_aim;
+void pointing_device_init_user(void) {
+    set_auto_mouse_enable(true);
+}
+bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
+  switch (keycode) {
+    case NAVIGATOR_INC_CPI ... NAVIGATOR_AIM:
+    case DRAG_SCROLL:
+    case TOGGLE_SCROLL:
+      return true;
+  }
+  return is_mouse_record_user(keycode, record);
+}
+#endif
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   const uint8_t mods = get_mods();
@@ -726,7 +752,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (swapp_mod) {
     // release swapp mod when LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((keycode == HRM_X && !record->tap.count && !record->event.pressed) ||
+    if ((keycode == HRM_X && !record->event.pressed) ||
             (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
@@ -855,6 +881,45 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         break;
     */
+#ifdef POINTING_DEVICE_ENABLE
+    case DRAG_SCROLL:
+      if (record->event.pressed) {
+        set_scrolling = true;
+      } else {
+        set_scrolling = false;
+      }
+      return false;
+    case TOGGLE_SCROLL:
+      if (record->event.pressed) {
+        set_scrolling = !set_scrolling;
+      }
+      return false;
+    break;
+  case NAVIGATOR_TURBO:
+    if (record->event.pressed) {
+      navigator_turbo = true;
+    } else {
+      navigator_turbo = false;
+    }
+    return false;
+  case NAVIGATOR_AIM:
+    if (record->event.pressed) {
+      navigator_aim = true;
+    } else {
+      navigator_aim = false;
+    }
+    return false;
+  case NAVIGATOR_INC_CPI:
+    if (record->event.pressed) {
+        pointing_device_set_cpi(1);
+    }
+    return false;
+  case NAVIGATOR_DEC_CPI:
+    if (record->event.pressed) {
+        pointing_device_set_cpi(0);
+    }
+    return false;
+#endif
   }
 
   if (record->event.pressed) {

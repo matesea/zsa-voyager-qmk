@@ -1,5 +1,6 @@
 {
   "modules": [
+    "zsa/defaults",
     "getreuer/orbital_mouse",
     "getreuer/lumino",
     "getreuer/palettefx"
