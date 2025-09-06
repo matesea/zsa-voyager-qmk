@@ -16,12 +16,14 @@ enum custom_keycodes {
   RGBHRND, // random select effect
 
 #ifdef POINTING_DEVICE_ENABLE
-  DRAG_SCROLL,  TOGGLE_SCROLL,
-  NAVIGATOR_INC_CPI,
-  NAVIGATOR_DEC_CPI,
-  NAVIGATOR_TURBO,
-  NAVIGATOR_AIM,
-#endif
+  // navigator trackball specific
+  SCRL_TOG, // toggle scroll drag
+  SCRL_DRG, // hold to enable scroll drag
+  CPI_INC, // increase cpi
+  CPI_DEC, // decrease cpi
+  NAV_TUR, // hold to enable trackball turbo mode
+  NAV_AIM, // hold to enable trackball aim mode
+#endif /* POINTING_DEVICE_ENABLE */
 
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
   CZ,
@@ -253,7 +255,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, _______
             ),
 
-     [EXT] = LAYOUT_LR(  // Mouse and extras.
+#ifdef POINTING_DEVICE_ENABLE
+     [EXT] = LAYOUT_LR(  // navigator trackball  and extras.
+             _______, _______, _______, _______, _______, _______,
+             _______, XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX,
+             _______, XXXXXXX, XXXXXXX, NAV_TUR, NAV_AIM, SCRL_TOG,
+             _______, XXXXXXX, XXXXXXX, APPPREV, APPNEXT, SCRL_DRG,
+                                                 MS_BTN1, MS_BTN2,
+
+                      _______, _______, _______, _______, _______, _______,
+                      XXXXXXX, MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, _______,
+                      XXXXXXX, MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX, _______,
+                      XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                      XXXXXXX, QK_LLCK
+     ),
+#else
+     [EXT] = LAYOUT_LR(  // Orbit Mouse and extras.
              _______, _______, _______, _______, _______, _______,
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
@@ -266,6 +283,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                       KC_WBAK, QK_LLCK
      ),
+#endif /* POINTING_DEVICE_ENABLE */
 };
 
 #if defined(COMBO_ENABLE)
@@ -723,14 +741,12 @@ void pointing_device_init_user(void) {
 }
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
   switch (keycode) {
-    case NAVIGATOR_INC_CPI ... NAVIGATOR_AIM:
-    case DRAG_SCROLL:
-    case TOGGLE_SCROLL:
+    case SCRL_TOG ... NAV_AIM:
       return true;
   }
   return is_mouse_record_user(keycode, record);
 }
-#endif
+#endif /* POINTING_DEVICE_ENABLE */
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
@@ -882,44 +898,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
     */
 #ifdef POINTING_DEVICE_ENABLE
-    case DRAG_SCROLL:
-      if (record->event.pressed) {
-        set_scrolling = true;
-      } else {
-        set_scrolling = false;
-      }
+    case SCRL_DRG:
+      set_scrolling = record->event.pressed;
       return false;
-    case TOGGLE_SCROLL:
-      if (record->event.pressed) {
-        set_scrolling = !set_scrolling;
-      }
+    case NAV_TUR:
+      navigator_turbo = record->event.pressed;
       return false;
-    break;
-  case NAVIGATOR_TURBO:
-    if (record->event.pressed) {
-      navigator_turbo = true;
-    } else {
-      navigator_turbo = false;
-    }
-    return false;
-  case NAVIGATOR_AIM:
-    if (record->event.pressed) {
-      navigator_aim = true;
-    } else {
-      navigator_aim = false;
-    }
-    return false;
-  case NAVIGATOR_INC_CPI:
-    if (record->event.pressed) {
-        pointing_device_set_cpi(1);
-    }
-    return false;
-  case NAVIGATOR_DEC_CPI:
-    if (record->event.pressed) {
-        pointing_device_set_cpi(0);
-    }
-    return false;
-#endif
+    case NAV_AIM:
+      navigator_aim = record->event.pressed;
+      return false;
+#endif /* POINTING_DEVICE_ENABLE */
   }
 
   if (record->event.pressed) {
@@ -976,6 +964,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           lighting_preset(RGB_MATRIX_CUSTOM_PALETTEFX_FLOW + (myrand() % 4), myrand());
           return false;
 #endif /* COMMUNITY_MODULE_PALETTEFX_ENABLE */
+#ifdef POINTING_DEVICE_ENABLE
+        case SCRL_TOG:
+            set_scrolling = !set_scrolling;
+            return false;
+        case CPI_INC:
+            pointing_device_set_cpi(1);
+            return false;
+        case CPI_DEC:
+            pointing_device_set_cpi(0);
+            return false;
+#endif /* POINTING_DEVICE_ENABLE */
     }
   }
   return true;
