@@ -72,6 +72,17 @@ enum custom_keycodes {
   TMUX_F,    // C-A f, select pane with fzf
   TMUX_Z,    // C-A z, zoom in current pane
 
+  TMUX_0,
+  TMUX_1,
+  TMUX_2,
+  TMUX_3,
+  TMUX_4,
+  TMUX_5,
+  TMUX_6,
+  TMUX_7,
+  TMUX_8,
+  TMUX_9,
+
   TMUX_H,   // C-A h, select left pane
   TMUX_K,   // C-A k, select down pane
   TMUX_J,   // C-A j, select up pane
@@ -228,13 +239,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, TMUX_W,  XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, TMUX_A,  TMUX_S,  XXXXXXX, TMUX_F,  TMUX_G,
-            _______, TMUX_Z,  TMUX_X,  TMUX_C,  TMUX_V,  XXXXXXX,
-                                                XXXXXXX, XXXXXXX,
+            _______, TMUX_1,  TMUX_2, TMUX_3,  TMUX_4,  TMUX_5,
+            _______, XXXXXXX, TMUX_W, XXXXXXX, XXXXXXX, XXXXXXX,
+            _______, TMUX_A,  TMUX_S, XXXXXXX, TMUX_F,  TMUX_G,
+            _______, TMUX_Z,  TMUX_X, TMUX_C,  TMUX_V,  XXXXXXX,
+                                               XXXXXXX, XXXXXXX,
 
-                       _______,   _______,   _______,   _______,   _______,   _______,
+                       TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    _______,
                        TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   TMUX_RBRC, _______,
                        TMUX_H,    TMUX_J,    TMUX_K,    TMUX_L,    TMUX_SLSH, _______,
                        TMUX_LCBR, TMUX_LBRC, TMUX_RBRC, TMUX_RCBR, TMUX_QUES, _______,
@@ -242,15 +253,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [DIR] = LAYOUT_LR(
-            _______,   _______, _______, _______, _______, _______,
-            C(KC_TAB), RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
-            XXXXXXX,   RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
-            XXXXXXX,   XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
-                                                  _______, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
+            _______, RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
+            _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
+                                                _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
@@ -264,9 +275,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  MS_BTN1, MS_BTN2,
 
                       _______, _______, _______, _______, _______, _______,
-                      XXXXXXX, MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, _______,
-                      XXXXXXX, MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX, _______,
+                      MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______
                       XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                      MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                       XXXXXXX, QK_LLCK
      ),
 #else
@@ -275,13 +286,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
              _______, KC_LALT, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
-                                                 OM_SLOW, XXXXXXX,
+                                                 MS_BTN1, MS_BTN2,
 
                       _______, _______, _______, _______, _______, _______,
                       OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
                       OM_W_D , OM_L   , OM_D   , OM_R   , OM_SLOW, _______,
                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                      KC_WBAK, QK_LLCK
+                      XXXXXXX, QK_LLCK
      ),
 #endif /* POINTING_DEVICE_ENABLE */
 };
@@ -430,6 +441,14 @@ bool get_chordal_hold(
                     return true;
             }
             break;
+
+        /*
+        case HRM_DOT:
+            switch (get_tap_keycode(other_keycode)) {
+                case KC_COMM:
+                    return true;
+            }
+        */
     }
     return get_chordal_hold_default(tap_hold_record, other_record);
 }
@@ -461,13 +480,28 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
     if (is_typing(prev_keycode) &&
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
+            case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+                const uint8_t mod = QK_MOD_TAP_GET_MODS(keycode);
+                if (mod & MOD_MASK_CS)
+                    return 0;
+                return FLOW_TAP_TERM;
+
+            case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+                const uint8_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
+                if (layer == NAV || layer == SYM)
+                    return 0;
+                return FLOW_TAP_TERM;
+#if 0
+            // determine FLOW_TAP_TERM per key
             case HRM_F: case HRM_J: // shift
             case HRM_ENT:           // NAV
-                return 0;
             case HRM_S: case HRM_L: // SYM
-            case HRM_D: case HRM_K: // ctrl
             case HRM_V:             // NAV
-                return FLOW_TAP_TERM - 40;
+                return 0;
+            case HRM_D: case HRM_K: // ctrl
+                return FLOW_TAP_TERM - 25;
+            */
+#endif
             default:
                 return FLOW_TAP_TERM; // 100ms
         }
@@ -518,15 +552,11 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     if ((mods & ~MOD_MASK_SHIFT) == 0) {
         switch (keycode) {
             case KC_TAB:
-                if (mods & MOD_MASK_SHIFT)
-                    return KC_TAB;
-                else
-                    return S(KC_TAB);
             case C(KC_TAB):
                 if (mods & MOD_MASK_SHIFT)
-                    return C(KC_TAB);
+                    return keycode;
                 else
-                    return C(S(KC_TAB));
+                    return S(keycode);
 
             /* reverse vim navigation */
             case LBRC_A: return RBRC_A;
@@ -613,6 +643,18 @@ static const struct keystring_t keystrings[] = {
     [TMUX_S - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
     [TMUX_F - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_F), TAP_CODE_DELAY},
     [TMUX_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},
+
+    [TMUX_0 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_0), TAP_CODE_DELAY},
+    [TMUX_1 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_1), TAP_CODE_DELAY},
+    [TMUX_2 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_2), TAP_CODE_DELAY},
+    [TMUX_3 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_3), TAP_CODE_DELAY},
+    [TMUX_4 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_4), TAP_CODE_DELAY},
+    [TMUX_5 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_5), TAP_CODE_DELAY},
+    [TMUX_6 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_6), TAP_CODE_DELAY},
+    [TMUX_7 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_7), TAP_CODE_DELAY},
+    [TMUX_8 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_8), TAP_CODE_DELAY},
+    [TMUX_9 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_9), TAP_CODE_DELAY},
+
     [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_LBRC), TAP_CODE_DELAY},
     [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_RBRC), TAP_CODE_DELAY},
 
