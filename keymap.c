@@ -12,7 +12,6 @@ enum custom_keycodes {
   SELLINE, // import from select_word.c, select line
   APPPREV, // swap forground app to previous
   APPNEXT, // swap forground app to next
-  // OSM_SFT, // cancelable OSM(SFT)
   RGBHRND, // random select effect
 
 #ifdef POINTING_DEVICE_ENABLE
@@ -43,19 +42,33 @@ enum custom_keycodes {
   LBRC_B, // previous buffer
   LBRC_C, // previous hunk
   LBRC_D, // previous diagnostics
+  LBRC_E,
   LBRC_F, // jump to highlight under cursor backward
   LBRC_G, // jump to any highlight backward
   LBRC_Q, // previous item in quickfix
+  LBRC_R,
+  LBRC_S,
   LBRC_T, // previous tab
+  LBRC_V,
+  LBRC_W,
+  LBRC_X,
+  LBRC_Z,
 
   RBRC_A,
   RBRC_B,
   RBRC_C,
   RBRC_D,
+  RBRC_E,
   RBRC_F,
   RBRC_G,
   RBRC_Q,
+  RBRC_R,
+  RBRC_S,
   RBRC_T,
+  RBRC_V,
+  RBRC_W,
+  RBRC_X,
+  RBRC_Z,
 
   /* tmux navigation */
   TMUX_A,    // C-a C-a, last window
@@ -147,10 +160,10 @@ enum {
 #define NAV_D      LCTL_T(CD)
 #define NAV_F      LSFT_T(CF)
 
-// #define NAV_SFT   LT(NAV, OSM_SFT)
 // #define HRM_REP   LT(NAV, QK_REP)
 #define HRM_ENT   LT(NAV, KC_ENT)
 #define HRM_V     LT(NAV, KC_V)
+#define OSM_SFT   OSM(MOD_LSFT)
 
 // switch to NAV layer with modifier held
 #define NAV_EQL   LT(NAV, KC_EQL)  // shift
@@ -175,7 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,  KC_T,
             HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F, KC_G,
             SWIME,    HRM_Z,  HRM_X,  KC_C,  HRM_V, KC_B,
-                                             QK_REP, HRM_ENT,
+                                             OSM_SFT, HRM_ENT,
 
                       KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
                       KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
@@ -254,9 +267,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [DIR] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, RBRC_Q,  XXXXXXX, XXXXXXX, XXXXXXX, RBRC_T,
-            _______, RBRC_A,  XXXXXXX, RBRC_D,  RBRC_F,  RBRC_G,
-            _______, XXXXXXX, TMUX_N,  RBRC_C,  XXXXXXX, RBRC_B,
+            XXXXXXX, RBRC_Q,  RBRC_W,  RBRC_E,  RBRC_R,  RBRC_T,
+            TMUX_N,  RBRC_A,  RBRC_S,  RBRC_D,  RBRC_F,  RBRC_G,
+            XXXXXXX, RBRC_Z,  RBRC_X,  RBRC_C,  RBRC_V,  RBRC_B,
                                                 _______, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -274,9 +287,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              _______, XXXXXXX, XXXXXXX, APPPREV, APPNEXT, SCRL_DRG,
                                                  MS_BTN1, MS_BTN2,
 
-                      _______, _______, _______, _______, _______, _______,
-                      MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______
-                      XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                      MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______,
+                      OM_W_U,  OM_BTN1, OM_U,    OM_BTN2, XXXXXXX, _______,
+                      OM_W_D,  OM_L,    OM_D,    OM_R,    XXXXXXX, _______,
                       MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                       XXXXXXX, QK_LLCK
      ),
@@ -488,7 +501,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 
             case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
                 const uint8_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
-                if (layer == NAV || layer == SYM)
+                if (layer == NAV || layer == SYM || layer == EXT)
                     return 0;
                 return FLOW_TAP_TERM;
 #if 0
@@ -559,23 +572,11 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                     return S(keycode);
 
             /* reverse vim navigation */
-            case LBRC_A: return RBRC_A;
-            case LBRC_B: return RBRC_B;
-            case LBRC_C: return RBRC_C;
-            case LBRC_D: return RBRC_D;
-            case LBRC_F: return RBRC_F;
-            case LBRC_G: return RBRC_G;
-            case LBRC_Q: return RBRC_Q;
-            case LBRC_T: return RBRC_T;
+            case LBRC_A ... LBRC_Z:
+                return keycode - LBRC_A + RBRC_A;
 
-            case RBRC_A: return LBRC_A;
-            case RBRC_B: return LBRC_B;
-            case RBRC_C: return LBRC_C;
-            case RBRC_D: return LBRC_D;
-            case RBRC_F: return LBRC_F;
-            case RBRC_G: return LBRC_G;
-            case RBRC_Q: return LBRC_Q;
-            case RBRC_T: return LBRC_T;
+            case RBRC_A ... RBRC_Z:
+                return keycode - RBRC_A + LBRC_A;
 
             /* select pane */
             case TMUX_J: return TMUX_K;
@@ -616,19 +617,33 @@ static const struct keystring_t keystrings[] = {
     [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
     [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
     [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
+    [LBRC_E - KEYSTR_MIN]   = {"[e", TAP_CODE_DELAY},
     [LBRC_F - KEYSTR_MIN]   = {"[f", TAP_CODE_DELAY},
     [LBRC_G - KEYSTR_MIN]   = {"[g", TAP_CODE_DELAY},
     [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
+    [LBRC_R - KEYSTR_MIN]   = {"[r", TAP_CODE_DELAY},
+    [LBRC_S - KEYSTR_MIN]   = {"[s", TAP_CODE_DELAY},
     [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
+    [LBRC_V - KEYSTR_MIN]   = {"[v", TAP_CODE_DELAY},
+    [LBRC_W - KEYSTR_MIN]   = {"[w", TAP_CODE_DELAY},
+    [LBRC_X - KEYSTR_MIN]   = {"[x", TAP_CODE_DELAY},
+    [LBRC_Z - KEYSTR_MIN]   = {"[z", TAP_CODE_DELAY},
 
     [RBRC_A - KEYSTR_MIN]   = {"]a", TAP_CODE_DELAY},
     [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
     [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
     [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
+    [RBRC_E - KEYSTR_MIN]   = {"]e", TAP_CODE_DELAY},
     [RBRC_F - KEYSTR_MIN]   = {"]f", TAP_CODE_DELAY},
     [RBRC_G - KEYSTR_MIN]   = {"]g", TAP_CODE_DELAY},
     [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
+    [RBRC_R - KEYSTR_MIN]   = {"]r", TAP_CODE_DELAY},
+    [RBRC_S - KEYSTR_MIN]   = {"]s", TAP_CODE_DELAY},
     [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
+    [RBRC_V - KEYSTR_MIN]   = {"]v", TAP_CODE_DELAY},
+    [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
+    [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
+    [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
@@ -699,23 +714,6 @@ static void dlog_record(uint16_t keycode, keyrecord_t* record) {
 #define dlog_record(keycode, record)
 #endif  // NO_DEBUG
 
-// cancel OSM SHIFT if no key pressed within timeout
-#define OSM_SHIFT_TIMEOUT 5000
-static uint32_t osm_shift_timer;
-static void osm_shift_refresh(void) {
-    osm_shift_timer = timer_read32();
-}
-
-static void osm_shift_timer_check(void) {
-    if ((get_oneshot_mods() & MOD_MASK_SHIFT) &&
-            (timer_elapsed32(osm_shift_timer) >= OSM_SHIFT_TIMEOUT))
-        del_oneshot_mods(MOD_MASK_SHIFT);
-}
-
-void housekeeping_task_user(void) {
-    osm_shift_timer_check();
-}
-
 // customize tap/hold behavior
 // returning true means already handled
 static bool process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
@@ -755,24 +753,6 @@ void oneshot_mods_changed_user(uint8_t mods) {
     STATUS_LED_4(!!(mods & MOD_MASK_SHIFT));
 }
 #endif
-
-#if defined(REPEAT_KEY_ENABLE)
-static bool toggle_osm_shift_for_next_repeat_key(keyrecord_t *record)
-{
-    // don't change for alt repeat key
-    if (get_repeat_key_count() <= 0)
-        return false;
-    if (record->event.pressed) {
-        if (get_oneshot_mods() & MOD_MASK_SHIFT) {
-            del_oneshot_mods(MOD_MASK_SHIFT);
-        } else {
-            add_oneshot_mods(MOD_LSFT);
-            osm_shift_refresh();
-        }
-    }
-    return true;
-}
-#endif /* REPEAT_KEY_ENABLE */
 
 #ifdef POINTING_DEVICE_ENABLE
 extern bool set_scrolling;
@@ -818,22 +798,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
   }
 
-#if defined(REPEAT_KEY_ENABLE)
   /* change repeat key as oneshot shift if following these keys */
   switch (get_tap_keycode(keycode)) {
+#if defined(REPEAT_KEY_ENABLE)
       case KC_ENT:
-      case KC_BSPC:
       case KC_SPC:
       case KC_TAB:
       case KC_MINS:
       case APPPREV:
       case APPNEXT:
       case SWIME:
-          if (toggle_osm_shift_for_next_repeat_key(record))
+          if (get_repeat_key_count() > 0) {
+              add_oneshot_mods(MOD_LSFT);
               return false;
+          }
           break;
+#endif /* REPEAT_KEY_ENABLE */
+      /* cancel OSM shift with BSPC */
+      case KC_BSPC:
+          if (get_oneshot_mods() & MOD_MASK_SHIFT) {
+              del_oneshot_mods(MOD_MASK_SHIFT);
+              return false;
+          }
+          break;
+
   }
-#endif
 
   switch (keycode) {
     case APPPREV:
@@ -956,7 +945,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // opposite directional movement when shift pressed
     if (shift_mods) {
         switch (keycode) {
-          case RBRC_A ... RBRC_T:
+          case RBRC_A ... RBRC_Z:
               keycode += LBRC_A - RBRC_A;
 #ifdef REPEAT_KEY_ENABLE
               set_last_keycode(keycode);

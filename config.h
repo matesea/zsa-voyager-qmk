@@ -9,7 +9,7 @@
 #define TAPPING_TERM 180
 #define TAPPING_TERM_PER_KEY
 #define PERMISSIVE_HOLD
-#define PERMISSIVE_HOLD_PER_KEY
+// #define PERMISSIVE_HOLD_PER_KEY
 #define QUICK_TAP_TERM_PER_KEY
 #define QUICK_TAP_TERM 120
 
@@ -22,7 +22,7 @@
 // Use Left Ctrl + Right Ctrl to activate the Command feature.
 #define IS_COMMAND() (get_mods() == MOD_MASK_CTRL)
 
-// #define NO_ALT_REPEAT_KEY
+#define NO_ALT_REPEAT_KEY
 
 #ifdef COMBO_ENABLE
 #define COMBO_TERM 35
