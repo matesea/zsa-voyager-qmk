@@ -58,15 +58,32 @@
 #define FLOW_TAP_TERM 100
 // #define ACTION_DEBUG
 
+#ifdef COMMUNITY_MODULE_ORBITIAL_MOUSE_ENABLE
 // Define speed curve for Orbital Mouse.
 #define ORBITAL_MOUSE_SPEED_CURVE \
       {24, 24, 24, 32, 62, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72}
 //     |               |               |               |           |
 // t = 0.000           1.024           2.048           3.072       3.840 s
+#endif
 
 #ifdef POINTING_DEVICE_ENABLE
+#define WHEEL_EXTENDED_SUPPORT
+#define POINTING_DEVICE_HIRES_SCROLL_ENABLE
+#define POINTING_DEVICE_HIRES_SCROLL_EXPONENT 1
+#define POINTING_DEVICE_GESTURES_CURSOR_GLIDE_ENABLE
 #define MOUSE_EXTENDED_REPORT
+#define NAVIGATOR_SCROLL_DIVIDER 50
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #define AUTO_MOUSE_DEFAULT_LAYER 3
-#define NAVIGATOR_SCROLL_DIVIDER 24
+#define AUTO_MOUSE_THRESHOLD 10
+
+/*
+ * opt1: short timeout + oneshot: after pointing device moving,
+ *       auto mouse layer is on until any key press
+ * opt2: long timeout w.o. oneshot: clear auto mouse layer by manual key press,
+ *       i.e., AML_OFF, or long timeout expires
+*/
+#define AUTO_MOUSE_TIME 650
+#define AUTO_MOUSE_ONESHOT
+#define AUTO_MOUSE_SCROLL_THRESHOLD AUTO_MOUSE_THRESHOLD / NAVIGATOR_SCROLL_DIVIDER
 #endif

@@ -2,7 +2,6 @@
   "modules": [
     "zsa/defaults",
     "getreuer/custom_shift_keys",
-    "getreuer/orbital_mouse",
     "getreuer/lumino",
     "getreuer/palettefx"
   ]

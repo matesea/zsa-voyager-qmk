@@ -16,12 +16,15 @@ enum custom_keycodes {
 
 #ifdef POINTING_DEVICE_ENABLE
   // navigator trackball specific
-  SCRL_TOG, // toggle scroll drag
-  SCRL_DRG, // hold to enable scroll drag
-  CPI_INC, // increase cpi
-  CPI_DEC, // decrease cpi
+  SCL_TOG, // toggle scroll drag
+  SCL_DRG, // hold to enable scroll drag
   NAV_TUR, // hold to enable trackball turbo mode
   NAV_AIM, // hold to enable trackball aim mode
+  CPI_INC, // increase cpi
+  CPI_DEC, // decrease cpi
+
+  AM_TOGG, // toggle auto mouse feature
+  AML_OFF, // deactivate auto mouse layer
 #endif /* POINTING_DEVICE_ENABLE */
 
   /* dummy keycode for Ctrl-A/S/D/F in NAV layer */
@@ -125,8 +128,12 @@ struct keystring_t {
 enum {
     QWERTY = 0,
     SYM,
-    NAV,
+#ifdef POINTING_DEVICE_ENABLE
+    // in front of NAV to ensure
+    // the left-handed shortcuts can overlap mouse keys
     EXT,
+#endif
+    NAV,
     FN,
     DIR,
     TMUX,
@@ -138,7 +145,16 @@ enum {
 #define HRM_F      LSFT_T(KC_F)
 
 #define HRM_Z      LALT_T(KC_Z)
-#define HRM_X      LT(EXT, KC_X)
+
+#if defined(POINTING_DEVICE_ENABLE)
+    #define HRM_X     LT(EXT, KC_X)
+    #define HRM_G     LT(0, KC_G) // hold for scroll drag
+    #define HRM_B     LT(0, KC_B) // hold for navigator aim mode
+#else
+    #define HRM_X      KC_X
+    #define HRM_G      KC_G
+    #define HRM_B      KC_B
+#endif
 
 #define HRM_J      RSFT_T(KC_J)
 #define HRM_K      RCTL_T(KC_K)
@@ -184,10 +200,10 @@ bool process_detected_host_os_user(os_variant_t os) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [QWERTY] = LAYOUT_LR(
-            KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,  KC_5,
-            KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,  KC_T,
-            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F, KC_G,
-            SWIME,    HRM_Z,  HRM_X,  KC_C,  HRM_V, KC_B,
+            KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
+            KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
+            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
+            SWIME,    HRM_Z,  HRM_X,  KC_C,  HRM_V,   HRM_B,
                                              OSM_SFT, HRM_ENT,
 
                       KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
@@ -202,13 +218,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, CLOSAPP, C(KC_W), G(KC_E), C(KC_R), C(KC_T),
             XXXXXXX, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
             XXXXXXX, NAV_Z,   C(KC_X), C(KC_C), C(KC_V), C(KC_B),
-                                                _______, KC_ENT,
+                                                QK_LLCK, KC_ENT,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
                      KC_HOME,   KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT,   KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     G(KC_TAB), SELLINE, KC_APP,  XXXXXXX, XXXXXXX, KC_SCRL,
-                     _______,   QK_LLCK
+                     G(KC_TAB), SELLINE, XXXXXXX, XXXXXXX, KC_APP,  KC_SCRL,
+                     _______,   _______
             ),
 
     /* getreuer's symbol layer
@@ -242,13 +258,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                _______, _______,
+                                                QK_LLCK, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_RBT, QK_BOOT,
+                     XXXXXXX, AM_TOGG, XXXXXXX, XXXXXXX, QK_RBT, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11, LUMINO,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10, RGBHRND,
-                     _______, QK_LLCK
+                     _______, _______
             ),
 
     [TMUX] = LAYOUT_LR(
@@ -280,21 +296,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
 #ifdef POINTING_DEVICE_ENABLE
-     [EXT] = LAYOUT_LR(  // navigator trackball  and extras.
+     // enable fewer keys so auto mouse layer will be disabled after non-mouse key pressed
+     [EXT] = LAYOUT_LR(  // Navigator trackball
              _______, _______, _______, _______, _______, _______,
-             _______, XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX,
-             _______, XXXXXXX, XXXXXXX, NAV_TUR, NAV_AIM, SCRL_TOG,
-             _______, XXXXXXX, XXXXXXX, APPPREV, APPNEXT, SCRL_DRG,
-                                                 MS_BTN1, MS_BTN2,
+             _______, _______, _______, _______, AML_OFF, SCL_TOG,
+             _______, _______, _______, MS_BTN2, MS_BTN1, SCL_DRG,
+             _______, _______, _______, APPPREV, APPNEXT, NAV_AIM,
+                                                 QK_LLCK, _______,
 
-                      MS_BTN3, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______,
-                      OM_W_U,  OM_BTN1, OM_U,    OM_BTN2, XXXXXXX, _______,
-                      OM_W_D,  OM_L,    OM_D,    OM_R,    XXXXXXX, _______,
-                      MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                      XXXXXXX, QK_LLCK
+                      _______, CPI_DEC, CPI_INC, _______, _______, _______,
+                      _______, _______, _______, _______, _______, _______,
+                      _______, _______, _______, _______, _______, _______,
+                      _______, _______, _______, _______, _______, _______,
+                      _______, _______
      ),
-#else
-     [EXT] = LAYOUT_LR(  // Orbit Mouse and extras.
+#elif COMMUNITY_MODULE_ORBITIAL_MOUSE_ENABLE
+     [EXT] = LAYOUT_LR(  // Orbit Mouse
              _______, _______, _______, _______, _______, _______,
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
              _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
@@ -312,7 +329,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
-const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
 const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
 const uint16_t PROGMEM combo_hj[] = {KC_H, HRM_J, COMBO_END};
 
@@ -448,9 +465,17 @@ bool get_chordal_hold(
 
         case HRM_X:
             switch (get_tap_keycode(other_keycode)) {
-                // for APPPREV/APPNEXT
+                // for APPNEXT/APPPREV
                 case KC_C:
                 case KC_V:
+#ifdef POINTING_DEVICE_ENABLE
+                // for mouse clicks & navigator trackball
+                case KC_D:
+                case KC_F:
+                case KC_B:
+                case KC_G:
+                case KC_T:
+#endif
                     return true;
             }
             break;
@@ -501,8 +526,14 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 
             case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
                 const uint8_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
-                if (layer == NAV || layer == SYM || layer == EXT)
-                    return 0;
+                switch (layer) {
+                    case NAV: case SYM:
+#if defined(POINTING_DEVICE_ENABLE)
+                    case EXT:
+                    case QWERTY: // for dummy layer switch
+#endif
+                        return 0;
+                }
                 return FLOW_TAP_TERM;
 #if 0
             // determine FLOW_TAP_TERM per key
@@ -758,16 +789,27 @@ void oneshot_mods_changed_user(uint8_t mods) {
 extern bool set_scrolling;
 extern bool navigator_turbo;
 extern bool navigator_aim;
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // Disable set_scrolling when EXT layer is off
+    if (IS_LAYER_OFF_STATE(state, EXT))
+        set_scrolling = false;
+    return state;
+}
+
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 void pointing_device_init_user(void) {
+    set_auto_mouse_layer(EXT);
     set_auto_mouse_enable(true);
 }
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
   switch (keycode) {
-    case SCRL_TOG ... NAV_AIM:
+    case SCL_TOG ... CPI_DEC:
       return true;
   }
   return is_mouse_record_user(keycode, record);
 }
+#endif /* POINTING_DEVICE_AUTO_MOUSE_ENABLE */
 #endif /* POINTING_DEVICE_ENABLE */
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -777,7 +819,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t ctrl_mods = all_mods & MOD_MASK_CTRL;
   const uint8_t layer = read_source_layers_cache(record->event.key);
-  static uint8_t swapp_mod = 0;
+  static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
+  static bool ext_on = false;   // is HRM_X held?
 
   dlog_record(keycode, record);
 
@@ -787,20 +830,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       send_keyboard_report();
   }
 
+  if (keycode == HRM_X && !record->tap.count)
+      ext_on = record->event.pressed;
+
   if (swapp_mod) {
-    // release swapp mod when LT(EXT) being released
+    // release swapp mod hen LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if ((keycode == HRM_X && !record->event.pressed) ||
-            (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
+    if (!ext_on || (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
         swapp_mod = 0;
     }
   }
 
-  /* change repeat key as oneshot shift if following these keys */
   switch (get_tap_keycode(keycode)) {
 #if defined(REPEAT_KEY_ENABLE)
+      /* change repeat key as oneshot shift if following these keys */
       case KC_ENT:
       case KC_SPC:
       case KC_TAB:
@@ -814,6 +859,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           break;
 #endif /* REPEAT_KEY_ENABLE */
+
       /* cancel OSM shift with BSPC */
       case KC_BSPC:
           if (get_oneshot_mods() & MOD_MASK_SHIFT) {
@@ -821,13 +867,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               return false;
           }
           break;
-
   }
 
   switch (keycode) {
     case APPPREV:
     case APPNEXT:
-        if (record->event.pressed) {
+        if (ext_on && record->event.pressed) {
           if (!swapp_mod) {
               swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
               register_mods(swapp_mod);
@@ -929,15 +974,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
     */
 #ifdef POINTING_DEVICE_ENABLE
-    case SCRL_DRG:
+    case SCL_DRG:
       set_scrolling = record->event.pressed;
       return false;
+
     case NAV_TUR:
       navigator_turbo = record->event.pressed;
       return false;
+
     case NAV_AIM:
       navigator_aim = record->event.pressed;
       return false;
+
+    case HRM_B:
+      if (!record->tap.count) {
+          navigator_aim = record->event.pressed;
+          return false;
+      }
+      break;
+
+    case HRM_G:
+      if (!record->tap.count) {
+          set_scrolling = record->event.pressed;
+          return false;
+      }
+      break;
 #endif /* POINTING_DEVICE_ENABLE */
   }
 
@@ -996,7 +1057,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
 #endif /* COMMUNITY_MODULE_PALETTEFX_ENABLE */
 #ifdef POINTING_DEVICE_ENABLE
-        case SCRL_TOG:
+        case SCL_TOG:
             set_scrolling = !set_scrolling;
             return false;
         case CPI_INC:
@@ -1004,6 +1065,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         case CPI_DEC:
             pointing_device_set_cpi(0);
+            return false;
+        case AM_TOGG:
+            auto_mouse_layer_off();
+            set_auto_mouse_enable((AUTO_MOUSE_ENABLED) ^ 1);
+            return false;
+        case AML_OFF:
+            auto_mouse_layer_off();
             return false;
 #endif /* POINTING_DEVICE_ENABLE */
     }
