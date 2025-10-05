@@ -34,10 +34,6 @@ enum custom_keycodes {
   CD,
   CF,
 
-  KEYSTR_MIN,
-  UPDIR = KEYSTR_MIN, // input ../ per press
-  USRNAME, // input username
-
   /* vim navigation */
   /* the LBRC/RBRC keys must be both defined and in same order */
   /* shift + RBRC_* = LBRC_* */
@@ -48,13 +44,24 @@ enum custom_keycodes {
   LBRC_E,
   LBRC_F, // jump to highlight under cursor backward
   LBRC_G, // jump to any highlight backward
+  LBRC_H,
+  LBRC_I,
+  LBRC_J,
+  LBRC_K,
+  LBRC_L,
+  LBRC_M,
+  LBRC_N,
+  LBRC_O,
+  LBRC_P,
   LBRC_Q, // previous item in quickfix
   LBRC_R,
   LBRC_S,
   LBRC_T, // previous tab
+  LBRC_U,
   LBRC_V,
   LBRC_W,
   LBRC_X,
+  LBRC_Y,
   LBRC_Z,
 
   RBRC_A,
@@ -64,14 +71,29 @@ enum custom_keycodes {
   RBRC_E,
   RBRC_F,
   RBRC_G,
+  RBRC_H,
+  RBRC_I,
+  RBRC_J,
+  RBRC_K,
+  RBRC_L,
+  RBRC_M,
+  RBRC_N,
+  RBRC_O,
+  RBRC_P,
   RBRC_Q,
   RBRC_R,
   RBRC_S,
   RBRC_T,
+  RBRC_U,
   RBRC_V,
   RBRC_W,
   RBRC_X,
+  RBRC_Y,
   RBRC_Z,
+
+  KEYSTR_MIN,
+  UPDIR = KEYSTR_MIN, // input ../ per press
+  USRNAME, // input username
 
   /* tmux navigation */
   TMUX_A,    // C-a C-a, last window
@@ -639,42 +661,22 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 #endif /* NO_ALT_REPEAT_KEY */
 #endif /* REPEAT_KEY_ENABLE */
 
+static void generate_directional_string(uint16_t keycode, char* buf) {
+    if (keycode >= LBRC_A && keycode <= LBRC_Z) {
+        buf[0] = '[';
+        buf[1] = keycode - LBRC_A + 'a';
+    }
+    else if (keycode >= RBRC_A && keycode <= RBRC_Z) {
+        buf[0] = ']';
+        buf[1] = keycode - RBRC_A + 'a';
+    }
+    buf[2] = '\0';
+}
+
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
     [UPDIR - KEYSTR_MIN]    = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]  = {"wenlongy", TAP_CODE_DELAY},
-
-    [LBRC_A - KEYSTR_MIN]   = {"[a", TAP_CODE_DELAY},
-    [LBRC_B - KEYSTR_MIN]   = {"[b", TAP_CODE_DELAY},
-    [LBRC_C - KEYSTR_MIN]   = {"[c", TAP_CODE_DELAY},
-    [LBRC_D - KEYSTR_MIN]   = {"[d", TAP_CODE_DELAY},
-    [LBRC_E - KEYSTR_MIN]   = {"[e", TAP_CODE_DELAY},
-    [LBRC_F - KEYSTR_MIN]   = {"[f", TAP_CODE_DELAY},
-    [LBRC_G - KEYSTR_MIN]   = {"[g", TAP_CODE_DELAY},
-    [LBRC_Q - KEYSTR_MIN]   = {"[q", TAP_CODE_DELAY},
-    [LBRC_R - KEYSTR_MIN]   = {"[r", TAP_CODE_DELAY},
-    [LBRC_S - KEYSTR_MIN]   = {"[s", TAP_CODE_DELAY},
-    [LBRC_T - KEYSTR_MIN]   = {"[t", TAP_CODE_DELAY},
-    [LBRC_V - KEYSTR_MIN]   = {"[v", TAP_CODE_DELAY},
-    [LBRC_W - KEYSTR_MIN]   = {"[w", TAP_CODE_DELAY},
-    [LBRC_X - KEYSTR_MIN]   = {"[x", TAP_CODE_DELAY},
-    [LBRC_Z - KEYSTR_MIN]   = {"[z", TAP_CODE_DELAY},
-
-    [RBRC_A - KEYSTR_MIN]   = {"]a", TAP_CODE_DELAY},
-    [RBRC_B - KEYSTR_MIN]   = {"]b", TAP_CODE_DELAY},
-    [RBRC_C - KEYSTR_MIN]   = {"]c", TAP_CODE_DELAY},
-    [RBRC_D - KEYSTR_MIN]   = {"]d", TAP_CODE_DELAY},
-    [RBRC_E - KEYSTR_MIN]   = {"]e", TAP_CODE_DELAY},
-    [RBRC_F - KEYSTR_MIN]   = {"]f", TAP_CODE_DELAY},
-    [RBRC_G - KEYSTR_MIN]   = {"]g", TAP_CODE_DELAY},
-    [RBRC_Q - KEYSTR_MIN]   = {"]q", TAP_CODE_DELAY},
-    [RBRC_R - KEYSTR_MIN]   = {"]r", TAP_CODE_DELAY},
-    [RBRC_S - KEYSTR_MIN]   = {"]s", TAP_CODE_DELAY},
-    [RBRC_T - KEYSTR_MIN]   = {"]t", TAP_CODE_DELAY},
-    [RBRC_V - KEYSTR_MIN]   = {"]v", TAP_CODE_DELAY},
-    [RBRC_W - KEYSTR_MIN]   = {"]w", TAP_CODE_DELAY},
-    [RBRC_X - KEYSTR_MIN]   = {"]x", TAP_CODE_DELAY},
-    [RBRC_Z - KEYSTR_MIN]   = {"]z", TAP_CODE_DELAY},
 
     [TMUX_A - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
     [TMUX_C - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
@@ -1032,6 +1034,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       "<->" :
                       "->"));
           set_mods(mods);
+          return false;
+
+        case LBRC_A ... RBRC_Z:
+          {
+              char buf[3] = {0};
+              clear_mods();
+              generate_directional_string(keycode, buf);
+              SEND_STRING_DELAY(buf, TAP_CODE_DELAY);
+              set_mods(mods);
+          }
           return false;
 
         case KEYSTR_MIN ... KEYSTR_MAX:
