@@ -74,7 +74,7 @@
 #define MOUSE_EXTENDED_REPORT
 #define NAVIGATOR_SCROLL_DIVIDER 50
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#define AUTO_MOUSE_DEFAULT_LAYER 3
+#define AUTO_MOUSE_DEFAULT_LAYER 2 // EXT
 #define AUTO_MOUSE_THRESHOLD 10
 
 /*
@@ -83,7 +83,7 @@
  * opt2: long timeout w.o. oneshot: clear auto mouse layer by manual key press,
  *       i.e., AML_OFF, or long timeout expires
 */
-#define AUTO_MOUSE_TIME 650
+#define AUTO_MOUSE_TIME 250
 #define AUTO_MOUSE_ONESHOT
 #define AUTO_MOUSE_SCROLL_THRESHOLD AUTO_MOUSE_THRESHOLD / NAVIGATOR_SCROLL_DIVIDER
 #endif

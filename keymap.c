@@ -282,7 +282,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 QK_LLCK, _______,
 
-                     XXXXXXX, AM_TOGG, XXXXXXX, XXXXXXX, QK_RBT, QK_BOOT,
+                     AM_TOGG, CPI_DEC, CPI_INC, XXXXXXX, QK_RBT, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11, LUMINO,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10, RGBHRND,
@@ -321,18 +321,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      // enable fewer keys so auto mouse layer will be disabled after non-mouse key pressed
      [EXT] = LAYOUT_LR(  // Navigator trackball
              _______, _______, _______, _______, _______, _______,
-             _______, _______, _______, _______, AML_OFF, SCL_TOG,
-             _______, _______, _______, MS_BTN2, MS_BTN1, SCL_DRG,
-             _______, _______, _______, APPPREV, APPNEXT, NAV_AIM,
+             _______, _______, KC_LSFT, MS_BTN3, AML_OFF, SCL_TOG,
+             _______, _______, KC_LCTL, MS_BTN2, MS_BTN1, SCL_DRG,
+             _______, _______, HRM_X,   APPPREV, APPNEXT, NAV_AIM,
                                                  QK_LLCK, _______,
 
-                      _______, CPI_DEC, CPI_INC, _______, _______, _______,
+                      _______, _______, _______, _______, _______, _______,
                       _______, _______, _______, _______, _______, _______,
                       _______, _______, _______, _______, _______, _______,
                       _______, _______, _______, _______, _______, _______,
                       _______, _______
      ),
-#elif COMMUNITY_MODULE_ORBITIAL_MOUSE_ENABLE
+#endif
+#if 0
      [EXT] = LAYOUT_LR(  // Orbit Mouse
              _______, _______, _______, _______, _______, _______,
              _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
@@ -662,13 +663,18 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 #endif /* REPEAT_KEY_ENABLE */
 
 static void generate_directional_string(uint16_t keycode, char* buf) {
-    if (keycode >= LBRC_A && keycode <= LBRC_Z) {
-        buf[0] = '[';
-        buf[1] = keycode - LBRC_A + 'a';
-    }
-    else if (keycode >= RBRC_A && keycode <= RBRC_Z) {
-        buf[0] = ']';
-        buf[1] = keycode - RBRC_A + 'a';
+    switch (keycode) {
+        case LBRC_A ... LBRC_Z:
+            buf[0] = '[';
+            buf[1] = keycode - LBRC_A + 'a';
+            break;
+        case RBRC_A ... RBRC_Z:
+            buf[0] = ']';
+            buf[1] = keycode - RBRC_A + 'a';
+            break;
+        default:
+            buf[0] = '\0';
+            break;
     }
     buf[2] = '\0';
 }
@@ -792,13 +798,6 @@ extern bool set_scrolling;
 extern bool navigator_turbo;
 extern bool navigator_aim;
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    // Disable set_scrolling when EXT layer is off
-    if (IS_LAYER_OFF_STATE(state, EXT))
-        set_scrolling = false;
-    return state;
-}
-
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(EXT);
@@ -806,13 +805,30 @@ void pointing_device_init_user(void) {
 }
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
   switch (keycode) {
-    case SCL_TOG ... CPI_DEC:
+    case SCL_TOG ... NAV_AIM:
       return true;
   }
   return is_mouse_record_user(keycode, record);
 }
 #endif /* POINTING_DEVICE_AUTO_MOUSE_ENABLE */
 #endif /* POINTING_DEVICE_ENABLE */
+
+static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    // Disable set_scrolling when EXT layer is off
+    if (IS_LAYER_OFF_STATE(state, EXT)) {
+#ifdef POINTING_DEVICE_ENABLE
+        set_scrolling = false;
+#endif
+        if (swapp_mod) {
+            unregister_mods(swapp_mod);
+            swapp_mod = 0;
+        }
+    }
+    return state;
+}
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
@@ -821,8 +837,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   const uint8_t shift_mods = all_mods & MOD_MASK_SHIFT;
   const uint8_t ctrl_mods = all_mods & MOD_MASK_CTRL;
   const uint8_t layer = read_source_layers_cache(record->event.key);
-  static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
-  static bool ext_on = false;   // is HRM_X held?
 
   dlog_record(keycode, record);
 
@@ -832,13 +846,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       send_keyboard_report();
   }
 
-  if (keycode == HRM_X && !record->tap.count)
-      ext_on = record->event.pressed;
-
   if (swapp_mod) {
     // release swapp mod hen LT(EXT) being released
     // or any tap/hold key pressed other than APPPREV/APPNEXT
-    if (!ext_on || (keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
+    if ((keycode != APPPREV && keycode != APPNEXT && record->event.pressed)) {
         unregister_mods(swapp_mod);
         wait_ms(TAP_CODE_DELAY);
         swapp_mod = 0;
@@ -874,7 +885,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case APPPREV:
     case APPNEXT:
-        if (ext_on && record->event.pressed) {
+        if (record->event.pressed) {
           if (!swapp_mod) {
               swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
               register_mods(swapp_mod);
@@ -1038,7 +1049,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case LBRC_A ... RBRC_Z:
           {
-              char buf[3] = {0};
+              static char buf[5] = {0};
               clear_mods();
               generate_directional_string(keycode, buf);
               SEND_STRING_DELAY(buf, TAP_CODE_DELAY);
