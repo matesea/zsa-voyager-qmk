@@ -82,8 +82,11 @@
  *       auto mouse layer is on until any key press
  * opt2: long timeout w.o. oneshot: clear auto mouse layer by manual key press,
  *       i.e., AML_OFF, or long timeout expires
+ *
+ * -> choose opt2 as with opt1 setting,
+ *    holding mod tap will deactivate auto mouse layer
 */
-#define AUTO_MOUSE_TIME 250
-#define AUTO_MOUSE_ONESHOT
+#define AUTO_MOUSE_TIME 650
+// #define AUTO_MOUSE_ONESHOT
 #define AUTO_MOUSE_SCROLL_THRESHOLD AUTO_MOUSE_THRESHOLD / NAVIGATOR_SCROLL_DIVIDER
 #endif
