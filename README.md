@@ -10,21 +10,24 @@ qmk firmware version >= 0.28.0 with community modules
     * left: Enter, OSM_SFT
     * right: Backspace, Space
 * layers
-    * NAVI: arrow keys/PGUP/PGDN/HOME/END/Insert/Delete etc
+    * NAV: arrow keys/page up/page down/home/end/insert/delete etc + mouse keys
     * SYM: symbol layer
     * FN: Function keys
     * DIR: prefix keystroke with [ or ] for vim, or other directional navigation
     * TMUX: tmux shortcuts
-    * EXT: navigator/orbital mouse
+    * SHORTCUT: left-hand shortcuts
 * combo:
-    * cv = CW_TOGG
-    * m, = ctrl+space/win+space depending on OS
+    * cv = caps word toggle
+    * m, = ctrl+space/win+space depending on OS, switch input method
     * fg = OSL(FN)
-* community module: custom shift
-    * shift + esc = ~
 * community module: lumino/palettefx
     * randomly pick an effect/palette at startup
+* community module: select word
+    * quickly select word forward/backward or select line
 * zsa navigator support
-    * auto mouse enabled, with two custom keycodes
-    * AML_OFF: turn off automouse layer
-    * AM_TOGG: toggle automouse feature
+    * auto mouse enabled with custom keycodes
+    * AUTO_MOUSE_LAYER_OFF: turn off automouse layer
+    * AUTO_MOUSE_TOGGLE: toggle automouse feature
+* other custom keycodes
+    * DYNAMIC_FLOW_TAP_TERM: dynamic adjust FLOW_TAP_TERM
+    * APPNEXT/APPPREV: swap foreground app

@@ -55,6 +55,9 @@
 // #define OS_DETECTION_SINGLE_REPORT
 // #endif
 
+// control voyager LED
+#define VOYAGER_USER_LEDS
+
 #define FLOW_TAP_TERM 100
 // #define ACTION_DEBUG
 
@@ -73,20 +76,17 @@
 #define POINTING_DEVICE_GESTURES_CURSOR_GLIDE_ENABLE
 #define MOUSE_EXTENDED_REPORT
 #define NAVIGATOR_SCROLL_DIVIDER 50
-#define POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#define AUTO_MOUSE_DEFAULT_LAYER 2 // EXT
-#define AUTO_MOUSE_THRESHOLD 10
-
 /*
  * opt1: short timeout + oneshot: after pointing device moving,
- *       auto mouse layer is on until any key press
+ *       auto mouse layer remains on until any key press
  * opt2: long timeout w.o. oneshot: clear auto mouse layer by manual key press,
  *       i.e., AML_OFF, or long timeout expires
- *
- * -> choose opt2 as with opt1 setting,
- *    holding mod tap will deactivate auto mouse layer
+ * opt3: disable automouse, maunlly lock/unlock
 */
-#define AUTO_MOUSE_TIME 650
+// #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
+// #define AUTO_MOUSE_DEFAULT_LAYER 2 // NAV
+// #define AUTO_MOUSE_THRESHOLD 10
+// #define AUTO_MOUSE_TIME 250
 // #define AUTO_MOUSE_ONESHOT
-#define AUTO_MOUSE_SCROLL_THRESHOLD AUTO_MOUSE_THRESHOLD / NAVIGATOR_SCROLL_DIVIDER
+// #define AUTO_MOUSE_SCROLL_THRESHOLD AUTO_MOUSE_THRESHOLD / NAVIGATOR_SCROLL_DIVIDER
 #endif
