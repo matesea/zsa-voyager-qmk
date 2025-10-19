@@ -169,10 +169,11 @@ enum keycode_aliases {
 #if defined(POINTING_DEVICE_ENABLE)
     HRM_X   =  LT(NAV, KC_X),
     HRM_G   =  LT(NAV, KC_G), // hold for scroll drag
-    // HRM_B   =  LT(NAV, KC_B), // hold for navigator aim mode
+    HRM_B   =  LT(NAV, KC_B), // hold for navigator aim mode
 #else
     HRM_X   =  KC_X,
     HRM_G   =  KC_G,
+    HRM_B   =  KC_B,
 #endif
 
     HRM_J    = RSFT_T(KC_J),
@@ -180,7 +181,7 @@ enum keycode_aliases {
     HRM_L    = LT(SYM, KC_L),
     HRM_SCLN = RGUI_T(KC_SCLN),
 
-    // HRM_COMM = LT(DIR, KC_COMM),
+    HRM_COMM = LT(DIR, KC_COMM),
     HRM_DOT  = LT(DIR, KC_DOT),
     HRM_SLSH = LALT_T(KC_SLSH),
 
@@ -215,13 +216,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
             KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
             HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
-            SWIME,    HRM_Z,  HRM_X,  KC_C,  KC_V,    KC_B,
+            SWIME,    HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
                                              OSM_SFT, HRM_ENT,
 
                       KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
                       KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
                       KC_H,    HRM_J, HRM_K,    HRM_L,   HRM_SCLN, HRM_QUOT,
-                      KC_N,    KC_M,  KC_COMM,  HRM_DOT, HRM_SLSH, KC_BSLS,
+                      KC_N,    KC_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
                       KC_BSPC, KC_SPC
             ),
 
@@ -341,7 +342,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM combo_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
-const uint16_t PROGMEM combo_m_comm[] = {KC_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
 const uint16_t PROGMEM combo_hj[] = {KC_H, HRM_J, COMBO_END};
 
 combo_t key_combos[] = {
@@ -462,7 +463,7 @@ bool get_chordal_hold(
 #endif  // CHORDAL_HOLD
 
 #ifdef FLOW_TAP_TERM
-static uint16_t flow_term = 0;
+static uint16_t flow_term = 60;
 static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
       case KC_A ... KC_Z:
@@ -485,40 +486,27 @@ static bool is_typing(uint16_t keycode) {
 
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                            uint16_t prev_keycode) {
+    // FLOW_TAP_TERM if oneshot shift or caps word is on
+    if ((get_oneshot_mods() & MOD_MASK_SHIFT) || is_caps_word_on())
+        return FLOW_TAP_TERM;
+
     if (is_typing(prev_keycode) &&
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
+        // determine FLOW_TAP_TERM per key
         switch (keycode) {
-            case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-                const uint8_t mod = QK_MOD_TAP_GET_MODS(keycode);
-                if (mod & MOD_MASK_SHIFT)
-                    return 0;
-                if (mod & MOD_MASK_CTRL)
-                    return flow_term;
-                return FLOW_TAP_TERM;
-
-            case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-                const uint8_t layer = QK_LAYER_TAP_GET_LAYER(keycode);
-                switch (layer) {
-                    case SHORTCUT:
-                        return 0;
-                    case NAV:
-                    case SYM:
-                        return flow_term;
-                }
-                return FLOW_TAP_TERM;
-#if 0
-            // determine FLOW_TAP_TERM per key
-            case HRM_F: case HRM_J: // shift
-            case HRM_ENT:           // NAV
-            case HRM_S: case HRM_L: // SYM
-            case HRM_V:             // NAV
-                return 0;
             case HRM_D: case HRM_K: // ctrl
-                return FLOW_TAP_TERM - 25;
-            */
+            case HRM_S: case HRM_L: // LT(SYM)
+            // case HRM_X:             // LT(NAV)
+                 return flow_term;
+
+            case HRM_A: case HRM_SCLN:      // gui
+            case HRM_Z: case HRM_SLSH:      // alt
+            case HRM_DOT: case HRM_COMM:    // LT(DIR)
+            case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
+#ifdef POINTING_DEVICE_ENABLE
+            case HRM_G: case HRM_B:         // DRAG_SCROLL & NAVIGATOR_AIM
 #endif
-            default:
-                return FLOW_TAP_TERM; // 100ms
+                return FLOW_TAP_TERM;
         }
     }
     return 0;
@@ -892,7 +880,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     case NAV_EQL:  // NAV_EQL = hold shift + LT(NAV)
-    // case HRM_COMM: // HRM_COMM = hold shift + LT(DIR)
+    case HRM_COMM: // HRM_COMM = hold shift + LT(DIR)
          add_mod_when_held(record, MOD_BIT_LSHIFT);
          break;
 
@@ -936,12 +924,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       navigator_aim = record->event.pressed;
       return false;
 
-#if 0
     case HRM_B:
       if (!record->tap.count)
           navigator_aim = record->event.pressed;
       break;
-#endif
 
     case HRM_G:
       if (!record->tap.count)
