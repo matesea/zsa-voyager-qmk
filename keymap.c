@@ -23,7 +23,6 @@ enum custom_keycodes {
   NAVIGATOR_DEC_CPI, // decrease cpi
   AUTO_MOUSE_LAYER_OFF, // deactivate auto mouse layer
   AUTO_MOUSE_TOGGLE, // toggle auto mouse feature on/off
-  DYNAMIC_FLOW_TAP_TERM, // adjust FLOW_TAP_TERM for ctrl mod & NAV/SYM layer switch
 
   /* vim navigation */
   /* the LBRC/RBRC keys must be both defined and in same order */
@@ -157,7 +156,6 @@ enum keycode_aliases {
     CPI_DEC = NAVIGATOR_DEC_CPI,
     AML_OFF = AUTO_MOUSE_LAYER_OFF,
     AM_TOGG = AUTO_MOUSE_TOGGLE,
-    DFTT    = DYNAMIC_FLOW_TAP_TERM,
 
     HRM_A   = LGUI_T(KC_A),
     HRM_S   = LT(SYM, KC_S),
@@ -253,10 +251,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [NAV] = LAYOUT_LR(
-            _______, _______, _______, _______, _______,    _______,
-            _______, XXXXXXX, XXXXXXX, MS_BTN3, C(MS_BTN1), SRCHSEL,
-            _______, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT,    SCL_DRG,
-            _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1,    NAV_AIM,
+            _______, _______, _______, _______, _______, _______,
+            _______, XXXXXXX, XXXXXXX, XXXXXXX, SRCHSEL, SCL_TOG,
+            _______, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, SCL_DRG,
+            _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
                                                 QK_LLCK, _______,
 
                      KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
@@ -287,8 +285,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 QK_LLCK, _______,
 
-                     AM_TOGG, CPI_DEC, CPI_INC, XXXXXXX, QK_RBT, QK_BOOT,
-                     DFTT,    KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
+                     XXXXXXX, CPI_DEC, CPI_INC, XXXXXXX, QK_RBT, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11, LUMINO,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10, RGBHRND,
                      _______, _______
@@ -463,7 +461,6 @@ bool get_chordal_hold(
 #endif  // CHORDAL_HOLD
 
 #ifdef FLOW_TAP_TERM
-static uint16_t flow_term = 60;
 static bool is_typing(uint16_t keycode) {
   switch (get_tap_keycode(keycode)) {
       case KC_A ... KC_Z:
@@ -494,10 +491,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         // determine FLOW_TAP_TERM per key
         switch (keycode) {
-            case HRM_D: case HRM_K: // ctrl
-            case HRM_S: case HRM_L: // LT(SYM)
+            // case HRM_S: case HRM_L: // LT(SYM)
             // case HRM_X:             // LT(NAV)
-                 return flow_term;
+            // case HRM_D: case HRM_K: // ctrl
+            //     return ctrl_flow_term;
 
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
@@ -753,7 +750,7 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
 static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
 
 // layer mask for which layers APPPREV/APPNEXT on
-#define LAYER_MASK ((1 << SHORTCUT))
+#define SWAPP_LAYER_MASK ((1 << SHORTCUT))
 layer_state_t layer_state_set_user(layer_state_t state) {
     // LED indicates SYM or above layer is on
     uint8_t layer = get_highest_layer(state) - SYM + 1;
@@ -764,7 +761,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
 #endif
     // release swapp_mod when the layer is released
-    if (swapp_mod && !(state & LAYER_MASK)) {
+    if (swapp_mod && !(state & SWAPP_LAYER_MASK)) {
         unregister_mods(swapp_mod);
         swapp_mod = 0;
     }
@@ -800,8 +797,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
   }
 
-  switch (get_tap_keycode(keycode)) {
 #if defined(REPEAT_KEY_ENABLE)
+  switch (get_tap_keycode(keycode)) {
       /* change repeat key as oneshot shift if following these keys */
       case KC_ENT:
       case KC_SPC:
@@ -815,16 +812,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               return false;
           }
           break;
-#endif /* REPEAT_KEY_ENABLE */
-
-      /* cancel OSM shift with BSPC */
-      case KC_BSPC:
-          if (get_oneshot_mods() & MOD_MASK_SHIFT) {
-              del_oneshot_mods(MOD_MASK_SHIFT);
-              return false;
-          }
-          break;
   }
+#endif /* REPEAT_KEY_ENABLE */
 
   switch (keycode) {
     case APPPREV:
@@ -956,6 +945,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     switch (keycode) {
+        /* cancel OSM shift with BSPC */
+        case KC_BSPC:
+            if (get_oneshot_mods() & MOD_MASK_SHIFT) {
+                del_oneshot_mods(MOD_MASK_SHIFT);
+                return false;
+            }
+            break;
+
         case SRCHSEL:  // Searches the current selection in a new tab.
           if (!isMacOS)
               SEND_STRING_DELAY(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER),
@@ -1020,19 +1017,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 #endif
 #endif /* POINTING_DEVICE_ENABLE */
-        case DYNAMIC_FLOW_TAP_TERM:
-            switch (flow_term) {
-                case 0:
-                    flow_term = 60;
-                    break;
-                case 60:
-                    flow_term = 75;
-                    break;
-                case 75:
-                    flow_term = 0;
-                    break;
-            }
-            return false;
     }
   }
   return true;
