@@ -24,10 +24,5 @@ qmk firmware version >= 0.28.0 with community modules
     * randomly pick an effect/palette at startup
 * community module: select word
     * quickly select word forward/backward or select line
-* zsa navigator support
-    * auto mouse enabled with custom keycodes
-    * AUTO_MOUSE_LAYER_OFF: turn off automouse layer
-    * AUTO_MOUSE_TOGGLE: toggle automouse feature
 * other custom keycodes
-    * DYNAMIC_FLOW_TAP_TERM: dynamic adjust FLOW_TAP_TERM
     * APPNEXT/APPPREV: swap foreground app

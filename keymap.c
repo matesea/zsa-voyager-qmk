@@ -100,17 +100,6 @@ enum custom_keycodes {
   TMUX_F,    // C-A f, select pane with fzf
   TMUX_Z,    // C-A z, zoom in current pane
 
-  TMUX_0,
-  TMUX_1,
-  TMUX_2,
-  TMUX_3,
-  TMUX_4,
-  TMUX_5,
-  TMUX_6,
-  TMUX_7,
-  TMUX_8,
-  TMUX_9,
-
   TMUX_H,   // C-A h, select left pane
   TMUX_K,   // C-A k, select down pane
   TMUX_J,   // C-A j, select up pane
@@ -163,15 +152,14 @@ enum keycode_aliases {
     HRM_F   = LSFT_T(KC_F),
 
     HRM_Z   = LALT_T(KC_Z),
+    HRM_X   = LT(NAV, KC_X),
 
 #if defined(POINTING_DEVICE_ENABLE)
-    HRM_X   =  LT(NAV, KC_X),
-    HRM_G   =  LT(NAV, KC_G), // hold for scroll drag
-    HRM_B   =  LT(NAV, KC_B), // hold for navigator aim mode
+    HRM_G   = LT(NAV, KC_G), // hold for scroll drag
+    HRM_B   = LT(NAV, KC_B), // hold for navigator aim mode
 #else
-    HRM_X   =  KC_X,
-    HRM_G   =  KC_G,
-    HRM_B   =  KC_B,
+    HRM_G   = KC_G,
+    HRM_B   = KC_B,
 #endif
 
     HRM_J    = RSFT_T(KC_J),
@@ -186,11 +174,11 @@ enum keycode_aliases {
     HRM_UNDS = LT(TMUX, KC_UNDS),
     HRM_QUOT = LT(TMUX, KC_QUOT),
 
-//  HRM_REP  = LT(NAV, QK_REP),
+    // HRM_REP  = LT(NAV, QK_REP),
     HRM_ENT  = LT(SHORTCUT, KC_ENT),
     OSM_SFT  = OSM(MOD_LSFT),
 
-// switch to NAV layer with modifier
+    // switch to NAV layer with modifier
     NAV_EQL  = LT(NAV, KC_EQL),  // nav+shift
     NAV_SLSH = LT(NAV, KC_SLSH), // nav+ctrl
     NAV_EXLM = LT(NAV, KC_EXLM), // nav+gui
@@ -250,6 +238,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, _______
             ),
 
+    // navigation/mouse keycodes and those often used together
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, SRCHSEL, SCL_TOG,
@@ -257,24 +246,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
                                                 QK_LLCK, _______,
 
-                     KC_MPRV,   KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, KC_MPLY,
+                     SELLINE,   SELWBAK, SELWORD, XXXXXXX, XXXXXXX, XXXXXXX,
                      KC_HOME,   KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT,   KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
-                     G(KC_TAB), SELWBAK, SELWORD, SELLINE, KC_APP,  KC_SCRL,
+                     G(KC_TAB), APPPREV, APPNEXT, XXXXXXX, KC_APP,  KC_SCRL,
                      _______,   _______
             ),
 
+    // shortcuts that can be done with one-hand, or keycode not requireing modifiers
     [SHORTCUT] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, CLOSAPP, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
-            _______, C(KC_A), C(KC_S), APPPREV, APPNEXT, XXXXXXX,
-            _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            APPNEXT, C(KC_A), C(KC_S), C(KC_D), C(KC_F), C(KC_G),
+            APPPREV, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
                       _______, _______, _______, _______, _______, _______,
-                      _______, _______, _______, _______, _______, _______,
-                      _______, _______, _______, _______, _______, _______,
-                      _______, _______, _______, _______, _______, _______,
+                      XXXXXXX, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______,
+                      KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, _______,
+                      XXXXXXX, APPPREV, APPNEXT, XXXXXXX, XXXXXXX, _______,
                       _______, _______
      ),
 
@@ -285,7 +275,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 QK_LLCK, _______,
 
-                     XXXXXXX, CPI_DEC, CPI_INC, XXXXXXX, QK_RBT, QK_BOOT,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_RBT, QK_BOOT,
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12, DB_TOGG,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11, LUMINO,
                      XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F10, RGBHRND,
@@ -293,13 +283,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             ),
 
     [TMUX] = LAYOUT_LR(
-            _______, TMUX_1,  TMUX_2, TMUX_3,  TMUX_4,  TMUX_5,
-            _______, XXXXXXX, TMUX_W, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, TMUX_A,  TMUX_S, XXXXXXX, TMUX_F,  TMUX_G,
-            _______, TMUX_Z,  TMUX_X, TMUX_C,  TMUX_V,  XXXXXXX,
-                                               XXXXXXX, XXXXXXX,
+            _______, _______, _______, _______,  _______, _______,
+            _______, XXXXXXX, TMUX_W,  TMUX_P,   TMUX_N,  XXXXXXX,
+            _______, TMUX_A,  TMUX_S,  XXXXXXX,  TMUX_F,  TMUX_G,
+            _______, TMUX_Z,  TMUX_X,  TMUX_C,   TMUX_V,  XXXXXXX,
+                                                 XXXXXXX, XXXXXXX,
 
-                       TMUX_6,    TMUX_7,    TMUX_8,    TMUX_9,    TMUX_0,    _______,
+                       _______,   _______,   _______,   _______,   _______,   _______,
                        TMUX_ML,   TMUX_MD,   TMUX_MU,   TMUX_MR,   TMUX_RBRC, _______,
                        TMUX_H,    TMUX_J,    TMUX_K,    TMUX_L,    TMUX_SLSH, _______,
                        TMUX_LCBR, TMUX_LBRC, TMUX_RBRC, TMUX_RCBR, TMUX_QUES, _______,
@@ -359,7 +349,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case HRM_F: case HRM_J:
             return TAPPING_TERM; /* 180ms */
     }
-    return TAPPING_TERM + 70; /* 250ms */
+    return TAPPING_TERM + 45; /* 225ms */
 }
 #endif /* TAPPING_TERM_PER_KEY */
 
@@ -447,6 +437,13 @@ bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
     switch (tap_hold_keycode) {
+        case HRM_S:
+            switch (other_keycode) {
+                // NAV + modifiers
+                case HRM_A: case HRM_D: case HRM_F:
+                    return true;
+            }
+            break;
         case HRM_X:
             switch (get_tap_keycode(other_keycode)) {
                 // mouse keys
@@ -491,10 +488,12 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
             (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         // determine FLOW_TAP_TERM per key
         switch (keycode) {
-            // case HRM_S: case HRM_L: // LT(SYM)
-            // case HRM_X:             // LT(NAV)
-            // case HRM_D: case HRM_K: // ctrl
-            //     return ctrl_flow_term;
+            case HRM_X:             // LT(NAV)
+            case HRM_S: case HRM_L: // LT(SYM)
+                 return FLOW_TAP_TERM - 60;
+
+            case HRM_D: case HRM_K: // ctrl
+                 return FLOW_TAP_TERM - 40;
 
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
@@ -632,17 +631,6 @@ static const struct keystring_t keystrings[] = {
     [TMUX_F - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_F), TAP_CODE_DELAY},
     [TMUX_Z - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},
 
-    [TMUX_0 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_0), TAP_CODE_DELAY},
-    [TMUX_1 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_1), TAP_CODE_DELAY},
-    [TMUX_2 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_2), TAP_CODE_DELAY},
-    [TMUX_3 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_3), TAP_CODE_DELAY},
-    [TMUX_4 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_4), TAP_CODE_DELAY},
-    [TMUX_5 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_5), TAP_CODE_DELAY},
-    [TMUX_6 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_6), TAP_CODE_DELAY},
-    [TMUX_7 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_7), TAP_CODE_DELAY},
-    [TMUX_8 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_8), TAP_CODE_DELAY},
-    [TMUX_9 - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_9), TAP_CODE_DELAY},
-
     [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_LBRC), TAP_CODE_DELAY},
     [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_RBRC), TAP_CODE_DELAY},
 
@@ -750,7 +738,7 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
 static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
 
 // layer mask for which layers APPPREV/APPNEXT on
-#define SWAPP_LAYER_MASK ((1 << SHORTCUT))
+#define SWAPP_LAYER_MASK ((1 << NAV) | (1 << SHORTCUT))
 layer_state_t layer_state_set_user(layer_state_t state) {
     // LED indicates SYM or above layer is on
     uint8_t layer = get_highest_layer(state) - SYM + 1;
@@ -880,7 +868,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     case C(KC_A) ... C(KC_Z):
-    case C(MS_BTN1):
         // transform ctrl-<key> to gui-<key> on MacOS
         if (isMacOS && record->event.pressed) {
             keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
@@ -1052,3 +1039,46 @@ bool caps_word_press_user(uint16_t keycode) {
   }
 }
 #endif  // CAPS_WORD_ENABLE
+
+#ifdef COMMUNITY_MODULE_SENTENCE_CASE_ENABLE
+char sentence_case_press_user(uint16_t keycode, keyrecord_t* record,
+                              uint8_t mods) {
+  if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT_RALT)) == 0) {
+    const bool shifted = mods & MOD_MASK_SHIFT;
+    switch (keycode) {
+      case KC_A ... KC_Z:
+        return 'a';  // Letter key.
+
+      case KC_EXLM:
+      case KC_QUES:
+        return '.';
+
+      case KC_1:
+      case KC_SLSH:
+        return shifted ? '.' : '#';
+
+      case KC_DOT:  // . is punctuation, Shift . is a symbol (>)
+        return !shifted ? '.' : '#';
+
+      case KC_2 ... KC_0:  // 2 3 4 5 6 7 8 9 0
+      case KC_AT ... KC_RPRN:  // @ # $ % ^ & * ( )
+      case KC_MINS ... KC_SCLN:  // - = [ ] backslash ;
+      case KC_UNDS ... KC_COLN:  // _ + { } | :
+      case KC_COMM:
+      case KC_GRV:
+        return '#';  // Symbol key.
+
+      case KC_SPC:
+        return ' ';  // Space key.
+
+      case KC_QUOT:
+      case KC_DQUO:
+        return '\'';  // Quote key.
+    }
+  }
+
+  // Otherwise clear Sentence Case to initial state.
+  sentence_case_clear();
+  return '\0';
+}
+#endif  // COMMUNITY_MODULE_SENTENCE_CASE_ENABLE
