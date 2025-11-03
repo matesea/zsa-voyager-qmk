@@ -4,6 +4,7 @@
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
+// #define DIRECTION_LAYER_ENABLE
 
 enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
@@ -24,6 +25,7 @@ enum custom_keycodes {
   AUTO_MOUSE_LAYER_OFF, // deactivate auto mouse layer
   AUTO_MOUSE_TOGGLE, // toggle auto mouse feature on/off
 
+#ifdef DIRECTION_LAYER_ENABLE
   /* vim navigation */
   /* the LBRC/RBRC keys must be both defined and in same order */
   /* shift + RBRC_* = LBRC_* */
@@ -80,6 +82,7 @@ enum custom_keycodes {
   RBRC_X,
   RBRC_Y,
   RBRC_Z,
+#endif // DIRECTION_LAYER_ENABLE
 
   UPDIR, // input ../ per press
   KEYSTR_MIN = UPDIR,
@@ -100,10 +103,10 @@ enum custom_keycodes {
   TMUX_F,    // C-A f, select pane with fzf
   TMUX_Z,    // C-A z, zoom in current pane
 
-  TMUX_H,   // C-A h, select left pane
-  TMUX_K,   // C-A k, select down pane
-  TMUX_J,   // C-A j, select up pane
-  TMUX_L,   // C-A l, select right pane
+  TMUX_H,    // C-A h, select left pane
+  TMUX_K,    // C-A k, select down pane
+  TMUX_J,    // C-A j, select up pane
+  TMUX_L,    // C-A l, select right pane
 
   TMUX_SPC,  // C-A space, next layout
   TMUX_BSPC, // C-A backspace, previous layout
@@ -132,7 +135,9 @@ enum {
     NAV,
     SHORTCUT,
     FN,
+#ifdef DIRECTION_LAYER_ENABLE
     DIR,
+#endif // DIRECTION_LAYER_ENABLE
     TMUX,
 };
 
@@ -156,19 +161,24 @@ enum keycode_aliases {
 
 #if defined(POINTING_DEVICE_ENABLE)
     HRM_G   = LT(NAV, KC_G), // hold for scroll drag
-    HRM_B   = LT(NAV, KC_B), // hold for navigator aim mode
+    HRM_B   = LT(0, KC_B), // hold for navigator aim mode
 #else
     HRM_G   = KC_G,
     HRM_B   = KC_B,
-#endif
+#endif // POINTING_DEVICE_ENABLE
 
     HRM_J    = RSFT_T(KC_J),
     HRM_K    = RCTL_T(KC_K),
     HRM_L    = LT(SYM, KC_L),
     HRM_SCLN = RGUI_T(KC_SCLN),
 
+#ifdef DIRECTION_LAYER_ENABLE
     HRM_COMM = LT(DIR, KC_COMM),
     HRM_DOT  = LT(DIR, KC_DOT),
+#else
+    HRM_COMM = KC_COMM,
+    HRM_DOT  = KC_DOT,
+#endif // DIRECTION_LAYER_ENABLE
     HRM_SLSH = LALT_T(KC_SLSH),
 
     HRM_UNDS = LT(TMUX, KC_UNDS),
@@ -177,6 +187,9 @@ enum keycode_aliases {
     // HRM_REP  = LT(NAV, QK_REP),
     HRM_ENT  = LT(SHORTCUT, KC_ENT),
     OSM_SFT  = OSM(MOD_LSFT),
+    OSM_CTL  = OSM(MOD_LCTL),
+    OSM_ALT  = OSM(MOD_LALT),
+    OSM_GUI  = OSM(MOD_LGUI),
 
     // switch to NAV layer with modifier
     NAV_EQL  = LT(NAV, KC_EQL),  // nav+shift
@@ -242,7 +255,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, SRCHSEL, SCL_TOG,
-            _______, KC_LGUI, KC_LSFT, KC_LCTL, KC_LSFT, SCL_DRG,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, SCL_DRG,
             _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
                                                 QK_LLCK, _______,
 
@@ -256,9 +269,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // shortcuts that can be done with one-hand, or keycode not requireing modifiers
     [SHORTCUT] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, CLOSAPP, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
-            APPNEXT, C(KC_A), C(KC_S), C(KC_D), C(KC_F), C(KC_G),
-            APPPREV, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            _______, CLOSAPP, C(KC_W), APPPREV, APPNEXT, C(KC_T),
+            _______, C(KC_A), C(KC_S), C(KC_D), C(KC_F), C(KC_G),
+            _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 _______, _______,
 
                       _______, _______, _______, _______, _______, _______,
@@ -296,6 +309,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        TMUX_BSPC, TMUX_SPC
             ),
 
+#ifdef DIRECTION_LAYER_ENABLE
     [DIR] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             XXXXXXX, RBRC_Q,  RBRC_W,  RBRC_E,  RBRC_R,  RBRC_T,
@@ -309,6 +323,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
+#endif // DIRECTION_LAYER_ENABLE
 
 #if 0
      [EXT] = LAYOUT_LR(  // Orbit Mouse
@@ -349,7 +364,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case HRM_F: case HRM_J:
             return TAPPING_TERM; /* 180ms */
     }
-    return TAPPING_TERM + 45; /* 225ms */
+    return TAPPING_TERM + 70; /* 250ms */
 }
 #endif /* TAPPING_TERM_PER_KEY */
 
@@ -367,6 +382,16 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 #endif /* PERMISSIVE_HOLD_PER_KEY */
+
+#ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case HRM_ENT:
+            return true;
+    }
+    return false;
+}
+#endif
 
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
@@ -444,6 +469,13 @@ bool get_chordal_hold(
                     return true;
             }
             break;
+        case HRM_A:
+            switch (other_keycode) {
+                case KC_E: case KC_R:
+                    if (!isMacOS)
+                        return true;
+            }
+            break;
         case HRM_X:
             switch (get_tap_keycode(other_keycode)) {
                 // mouse keys
@@ -480,28 +512,28 @@ static bool is_typing(uint16_t keycode) {
 
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                            uint16_t prev_keycode) {
-    // FLOW_TAP_TERM if oneshot shift or caps word is on
-    if ((get_oneshot_mods() & MOD_MASK_SHIFT) || is_caps_word_on())
-        return FLOW_TAP_TERM;
-
+    const uint8_t all_mods = (get_mods() | get_weak_mods() |
+            get_oneshot_mods());
     if (is_typing(prev_keycode) &&
-            (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
+            (all_mods & MOD_MASK_CAG) == 0) {
         // determine FLOW_TAP_TERM per key
         switch (keycode) {
             case HRM_X:             // LT(NAV)
             case HRM_S: case HRM_L: // LT(SYM)
-                 return FLOW_TAP_TERM - 60;
+                 return FLOW_TAP_TERM - 60; // 40ms, mimimal value to prevent misfire
 
             case HRM_D: case HRM_K: // ctrl
-                 return FLOW_TAP_TERM - 40;
+                 return FLOW_TAP_TERM - 40; // 60ms
 
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
-            case HRM_DOT: case HRM_COMM:    // LT(DIR)
             case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
+#ifdef DIRECTION_LAYER_ENABLE
+            case HRM_DOT: case HRM_COMM:    // LT(DIR)
+#endif // DIRECTION_LAYER_ENABLE
 #ifdef POINTING_DEVICE_ENABLE
             case HRM_G: case HRM_B:         // DRAG_SCROLL & NAVIGATOR_AIM
-#endif
+#endif // POINTING_DEVICE_ENABLE
                 return FLOW_TAP_TERM;
         }
     }
@@ -538,7 +570,9 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
         *remembered_mods &= MOD_MASK_SHIFT;
         break;
 
+#ifdef DIRECTION_LAYER_ENABLE
       case LBRC_A ... RBRC_Z:
+#endif // DIRECTION_LAYER_ENABLE
       case KEYSTR_MIN ... KEYSTR_MAX: // forget all mods
         *remembered_mods = 0;
         break;
@@ -558,12 +592,14 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 else
                     return S(keycode);
 
+#ifdef DIRECTION_LAYER_ENABLE
             /* reverse vim navigation */
             case LBRC_A ... LBRC_Z:
                 return keycode - LBRC_A + RBRC_A;
 
             case RBRC_A ... RBRC_Z:
                 return keycode - RBRC_A + LBRC_A;
+#endif // DIRECTION_LAYER_ENABLE
 
             /* select pane */
             case TMUX_J: return TMUX_K;
@@ -595,6 +631,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 #endif /* NO_ALT_REPEAT_KEY */
 #endif /* REPEAT_KEY_ENABLE */
 
+#ifdef DIRECTION_LAYER_ENABLE
 static void generate_directional_string(uint16_t keycode, char* buf) {
     switch (keycode) {
         case LBRC_A ... LBRC_Z:
@@ -611,6 +648,7 @@ static void generate_directional_string(uint16_t keycode, char* buf) {
     }
     buf[2] = '\0';
 }
+#endif // DIRECTION_LAYER_ENABLE
 
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
@@ -747,7 +785,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     if (IS_LAYER_OFF_STATE(state, NAV)) {
         set_scrolling = false;
     }
-#endif
+#endif // POINTING_DEVICE_ENABLE
     // release swapp_mod when the layer is released
     if (swapp_mod && !(state & SWAPP_LAYER_MASK)) {
         unregister_mods(swapp_mod);
@@ -857,7 +895,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     case NAV_EQL:  // NAV_EQL = hold shift + LT(NAV)
+#ifdef DIRECTION_LAYER_ENABLE
     case HRM_COMM: // HRM_COMM = hold shift + LT(DIR)
+#endif // DIRECTION_LAYER_ENABLE
          add_mod_when_held(record, MOD_BIT_LSHIFT);
          break;
 
@@ -868,7 +908,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     case C(KC_A) ... C(KC_Z):
-        // transform ctrl-<key> to gui-<key> on MacOS
+        // convert ctrl-<key> on SHORTCUT layer to gui-<key> on MacOS
         if (isMacOS && record->event.pressed) {
             keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
             tap_code16_delay(G(keycode), TAP_CODE_DELAY);
@@ -913,6 +953,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   if (record->event.pressed) {
+#ifdef DIRECTION_LAYER_ENABLE
     // opposite directional movement when shift pressed
     if (shift_mods) {
         switch (keycode) {
@@ -930,6 +971,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
         }
     }
+#endif // DIRECTION_LAYER_ENABLE
 
     switch (keycode) {
         /* cancel OSM shift with BSPC */
@@ -961,6 +1003,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           set_mods(mods);
           return false;
 
+#ifdef DIRECTION_LAYER_ENABLE
         case LBRC_A ... RBRC_Z:
           {
               static char buf[5] = {0};
@@ -970,6 +1013,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               set_mods(mods);
           }
           return false;
+#endif // DIRECTION_LAYER_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
@@ -1039,46 +1083,3 @@ bool caps_word_press_user(uint16_t keycode) {
   }
 }
 #endif  // CAPS_WORD_ENABLE
-
-#ifdef COMMUNITY_MODULE_SENTENCE_CASE_ENABLE
-char sentence_case_press_user(uint16_t keycode, keyrecord_t* record,
-                              uint8_t mods) {
-  if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT_RALT)) == 0) {
-    const bool shifted = mods & MOD_MASK_SHIFT;
-    switch (keycode) {
-      case KC_A ... KC_Z:
-        return 'a';  // Letter key.
-
-      case KC_EXLM:
-      case KC_QUES:
-        return '.';
-
-      case KC_1:
-      case KC_SLSH:
-        return shifted ? '.' : '#';
-
-      case KC_DOT:  // . is punctuation, Shift . is a symbol (>)
-        return !shifted ? '.' : '#';
-
-      case KC_2 ... KC_0:  // 2 3 4 5 6 7 8 9 0
-      case KC_AT ... KC_RPRN:  // @ # $ % ^ & * ( )
-      case KC_MINS ... KC_SCLN:  // - = [ ] backslash ;
-      case KC_UNDS ... KC_COLN:  // _ + { } | :
-      case KC_COMM:
-      case KC_GRV:
-        return '#';  // Symbol key.
-
-      case KC_SPC:
-        return ' ';  // Space key.
-
-      case KC_QUOT:
-      case KC_DQUO:
-        return '\'';  // Quote key.
-    }
-  }
-
-  // Otherwise clear Sentence Case to initial state.
-  sentence_case_clear();
-  return '\0';
-}
-#endif  // COMMUNITY_MODULE_SENTENCE_CASE_ENABLE
