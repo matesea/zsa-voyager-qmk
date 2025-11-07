@@ -166,8 +166,10 @@ enum keycode_aliases {
 
 #if defined(POINTING_DEVICE_ENABLE)
     HRM_B   = LT(0, KC_B), // hold for navigator aim mode
+    HRM_G   = LT(0, KC_G), // hold for scroll drag
 #else
     HRM_B   = KC_B,
+    HRM_G   = KC_G,
 #endif // POINTING_DEVICE_ENABLE
 
     HRM_J    = RSFT_T(KC_J),
@@ -222,7 +224,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [QWERTY] = LAYOUT_LR(
             KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
             KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
-            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   KC_G,
+            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
             SWIME,    HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
                                              OSM_SFT, HRM_ENT,
 
@@ -263,8 +265,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [EXT] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, _______, _______, _______,
-            _______, _______, _______, MS_BTN2, MS_BTN1, _______,
+            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, SCL_DRG,
+            _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
                                                 QK_LLCK, _______,
 
                      _______, _______, _______, _______, _______, _______,
@@ -353,14 +355,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(COMBO_ENABLE)
 const uint16_t PROGMEM combo_cv[] = {KC_C, KC_V, COMBO_END};
-const uint16_t PROGMEM combo_fg[] = {HRM_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
 const uint16_t PROGMEM combo_vb[] = {HRM_B, KC_V, COMBO_END};
 const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
 const uint16_t PROGMEM combo_hj[] = {KC_H, HRM_J, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(combo_cv, CW_TOGG),
-    COMBO(combo_fg, SCL_TOG),
+    COMBO(combo_fg, TOGGLE_SCROLL),
     COMBO(combo_vb, OSL(FN)),
     COMBO(combo_m_comm, SWIME),
 #if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
@@ -539,6 +541,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 #endif // DIRECTION_LAYER_ENABLE
 #ifdef POINTING_DEVICE_ENABLE
             case HRM_B:         // NAVIGATOR_AIM
+            case HRM_G:         // DRAG_SCROLL
 #endif // POINTING_DEVICE_ENABLE
                 return FLOW_TAP_TERM;
         }
@@ -766,7 +769,7 @@ extern bool navigator_aim;
 
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 void pointing_device_init_user(void) {
-    set_auto_mouse_layer(NAV);
+    set_auto_mouse_layer(EXT);
     set_auto_mouse_enable(true);
 }
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
@@ -784,8 +787,9 @@ static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, 
 // layer mask for which layers APPPREV/APPNEXT on
 #define SWAPP_LAYER_MASK ((1 << NAV))
 layer_state_t layer_state_set_user(layer_state_t state) {
+#define max(x, y) ((x) > (y) ? (x) : (y))
     // LED indicates SYM or above layer is on
-    uint8_t layer = get_highest_layer(state) - SYM + 1;
+    uint8_t layer = max(get_highest_layer(state), SYM - 1) + 1 - SYM;
     // release swapp_mod when the layer is released
     if (swapp_mod && !(state & SWAPP_LAYER_MASK)) {
         unregister_mods(swapp_mod);
@@ -946,6 +950,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           navigator_aim = record->event.pressed;
       break;
 
+    case HRM_G:
+      if (!record->tap.count)
+          set_scrolling = record->event.pressed;
+      break;
 #endif /* POINTING_DEVICE_ENABLE */
   }
 
