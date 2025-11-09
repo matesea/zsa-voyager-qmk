@@ -196,10 +196,9 @@ enum keycode_aliases {
     OSM_ALT  = OSM(MOD_LALT),
     OSM_GUI  = OSM(MOD_LGUI),
 
-    // switch to NAV layer with modifier
-    NAV_EQL  = LT(NAV, KC_EQL),  // nav+shift
-    NAV_SLSH = LT(NAV, KC_SLSH), // nav+ctrl
-    NAV_EXLM = LT(NAV, KC_EXLM), // nav+gui
+    // switch to EXT layer with modifier
+    EXT_SLSH = LT(EXT, KC_SLSH), // ext+ctrl
+    EXT_EXLM = LT(EXT, KC_EXLM), // ext+gui
 
     NAV_A = LGUI_T(CA),
     NAV_S = LALT_T(CS),
@@ -248,11 +247,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        split symbol layer to two hands to reduce finger travel distance
      */
     [SYM] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, KC_GRV , KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
-            _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
-            XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
-                                                USRNAME, _______,
+            _______, _______,  _______, _______,  _______, _______,
+            _______, KC_GRV ,  KC_LABK, KC_RABK,  KC_MINS, KC_PIPE,
+            _______, EXT_EXLM, KC_ASTR, EXT_SLSH, KC_EQL,  KC_AMPR,
+            XXXXXXX, KC_TILD,  KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
+                                                  USRNAME, _______,
 
                      _______, _______, _______, _______, _______, _______,
                      KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW  , _______,
@@ -475,6 +474,12 @@ bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
     switch (tap_hold_keycode) {
+        case HRM_S:
+            switch (other_keycode) {
+                case HRM_A: case HRM_D:
+                    return true;
+            }
+            break;
         case HRM_A:
             switch (other_keycode) {
                 case KC_E: case KC_R:
@@ -529,10 +534,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
              *      this meaningful value should be around 60ms for me
              */
             // case HRM_S: case HRM_L: // LT(SYM)
-            case HRM_X:             // LT(EXT)
             case HRM_D: case HRM_K: // ctrl
                  return FLOW_TAP_TERM - 30; // 70ms
 
+            case HRM_X:                     // LT(EXT)
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
             case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
@@ -910,6 +915,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case NAV_F:
          if (process_mod_tap(record, isMacOS ? G(KC_F) : C(KC_F), 0))
              return false;
+         break;
+
+#ifdef DIRECTION_LAYER_ENABLE
+    case HRM_COMM:
+         add_mod_when_held(record, MOD_BIT_LSHIFT);
+         break;
+#endif
+
+    case EXT_SLSH:
+         add_mod_when_held(record, MOD_BIT_LCTRL);
+         break;
+
+    case EXT_EXLM:
+         if (process_mod_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode)), 0))
+             return false;
+         add_mod_when_held(record, MOD_BIT_LGUI);
          break;
 
     case C(KC_A) ... C(KC_Z):
