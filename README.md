@@ -24,8 +24,6 @@ qmk firmware version >= 0.28.0 with community modules
     * randomly pick an effect/palette at startup
 * community module: select word
     * quickly select word forward/backward or select line
-* community module: dave-thompson/lumberjack
-    * print tap/hold timing in qmk console, to analyze homerow mods
 * other custom keycodes
     * APPNEXT/APPPREV: swap foreground app
 * optional feature: vim navigation layer DIR

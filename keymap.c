@@ -21,8 +21,10 @@ enum custom_keycodes {
   NAVIGATOR_AIM, // hold to enable trackball aim mode
   NAVIGATOR_INC_CPI, // increase cpi
   NAVIGATOR_DEC_CPI, // decrease cpi
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
   AUTO_MOUSE_LAYER_OFF, // deactivate auto mouse layer
   AUTO_MOUSE_TOGGLE, // toggle auto mouse feature on/off
+#endif
 
   // dummy keycode for C(KC_A)/C(KC_S)/C(KC_D)/C(KC_F)
   CA,
@@ -153,8 +155,10 @@ enum keycode_aliases {
     NAV_AIM = NAVIGATOR_AIM,
     CPI_INC = NAVIGATOR_INC_CPI,
     CPI_DEC = NAVIGATOR_DEC_CPI,
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     AML_OFF = AUTO_MOUSE_LAYER_OFF,
     AM_TOGG = AUTO_MOUSE_TOGGLE,
+#endif
 
     HRM_A   = LGUI_T(KC_A),
     HRM_S   = LT(SYM, KC_S),
@@ -268,10 +272,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
                                                 QK_LLCK, _______,
 
+                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, CPI_INC,
+                     _______, _______, _______, _______, _______, CPI_DEC,
                      _______, _______, _______, _______, _______, _______,
-                     _______, _______, _______, _______, _______,  _______,
-                     _______, _______, _______, _______, _______,  _______,
-                     _______, _______, _______, _______, _______,  _______,
+                     _______, _______, _______, _______, _______, _______,
                      _______, _______
             ),
 
@@ -298,9 +302,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 QK_LLCK, _______,
 
-                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_BOOT,
-                     CPI_INC, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_RBT,
-                     CPI_DEC, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
+                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_RBT,
+                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
                      DB_TOGG, KC_F1,   KC_F2,   KC_F3,   KC_F10,  RGBHRND,
                      _______, _______
             ),
@@ -727,27 +731,19 @@ static void dlog_record(uint16_t keycode, keyrecord_t* record) {
 #define dlog_record(keycode, record)
 #endif  // NO_DEBUG
 
-// customize tap/hold behavior
+// customize tap behavior
 // returning true means already handled
-__attribute__((weak)) bool process_mod_tap(keyrecord_t *record, uint16_t tap, uint8_t mod) {
-    if (record->tap.count) {
-        // tap
-        if (record->event.pressed) {
-            tap_code16_delay(tap, TAP_CODE_DELAY);
+__attribute__((weak)) bool process_tap(keyrecord_t *record, uint16_t tap) {
+    if (!record->tap.count)
+        return false;
+    // tap
+    if (record->event.pressed) {
+        tap_code16_delay(tap, TAP_CODE_DELAY);
 #ifdef REPEAT_KEY_ENABLE
-            set_last_keycode(tap);
+        set_last_keycode(tap);
 #endif // REPEAT_KEY_ENABLE
-        }
-        return true;
-    } else if (mod) {
-        // hold
-        if (record->event.pressed)
-            register_mods(mod);
-        else
-            unregister_mods(mod);
-        return true;
-    }
-    return false;
+     }
+     return true;
 }
 
 __attribute__((weak)) bool add_mod_when_held(keyrecord_t *record, uint8_t mod) {
@@ -895,25 +891,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
 
     case HRM_UNDS:
-         if (process_mod_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode)), 0))
+         if (process_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode))))
              return false;
          break;
 
     case NAV_A:
-         if (process_mod_tap(record, isMacOS ? G(KC_A) : C(KC_A), 0))
+         if (process_tap(record, isMacOS ? G(KC_A) : C(KC_A)))
              return false;
          break;
     case NAV_S:
-         if (process_mod_tap(record, isMacOS ? G(KC_S) : C(KC_S), 0))
+         if (process_tap(record, isMacOS ? G(KC_S) : C(KC_S)))
              return false;
          break;
     case NAV_D:
-         if (process_mod_tap(record, isMacOS ? G(KC_D) : C(KC_D), 0))
+         if (process_tap(record, isMacOS ? G(KC_D) : C(KC_D)))
              return false;
          break;
 
     case NAV_F:
-         if (process_mod_tap(record, isMacOS ? G(KC_F) : C(KC_F), 0))
+         if (process_tap(record, isMacOS ? G(KC_F) : C(KC_F)))
              return false;
          break;
 
@@ -928,7 +924,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
     case EXT_EXLM:
-         if (process_mod_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode)), 0))
+         if (process_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode))))
              return false;
          add_mod_when_held(record, MOD_BIT_LGUI);
          break;

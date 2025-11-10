@@ -19,6 +19,15 @@
 
 #define CHORDAL_HOLD
 
+#define DISABLE_LEADER
+#ifndef NO_DEBUG
+	#define NO_DEBUG
+#endif
+
+#if !defined(NO_PRINT) && !defined(CONSOLE_ENABLE)
+	#define NO_PRINT
+#endif
+
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
 // #define NO_ACTION_ONESHOT
