@@ -4,7 +4,7 @@
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
-// #define DIRECTION_LAYER_ENABLE
+#define DIRECTION_LAYER_ENABLE
 
 enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
@@ -182,11 +182,11 @@ enum keycode_aliases {
     HRM_SCLN = RGUI_T(KC_SCLN),
 
 #ifdef DIRECTION_LAYER_ENABLE
-    HRM_COMM = LT(DIR, KC_COMM),
-    HRM_DOT  = LT(DIR, KC_DOT),
+    DIR_LPRN = LT(DIR, KC_LPRN),
+    DIR_RPRN = LT(DIR, KC_RPRN),
 #else
-    HRM_COMM = KC_COMM,
-    HRM_DOT  = KC_DOT,
+    DIR_LPRN = KC_LPRN,
+    DIR_RPRN = KC_RPRN,
 #endif // DIRECTION_LAYER_ENABLE
     HRM_SLSH = LALT_T(KC_SLSH),
 
@@ -231,10 +231,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             SWIME,    HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
                                              OSM_SFT, HRM_ENT,
 
-                      KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
-                      KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
-                      KC_H,    HRM_J, HRM_K,    HRM_L,   HRM_SCLN, HRM_QUOT,
-                      KC_N,    KC_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
+                      KC_6,    KC_7,  KC_8,    KC_9,   KC_0,     KC_EQL,
+                      KC_Y,    KC_U,  KC_I,    KC_O,   KC_P,     KC_MINS,
+                      KC_H,    HRM_J, HRM_K,   HRM_L,  HRM_SCLN, HRM_QUOT,
+                      KC_N,    KC_M,  KC_COMM, KC_DOT, HRM_SLSH, KC_BSLS,
                       KC_BSPC, KC_SPC
             ),
 
@@ -257,10 +257,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             XXXXXXX, KC_TILD,  KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
                                                   USRNAME, _______,
 
-                     _______, _______, _______, _______, _______, _______,
-                     KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  ARROW  , _______,
-                     KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, UPDIR,
-                     KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, KC_BSLS,
+                     _______, _______,  _______,  _______, _______, _______,
+                     KC_CIRC, KC_LCBR,  KC_RCBR,  KC_DLR,  ARROW  , _______,
+                     KC_HASH, DIR_LPRN, DIR_RPRN, KC_SCLN, KC_DQUO, UPDIR,
+                     KC_AT,   KC_COLN,  KC_COMM,  KC_DOT,  KC_QUOT, KC_BSLS,
                      _______, _______
             ),
 
@@ -333,7 +333,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                      _______, _______, _______, _______, _______, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                     XXXXXXX, KC_LSFT, KC_LCTL, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
@@ -360,7 +360,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM combo_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
 const uint16_t PROGMEM combo_vb[] = {HRM_B, KC_V, COMBO_END};
-const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_m_comm[] = {KC_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM combo_hj[] = {KC_H, HRM_J, COMBO_END};
 
 combo_t key_combos[] = {
@@ -478,24 +478,19 @@ bool get_chordal_hold(
         uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
         uint16_t other_keycode, keyrecord_t* other_record) {
     switch (tap_hold_keycode) {
-        case HRM_S:
-            switch (other_keycode) {
-                case HRM_A: case HRM_D:
-                    return true;
-            }
-            break;
         case HRM_A:
             switch (other_keycode) {
-                case KC_E: case KC_R:
+                // gui+E: explorer/gui+R: run
+                case KC_E:
+                case KC_R:
                     return true;
             }
             break;
         case HRM_X:
-            switch (get_tap_keycode(other_keycode)) {
+            switch (other_keycode) {
                 // mouse keys
                 case KC_C:
                 case KC_V:
-                case KC_B:
                     return true;
             }
             break;
@@ -512,7 +507,7 @@ static bool is_typing(uint16_t keycode) {
       case KC_DOT:
       case KC_SCLN:
       case KC_SLSH:
-      case KC_UNDS:
+      // case KC_UNDS: // XXX: get_tap_keycode(HRM_UNDS) returns KC_MINS
       case KC_QUOT:
       case SWIME:
       case KC_BSLS:
@@ -537,20 +532,17 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
              * XXX: tried investigating proper FLOW_TAP_TERM with qmk module dave-thompson/lumberjack
              *      this meaningful value should be around 60ms for me
              */
-            // case HRM_S: case HRM_L: // LT(SYM)
+            // case HRM_S: case HRM_L: // LT(SYM) XXX: hard to find proper value for SYM layer
             case HRM_D: case HRM_K: // ctrl
-                 return FLOW_TAP_TERM - 30; // 70ms
+                 return FLOW_TAP_TERM - 35; // 65ms
 
             case HRM_X:                     // LT(EXT)
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
-            case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
-#ifdef DIRECTION_LAYER_ENABLE
-            case HRM_DOT: case HRM_COMM:    // LT(DIR)
-#endif // DIRECTION_LAYER_ENABLE
+            // case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
 #ifdef POINTING_DEVICE_ENABLE
-            case HRM_B:         // NAVIGATOR_AIM
-            case HRM_G:         // DRAG_SCROLL
+            case HRM_B:                     // NAVIGATOR_AIM
+            case HRM_G:                     // DRAG_SCROLL
 #endif // POINTING_DEVICE_ENABLE
                 return FLOW_TAP_TERM;
         }
@@ -914,8 +906,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 
 #ifdef DIRECTION_LAYER_ENABLE
-    case HRM_COMM:
+    case DIR_LPRN:
          add_mod_when_held(record, MOD_BIT_LSHIFT);
+    case DIR_RPRN:
+         if (process_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode))))
+             return false;
          break;
 #endif
 
