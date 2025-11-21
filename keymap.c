@@ -15,15 +15,16 @@ enum custom_keycodes {
   RGBHRND, // random select effect
 
   // navigator trackball specific
-  TOGGLE_SCROLL, // toggle scroll drag
-  DRAG_SCROLL, // hold to enable scroll drag
-  NAVIGATOR_TURBO, // hold to enable trackball turbo mode
-  NAVIGATOR_AIM, // hold to enable trackball aim mode
-  NAVIGATOR_INC_CPI, // increase cpi
-  NAVIGATOR_DEC_CPI, // decrease cpi
+  TOGGLE_SCROLL,        // toggle scroll drag
+  DRAG_SCROLL,          // hold to enable scroll drag
+  NAVIGATOR_TURBO,      // hold to enable trackball turbo mode
+  NAVIGATOR_AIM,        // hold to enable trackball aim mode
+  NAVIGATOR_INC_CPI,    // increase cpi
+  NAVIGATOR_DEC_CPI,    // decrease cpi
+  MOUSE_TOGGLE,         // toggle mouse layer
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
   AUTO_MOUSE_LAYER_OFF, // deactivate auto mouse layer
-  AUTO_MOUSE_TOGGLE, // toggle auto mouse feature on/off
+  AUTO_MOUSE_TOGGLE,    // toggle auto mouse feature on/off
 #endif
 
   // dummy keycode for C(KC_A)/C(KC_S)/C(KC_D)/C(KC_F)
@@ -201,6 +202,7 @@ enum keycode_aliases {
     OSM_GUI  = OSM(MOD_LGUI),
 
     // switch to EXT layer with modifier
+    EXT_EQL  = LT(EXT, KC_EQL),  // ext+shift
     EXT_SLSH = LT(EXT, KC_SLSH), // ext+ctrl
     EXT_EXLM = LT(EXT, KC_EXLM), // ext+gui
 
@@ -253,7 +255,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYM] = LAYOUT_LR(
             _______, _______,  _______, _______,  _______, _______,
             _______, KC_GRV ,  KC_LABK, KC_RABK,  KC_MINS, KC_PIPE,
-            _______, EXT_EXLM, KC_ASTR, EXT_SLSH, KC_EQL,  KC_AMPR,
+            _______, EXT_EXLM, KC_ASTR, EXT_SLSH, EXT_EQL, KC_AMPR,
             XXXXXXX, KC_TILD,  KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
                                                   USRNAME, _______,
 
@@ -268,12 +270,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [EXT] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, SCL_DRG,
-            _______, KC_LALT, XXXXXXX, MS_BTN2, MS_BTN1, NAV_AIM,
-                                                QK_LLCK, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, _______, _______, APPPREV, APPNEXT, _______,
+                                                MS_BTN2, MS_BTN1,
 
-                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, CPI_INC,
-                     _______, _______, _______, _______, _______, CPI_DEC,
+                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_LLCK,
+                     _______, _______, _______, _______, _______, _______,
                      _______, _______, _______, _______, _______, _______,
                      _______, _______, _______, _______, _______, _______,
                      _______, _______
@@ -283,16 +285,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // navigation layer
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, CLOSAPP, C(KC_W), APPPREV, APPNEXT, C(KC_T),
+            _______, CLOSAPP, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
             _______, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
             _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
-                                                _______, _______,
+                                                XXXXXXX, _______,
 
-                     SELLINE,   SELWBAK, SELWORD, XXXXXXX, XXXXXXX, XXXXXXX,
+                     SELLINE,   SELWBAK, SELWORD, XXXXXXX, XXXXXXX, QK_LLCK,
                      KC_HOME,   KC_PGDN, KC_PGUP, KC_END,  KC_INS,  KC_BRK,
                      KC_LEFT,   KC_DOWN, KC_UP,   KC_RGHT, KC_DEL,  KC_PSCR,
                      G(KC_TAB), APPPREV, APPNEXT, XXXXXXX, KC_APP,  KC_SCRL,
-                     QK_LLCK,   _______
+                     _______,   _______
      ),
 
     [FN] = LAYOUT_LR(
@@ -302,9 +304,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                                 QK_LLCK, _______,
 
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_RBT,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
+                     QK_RBT,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
+                     CPI_INC, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_BOOT,
+                     CPI_DEC, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
                      DB_TOGG, KC_F1,   KC_F2,   KC_F3,   KC_F10,  RGBHRND,
                      _______, _______
             ),
@@ -368,9 +370,7 @@ combo_t key_combos[] = {
     COMBO(combo_fg, TOGGLE_SCROLL),
     COMBO(combo_vb, OSL(FN)),
     COMBO(combo_m_comm, SWIME),
-#if defined(REPEAT_KEY_ENABLE) && !defined(NO_ALT_REPEAT_KEY)
-    COMBO(combo_hj, QK_AREP),
-#endif
+    COMBO(combo_hj, MOUSE_TOGGLE),
 };
 #endif /* COMBO_ENABLE */
 
@@ -778,7 +778,7 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
 static uint8_t swapp_mod = 0; // record app switch mod key status, alt for WIN, gui for MAC
 
 // layer mask for which layers APPPREV/APPNEXT on
-#define SWAPP_LAYER_MASK ((1 << NAV))
+#define SWAPP_LAYER_MASK ((1 << NAV) | (1 << EXT))
 layer_state_t layer_state_set_user(layer_state_t state) {
 #define max(x, y) ((x) > (y) ? (x) : (y))
     // LED indicates SYM or above layer is on
@@ -914,6 +914,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          break;
 #endif
 
+    case EXT_EQL:
+         add_mod_when_held(record, MOD_BIT_LSHIFT);
+         break;
+
     case EXT_SLSH:
          add_mod_when_held(record, MOD_BIT_LCTRL);
          break;
@@ -1045,6 +1049,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         case NAVIGATOR_DEC_CPI:
             pointing_device_set_cpi(0);
+            return false;
+        case MOUSE_TOGGLE:
+            layer_lock_invert(EXT);
             return false;
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
         case AUTO_MOUSE_LAYER_OFF:
