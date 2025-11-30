@@ -190,11 +190,10 @@ enum keycode_aliases {
 #endif // DIRECTION_LAYER_ENABLE
     HRM_SLSH = LALT_T(KC_SLSH),
 
-    HRM_UNDS = LT(TMUX, KC_UNDS),
-    HRM_QUOT = LT(TMUX, KC_QUOT),
-
     // HRM_REP  = LT(NAV, QK_REP),
     HRM_ENT  = LT(NAV, KC_ENT),
+    HRM_BSPC = LT(FN, KC_BSPC),
+
     OSM_SFT  = OSM(MOD_LSFT),
     OSM_CTL  = OSM(MOD_LCTL),
     OSM_ALT  = OSM(MOD_LALT),
@@ -221,17 +220,17 @@ bool process_detected_host_os_user(os_variant_t os) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [QWERTY] = LAYOUT_LR(
-            KC_ESC,   KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
-            KC_TAB,   KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
-            HRM_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
-            SWIME,    HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
+            KC_ESC,  KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
+            KC_TAB,  KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
+            KC_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
+            SWIME,   HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
                                              OSM_SFT, HRM_ENT,
 
-                      KC_6,    KC_7,  KC_8,     KC_9,   KC_0,     KC_EQL,
-                      KC_Y,    KC_U,  KC_I,     KC_O,   KC_P,     KC_MINS,
-                      KC_H,    HRM_J, HRM_K,    HRM_L,  HRM_SCLN, HRM_QUOT,
+                      KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
+                      KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
+                      KC_H,    HRM_J, HRM_K,    HRM_L,   HRM_SCLN, KC_QUOT,
                       KC_N,    KC_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
-                      KC_BSPC, KC_SPC
+                      HRM_BSPC, KC_SPC
             ),
 
     /* getreuer's symbol layer
@@ -279,9 +278,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // navigation layer
     [NAV] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
-            _______, CLOSAPP, C(KC_W), G(KC_E), G(KC_R), C(KC_T),
-            APPNEXT, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
-            APPPREV, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
+            _______, CLOSAPP, C(KC_W), APPPREV, APPNEXT, C(KC_T),
+            _______, NAV_A,   NAV_S,   NAV_D,   NAV_F,   C(KC_G),
+            _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),
                                                 XXXXXXX, _______,
 
                      SELLINE,   SELWBAK, SELWORD, XXXXXXX, XXXXXXX, QK_LLCK,
@@ -291,6 +290,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______,   _______
      ),
 
+#if 0
     [FN] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -302,6 +302,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_BOOT,
                      XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
                      DB_TOGG, KC_F1,   KC_F2,   KC_F3,   KC_F10,  RGBHRND,
+                     _______, _______
+            ),
+#endif
+
+    [FN] = LAYOUT_LR(
+            QK_LLCK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            QK_BOOT, KC_F12,  KC_F9,   KC_F8,   KC_F7,   DB_TOGG,
+            QK_RBT,  KC_F11,  KC_F6,   KC_F5,   KC_F4,   LUMINO,
+            XXXXXXX, KC_F10,  KC_F3,   KC_F2,   KC_F1,   RGBHRND,
+                                                XXXXXXX, _______,
+
+                     _______, _______, _______, _______, _______, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 
@@ -353,16 +368,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
+const uint16_t PROGMEM combo_xc[] = {HRM_X, KC_C, COMBO_END};
 const uint16_t PROGMEM combo_cv[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
-const uint16_t PROGMEM combo_vb[] = {HRM_B, KC_V, COMBO_END};
 const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
+const uint16_t PROGMEM combo_cd[] = {HRM_COMM, HRM_DOT, COMBO_END};
 
 combo_t key_combos[] = {
+    COMBO(combo_xc, MO(TMUX)),
     COMBO(combo_cv, CW_TOGG),
     COMBO(combo_fg, TOGGLE_SCROLL),
-    COMBO(combo_vb, OSL(FN)),
     COMBO(combo_m_comm, SWIME),
+    COMBO(combo_cd, MO(TMUX)),
 };
 #endif /* COMBO_ENABLE */
 
@@ -412,7 +429,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HRM_K:
     case HRM_L:
     case HRM_ENT:
-    case HRM_DOT:
+    case HRM_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
   }
   return 0;
@@ -482,7 +499,6 @@ bool get_chordal_hold(
         case HRM_X:
             switch (other_keycode) {
                 // mouse keys
-                case KC_C:
                 case KC_V:
                     return true;
             }
@@ -500,7 +516,7 @@ static bool is_typing(uint16_t keycode) {
       case KC_DOT:
       case KC_SCLN:
       case KC_SLSH:
-      // case KC_UNDS: // XXX: get_tap_keycode(HRM_UNDS) returns KC_MINS
+      case KC_UNDS: // XXX: get_tap_keycode(HRM_UNDS) returns KC_MINS
       case KC_QUOT:
       case SWIME:
       case KC_BSLS:
@@ -527,20 +543,20 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
              */
             // case HRM_S: case HRM_L: // LT(SYM) XXX: hard to find proper value for SYM layer
             case HRM_D: case HRM_K: // ctrl
-                 return FLOW_TAP_TERM - 45; // 55ms
+                 return FLOW_TAP_TERM - 70; // 55ms
 
+#ifdef DIRECTION_LAYER_ENABLE
+            case HRM_COMM: case HRM_DOT:
+                 return FLOW_TAP_TERM;      // 125ms
+#endif
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
             case HRM_X:                     // LT(EXT)
-            // case HRM_UNDS: case HRM_QUOT:   // LT(TMUX)
 #ifdef POINTING_DEVICE_ENABLE
             case HRM_B:                     // NAVIGATOR_AIM
             case HRM_G:                     // DRAG_SCROLL
 #endif // POINTING_DEVICE_ENABLE
-#ifdef DIRECTION_LAYER_ENABLE
-            case HRM_COMM: case HRM_DOT:
-#endif
-                return FLOW_TAP_TERM;
+                return FLOW_TAP_TERM + 25;  // 150ms
         }
     }
     return 0;
@@ -914,11 +930,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
 
-    case HRM_UNDS:
-         if (process_tap(record, S(QK_MODS_GET_BASIC_KEYCODE(keycode))))
-             return false;
-         break;
-
     case NAV_A:
          if (process_tap(record, isMacOS ? G(KC_A) : C(KC_A)))
              return false;
@@ -1009,7 +1020,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
         /* cancel OSM shift with BSPC */
-        case KC_BSPC:
+        case HRM_BSPC:
+            if (!record->tap.count)
+                break;
             if (record->event.pressed && (get_oneshot_mods() & MOD_MASK_SHIFT)) {
                 del_oneshot_mods(MOD_MASK_SHIFT);
                 return false;

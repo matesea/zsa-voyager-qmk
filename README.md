@@ -16,10 +16,10 @@ qmk firmware version >= 0.28.0 with community modules
     * TMUX: tmux shortcuts
     * EXT: mouse keys
 * combo:
+    * xc, comm+dot = MO(TMUX)
     * cv = caps word toggle
     * m, = ctrl+space/win+space depending on OS, switch input method
     * fg = toggle DRAG_SCROLL
-    * vb = OSL(FN), oneshot FN layer
 * community module: lumino/palettefx
     * randomly pick an effect/palette at startup
 * community module: select word

@@ -71,7 +71,7 @@
 // control voyager LED
 #define VOYAGER_USER_LEDS
 
-#define FLOW_TAP_TERM 100
+#define FLOW_TAP_TERM 125
 // #define ACTION_DEBUG
 
 #ifdef COMMUNITY_MODULE_ORBITIAL_MOUSE_ENABLE
