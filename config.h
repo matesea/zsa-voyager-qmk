@@ -38,7 +38,7 @@
 #define NO_ALT_REPEAT_KEY
 
 #ifdef COMBO_ENABLE
-#define COMBO_TERM 35
+#define COMBO_TERM 50
 #endif
 
 #define USB_SUSPEND_WAKEUP_DELAY 0

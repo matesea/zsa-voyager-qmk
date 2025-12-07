@@ -4,7 +4,6 @@
 
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
-#define DIRECTION_LAYER_ENABLE
 
 enum custom_keycodes {
   ARROW = ML_SAFE_RANGE,    // -> =>
@@ -32,7 +31,6 @@ enum custom_keycodes {
   CD,
   CF,
 
-#ifdef DIRECTION_LAYER_ENABLE
   /* vim navigation */
   /* the LBRC/RBRC keys must be both defined and in same order */
   /* shift + RBRC_* = LBRC_* */
@@ -89,7 +87,6 @@ enum custom_keycodes {
   RBRC_X,
   RBRC_Y,
   RBRC_Z,
-#endif // DIRECTION_LAYER_ENABLE
 
   UPDIR, // input ../ per press
   KEYSTR_MIN = UPDIR,
@@ -102,6 +99,7 @@ enum custom_keycodes {
   TMUX_V,    // C-A v, vsplit
   TMUX_G,    // C-A g, split
   TMUX_P,    // C-A p, prev window
+  TMUX_Q,    // C-A q, select pane
   TMUX_SLSH, // C-A /, search backward
   TMUX_QUES, // C-A ?, search backward with tmux plugin tmux-fuzzback
   TMUX_W,    // C-A w, select window with preview
@@ -142,9 +140,7 @@ enum {
     EXT,
     NAV,
     FN,
-#ifdef DIRECTION_LAYER_ENABLE
     DIR,
-#endif // DIRECTION_LAYER_ENABLE
     TMUX,
 };
 
@@ -181,13 +177,8 @@ enum keycode_aliases {
     HRM_L    = LT(SYM, KC_L),
     HRM_SCLN = RGUI_T(KC_SCLN),
 
-#ifdef DIRECTION_LAYER_ENABLE
     HRM_COMM = LT(DIR, KC_COMM),
     HRM_DOT = LT(DIR, KC_DOT),
-#else
-    HRM_COMM = KC_COMM,
-    HRM_DOT = KC_DOT,
-#endif // DIRECTION_LAYER_ENABLE
     HRM_SLSH = LALT_T(KC_SLSH),
 
     // HRM_REP  = LT(NAV, QK_REP),
@@ -246,16 +237,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        split symbol layer to two hands to reduce finger travel distance
      */
     [SYM] = LAYOUT_LR(
-            _______, _______,  _______, _______,  _______, _______,
-            _______, KC_GRV ,  KC_LABK, KC_RABK,  KC_MINS, KC_PIPE,
-            _______, KC_EXLM,  KC_ASTR, KC_SLSH,  KC_EQL,  KC_AMPR,
-            XXXXXXX, KC_TILD,  KC_PLUS, KC_LBRC,  KC_RBRC, KC_PERC,
-                                                  USRNAME, _______,
+            _______, _______, _______, _______, _______, _______,
+            _______, KC_GRV , KC_LABK, KC_RABK, KC_MINS, KC_PIPE,
+            _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR,
+            XXXXXXX, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC,
+                                                USRNAME, _______,
 
-                     _______, _______,  _______,  _______, _______, _______,
-                     KC_CIRC, KC_LCBR,  KC_RCBR,  KC_DLR,  ARROW  , _______,
+                     _______, _______,  _______, _______, _______, _______,
+                     KC_CIRC, KC_LCBR,  KC_RCBR, KC_DLR,  ARROW  , _______,
                      KC_HASH, KC_LPRN,  KC_RPRN, KC_SCLN, KC_DQUO, UPDIR,
-                     KC_AT,   KC_COLN,  KC_COMM,  KC_DOT,  KC_QUOT, KC_BSLS,
+                     KC_AT,   KC_COLN,  KC_COMM, KC_DOT,  KC_QUOT, KC_BSLS,
                      _______, _______
             ),
 
@@ -290,22 +281,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______,   _______
      ),
 
-#if 0
-    [FN] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
-            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-            _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-            _______, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                                XXXXXXX, _______,
-
-                     QK_RBT,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK,
-                     XXXXXXX, KC_F7,   KC_F8,   KC_F9,   KC_F12,  QK_BOOT,
-                     XXXXXXX, KC_F4,   KC_F5,   KC_F6,   KC_F11,  LUMINO,
-                     DB_TOGG, KC_F1,   KC_F2,   KC_F3,   KC_F10,  RGBHRND,
-                     _______, _______
-            ),
-#endif
-
     [FN] = LAYOUT_LR(
             QK_LLCK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
             QK_BOOT, KC_F12,  KC_F9,   KC_F8,   KC_F7,   DB_TOGG,
@@ -322,7 +297,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [TMUX] = LAYOUT_LR(
             _______, _______, _______, _______,  _______, _______,
-            _______, XXXXXXX, TMUX_W,  TMUX_P,   TMUX_N,  XXXXXXX,
+            _______, TMUX_Q,  TMUX_W,  TMUX_P,   TMUX_N,  XXXXXXX,
             _______, TMUX_A,  TMUX_S,  XXXXXXX,  TMUX_F,  TMUX_G,
             _______, TMUX_Z,  TMUX_X,  TMUX_C,   TMUX_V,  XXXXXXX,
                                                  XXXXXXX, XXXXXXX,
@@ -334,7 +309,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                        TMUX_BSPC, TMUX_SPC
             ),
 
-#ifdef DIRECTION_LAYER_ENABLE
     [DIR] = LAYOUT_LR(
             _______, _______, _______, _______, _______, _______,
             XXXXXXX, RBRC_Q,  RBRC_W,  RBRC_E,  RBRC_R,  RBRC_T,
@@ -348,23 +322,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
-#endif // DIRECTION_LAYER_ENABLE
-
-#if 0
-     [EXT] = LAYOUT_LR(  // Orbit Mouse
-             _______, _______, _______, _______, _______, _______,
-             _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX ,XXXXXXX ,
-             _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,
-             _______, KC_LALT, XXXXXXX, APPPREV, APPNEXT, XXXXXXX,
-                                                 MS_BTN1, MS_BTN2,
-
-                      _______, _______, _______, _______, _______, _______,
-                      OM_W_U , OM_BTN1, OM_U   , OM_BTN2, XXXXXXX, _______,
-                      OM_W_D , OM_L   , OM_D   , OM_R   , OM_SLOW, _______,
-                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
-                      XXXXXXX, QK_LLCK
-     ),
-#endif
 };
 
 #if defined(COMBO_ENABLE)
@@ -389,7 +346,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case HRM_F: case HRM_J:
             return TAPPING_TERM; /* 180ms */
     }
-    return TAPPING_TERM + 70; /* 250ms */
+    return TAPPING_TERM + 120; /* 300ms */
 }
 #endif /* TAPPING_TERM_PER_KEY */
 
@@ -542,13 +499,11 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
              *      this meaningful value should be around 60ms for me
              */
             // case HRM_S: case HRM_L: // LT(SYM) XXX: hard to find proper value for SYM layer
-            case HRM_D: case HRM_K: // ctrl
-                 return FLOW_TAP_TERM - 70; // 55ms
+            // case HRM_D: case HRM_K: // ctrl
+            //      return FLOW_TAP_TERM - 75; // 50ms
 
-#ifdef DIRECTION_LAYER_ENABLE
             case HRM_COMM: case HRM_DOT:
                  return FLOW_TAP_TERM;      // 125ms
-#endif
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_Z: case HRM_SLSH:      // alt
             case HRM_X:                     // LT(EXT)
@@ -592,9 +547,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record,
         *remembered_mods &= MOD_MASK_SHIFT;
         break;
 
-#ifdef DIRECTION_LAYER_ENABLE
       case LBRC_A ... RBRC_Z:
-#endif // DIRECTION_LAYER_ENABLE
       case KEYSTR_MIN ... KEYSTR_MAX: // forget all mods
         *remembered_mods = 0;
         break;
@@ -614,14 +567,12 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 else
                     return S(keycode);
 
-#ifdef DIRECTION_LAYER_ENABLE
             /* reverse vim navigation */
             case LBRC_A ... LBRC_Z:
                 return keycode - LBRC_A + RBRC_A;
 
             case RBRC_A ... RBRC_Z:
                 return keycode - RBRC_A + LBRC_A;
-#endif // DIRECTION_LAYER_ENABLE
 
             /* select pane */
             case TMUX_J: return TMUX_K;
@@ -653,7 +604,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 #endif /* NO_ALT_REPEAT_KEY */
 #endif /* REPEAT_KEY_ENABLE */
 
-#ifdef DIRECTION_LAYER_ENABLE
 static void generate_directional_string(uint16_t keycode, char* buf) {
     switch (keycode) {
         case LBRC_A ... LBRC_Z:
@@ -670,7 +620,6 @@ static void generate_directional_string(uint16_t keycode, char* buf) {
     }
     buf[2] = '\0';
 }
-#endif // DIRECTION_LAYER_ENABLE
 
 #define PREFIX_DELAY 50
 static const struct keystring_t keystrings[] = {
@@ -683,6 +632,7 @@ static const struct keystring_t keystrings[] = {
     [TMUX_V - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_V), TAP_CODE_DELAY},
     [TMUX_G - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_G), TAP_CODE_DELAY},
     [TMUX_P - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_P), TAP_CODE_DELAY},
+    [TMUX_Q - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Q), TAP_CODE_DELAY},
     [TMUX_SLSH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_SLSH), TAP_CODE_DELAY},
     [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
     [TMUX_W - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_W), TAP_CODE_DELAY},
@@ -998,7 +948,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   if (record->event.pressed) {
-#ifdef DIRECTION_LAYER_ENABLE
     // opposite directional movement when shift pressed
     if (shift_mods) {
         switch (keycode) {
@@ -1016,7 +965,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
         }
     }
-#endif // DIRECTION_LAYER_ENABLE
 
     switch (keycode) {
         /* cancel OSM shift with BSPC */
@@ -1041,7 +989,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           set_mods(mods);
           return false;
 
-#ifdef DIRECTION_LAYER_ENABLE
         case LBRC_A ... RBRC_Z:
           {
               static char buf[5] = {0};
@@ -1051,7 +998,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               set_mods(mods);
           }
           return false;
-#endif // DIRECTION_LAYER_ENABLE
 
         case KEYSTR_MIN ... KEYSTR_MAX:
           const struct keystring_t *p = &keystrings[keycode - KEYSTR_MIN];
