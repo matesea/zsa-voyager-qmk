@@ -22,7 +22,6 @@ enum custom_keycodes {
   NAVIGATOR_DEC_CPI,    // decrease cpi
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
   AUTO_MOUSE_LAYER_OFF, // deactivate auto mouse layer
-  AUTO_MOUSE_TOGGLE,    // toggle auto mouse feature on/off
 #endif
 
   // dummy keycode for C(KC_A)/C(KC_S)/C(KC_D)/C(KC_F)
@@ -153,16 +152,16 @@ enum keycode_aliases {
     CPI_DEC = NAVIGATOR_DEC_CPI,
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     AML_OFF = AUTO_MOUSE_LAYER_OFF,
-    AM_TOGG = AUTO_MOUSE_TOGGLE,
 #endif
 
     HRM_A   = LGUI_T(KC_A),
-    HRM_S   = LT(SYM, KC_S),
+    HRM_S   = LALT_T(KC_S),
     HRM_D   = LCTL_T(KC_D),
     HRM_F   = LSFT_T(KC_F),
 
-    HRM_Z   = LALT_T(KC_Z),
+    HRM_Z   = LT(TMUX, KC_Z),
     HRM_X   = LT(EXT, KC_X),
+    HRM_V   = LT(SYM, KC_V),
 
 #if defined(POINTING_DEVICE_ENABLE)
     HRM_B   = LT(0, KC_B), // hold for navigator aim mode
@@ -174,21 +173,19 @@ enum keycode_aliases {
 
     HRM_J    = RSFT_T(KC_J),
     HRM_K    = RCTL_T(KC_K),
-    HRM_L    = LT(SYM, KC_L),
+    HRM_L    = LALT_T(KC_L),
     HRM_SCLN = RGUI_T(KC_SCLN),
 
+    HRM_M   = LT(SYM, KC_M),
     HRM_COMM = LT(DIR, KC_COMM),
     HRM_DOT = LT(DIR, KC_DOT),
-    HRM_SLSH = LALT_T(KC_SLSH),
+    HRM_SLSH = LT(TMUX, KC_SLSH),
 
     // HRM_REP  = LT(NAV, QK_REP),
     HRM_ENT  = LT(NAV, KC_ENT),
     HRM_BSPC = LT(FN, KC_BSPC),
 
     OSM_SFT  = OSM(MOD_LSFT),
-    OSM_CTL  = OSM(MOD_LCTL),
-    OSM_ALT  = OSM(MOD_LALT),
-    OSM_GUI  = OSM(MOD_LGUI),
 
     NAV_A = LGUI_T(CA),
     NAV_S = LALT_T(CS),
@@ -214,13 +211,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_ESC,  KC_1,   KC_2,   KC_3,  KC_4,    KC_5,
             KC_TAB,  KC_Q,   KC_W,   KC_E,  KC_R,    KC_T,
             KC_UNDS, HRM_A,  HRM_S,  HRM_D, HRM_F,   HRM_G,
-            SWIME,   HRM_Z,  HRM_X,  KC_C,  KC_V,    HRM_B,
-                                             OSM_SFT, HRM_ENT,
+            SWIME,   HRM_Z,  HRM_X,  KC_C,  HRM_V,   HRM_B,
+                                            OSM_SFT, HRM_ENT,
 
                       KC_6,    KC_7,  KC_8,     KC_9,    KC_0,     KC_EQL,
                       KC_Y,    KC_U,  KC_I,     KC_O,    KC_P,     KC_MINS,
                       KC_H,    HRM_J, HRM_K,    HRM_L,   HRM_SCLN, KC_QUOT,
-                      KC_N,    KC_M,  HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
+                      KC_N,    HRM_M, HRM_COMM, HRM_DOT, HRM_SLSH, KC_BSLS,
                       HRM_BSPC, KC_SPC
             ),
 
@@ -252,15 +249,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     // mouse keycodes and those often used together
     [EXT] = LAYOUT_LR(
-            _______, _______, _______, _______, _______, _______,
+            AML_OFF, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, _______, _______,
             _______, _______, _______, _______, MS_BTN2, _______,
                                                 MS_BTN1, HRM_ENT,
 
-                     KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_MPLY, QK_LLCK,
-                     _______, _______, _______, _______, _______, CPI_INC,
-                     _______, _______, _______, _______, _______, CPI_DEC,
+                     _______, _______, _______, _______, _______, QK_LLCK,
+                     _______, _______, _______, _______, _______, _______,
+                     _______, _______, _______, _______, _______, _______,
                      _______, _______, _______, _______, _______, _______,
                      _______, _______
             ),
@@ -282,7 +279,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      ),
 
     [FN] = LAYOUT_LR(
-            QK_LLCK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            QK_LLCK, KC_MPLY, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,
             QK_BOOT, KC_F12,  KC_F9,   KC_F8,   KC_F7,   DB_TOGG,
             QK_RBT,  KC_F11,  KC_F6,   KC_F5,   KC_F4,   LUMINO,
             XXXXXXX, KC_F10,  KC_F3,   KC_F2,   KC_F1,   RGBHRND,
@@ -291,7 +288,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      _______, _______, _______, _______, _______, _______,
                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
                      XXXXXXX, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                     XXXXXXX, CPI_DEC, CPI_INC, XXXXXXX, XXXXXXX, _______,
                      _______, _______
             ),
 
@@ -325,18 +322,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #if defined(COMBO_ENABLE)
-const uint16_t PROGMEM combo_xc[] = {HRM_X, KC_C, COMBO_END};
-const uint16_t PROGMEM combo_cv[] = {KC_C, KC_V, COMBO_END};
+const uint16_t PROGMEM combo_cv[] = {KC_C, HRM_V, COMBO_END};
 const uint16_t PROGMEM combo_fg[] = {HRM_F, HRM_G, COMBO_END};
-const uint16_t PROGMEM combo_m_comm[] = {KC_M, HRM_COMM, COMBO_END};
-const uint16_t PROGMEM combo_cd[] = {HRM_COMM, HRM_DOT, COMBO_END};
+const uint16_t PROGMEM combo_m_comm[] = {HRM_M, HRM_COMM, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(combo_xc, MO(TMUX)),
     COMBO(combo_cv, CW_TOGG),
     COMBO(combo_fg, TOGGLE_SCROLL),
     COMBO(combo_m_comm, SWIME),
-    COMBO(combo_cd, MO(TMUX)),
 };
 #endif /* COMBO_ENABLE */
 
@@ -344,6 +337,7 @@ combo_t key_combos[] = {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_F: case HRM_J:
+        case HRM_M: case HRM_V:
             return TAPPING_TERM; /* 180ms */
     }
     return TAPPING_TERM + 120; /* 300ms */
@@ -358,7 +352,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
         case HRM_A: case HRM_SCLN:
             return isMacOS;
         // disable permissive hold for alt
-        case HRM_Z: case HRM_SLSH:
+        case HRM_S: case HRM_L:
             return false;
     }
     return true;
@@ -456,7 +450,7 @@ bool get_chordal_hold(
         case HRM_X:
             switch (other_keycode) {
                 // mouse keys
-                case KC_V:
+                case KC_C:
                     return true;
             }
             break;
@@ -500,18 +494,18 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
              */
             // case HRM_S: case HRM_L: // LT(SYM) XXX: hard to find proper value for SYM layer
             // case HRM_D: case HRM_K: // ctrl
-            //      return FLOW_TAP_TERM - 75; // 50ms
+            //      return FLOW_TAP_TERM - 100; // 50ms
 
-            case HRM_COMM: case HRM_DOT:
-                 return FLOW_TAP_TERM;      // 125ms
+            case HRM_COMM: case HRM_DOT:    // LT(DIR)
             case HRM_A: case HRM_SCLN:      // gui
-            case HRM_Z: case HRM_SLSH:      // alt
+            case HRM_S: case HRM_L:         // alt
             case HRM_X:                     // LT(EXT)
+            case HRM_Z: case HRM_SLSH:      // LT(TMUX)
 #ifdef POINTING_DEVICE_ENABLE
             case HRM_B:                     // NAVIGATOR_AIM
             case HRM_G:                     // DRAG_SCROLL
 #endif // POINTING_DEVICE_ENABLE
-                return FLOW_TAP_TERM + 25;  // 150ms
+                return FLOW_TAP_TERM;  // 150ms
         }
     }
     return 0;
@@ -727,17 +721,14 @@ void pointing_device_init_user(void) {
     set_auto_mouse_layer(EXT);
     set_auto_mouse_enable(true);
 }
-bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
-  switch (keycode) {
-    case SCL_TOG ... NAV_AIM:
-    // modifiers for mouse key
-    case HRM_A:
-    case HRM_D:
-    case HRM_F:
-    case HRM_Z:
-      return true;
+bool is_mouse_record_user(uint16_t keycode, keyrecord_t* record) {
+  // Treat all keys as mouse keys when in the automouse layer so that any key set resets the timeout without leaving the layer.
+  if (!layer_state_is(AUTO_MOUSE_TARGET_LAYER)){
+    // When depressing a mouse key with a LT key at the same time, the mouse key tracker is not decremented.
+    // This is a workaround to fix that
+    return (IS_MOUSE_KEYCODE(keycode) && !record->event.pressed);
   }
-  return is_mouse_record_user(keycode, record);
+  return false;
 }
 #endif /* POINTING_DEVICE_AUTO_MOUSE_ENABLE */
 #endif /* POINTING_DEVICE_ENABLE */
@@ -791,32 +782,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
   }
 
-  // EXT layer lock will be automatically turned on when left/right mouse key pressed
-  if (record->event.pressed) {
-      switch (keycode) {
-          // mouse keys press to keep staying EXT layer
-          case MS_BTN1:
-          case MS_BTN2:
-              layer_lock_on(EXT);
-              break;
-          case C(KC_C):
-          case C(KC_V):
-          case TOGGLE_SCROLL:
-              break;
-          // hold modifiers to keep staying EXT layer
-          case HRM_F:
-          case HRM_D:
-          case HRM_A:
-          case HRM_Z:
-          case HRM_ENT: // for shortcuts on NAV layer
-          case HRM_B: case HRM_G: // DRAG_SCROLL
-              if (!record->tap.count)
-                  break;
-          default:
-              layer_lock_off(EXT);
-              break;
+  // XXX: import from oryx
+  // no MT(mouse key) on my keymap
+#if 0
+  switch (keycode) {
+  case QK_MODS ... QK_MODS_MAX:
+    // Mouse keys with modifiers work inconsistently across operating systems, this makes sure that modifiers are always
+    // applied to the mouse key that was pressed.
+    if (IS_MOUSE_KEYCODE(QK_MODS_GET_BASIC_KEYCODE(keycode))) {
+    if (record->event.pressed) {
+        add_mods(QK_MODS_GET_MODS(keycode));
+        send_keyboard_report();
+        wait_ms(2);
+        register_code(QK_MODS_GET_BASIC_KEYCODE(keycode));
+        return false;
+      } else {
+        wait_ms(2);
+        del_mods(QK_MODS_GET_MODS(keycode));
       }
+    }
+    break;
   }
+#endif
 
 #if defined(REPEAT_KEY_ENABLE)
   switch (get_tap_keycode(keycode)) {
@@ -1026,23 +1013,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case AUTO_MOUSE_LAYER_OFF:
             auto_mouse_layer_off();
             return false;
-        case AUTO_MOUSE_TOGGLE:
-            auto_mouse_layer_off();
-            set_auto_mouse_enable((AUTO_MOUSE_ENABLED) ^ 1);
-            return false;
 #endif
 #endif /* POINTING_DEVICE_ENABLE */
     }
   }
   return true;
 }
-
-#ifdef COMMUNITY_MODULE_CUSTOM_SHIFT_KEYS_ENABLE
-const custom_shift_key_t custom_shift_keys[] = {
-    {KC_ESC, KC_TILD},
-    {KC_MINS, KC_MINS}, // disable shift + -
-};
-#endif  // CUSTOM_SHIFT_KEYS_ENABLE
 
 ///////////////////////////////////////////////////////////////////////////////
 // Caps word (https://docs.qmk.fm/features/caps_word)
