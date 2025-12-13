@@ -500,10 +500,12 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
                  return FLOW_TAP_TERM - 100; // 50ms
 
             case HRM_COMM: case HRM_DOT:    // LT(DIR)
+            case HRM_Z: case HRM_SLSH:      // LT(TMUX)
+                 return FLOW_TAP_TERM - 25;
+
             case HRM_A: case HRM_SCLN:      // gui
             case HRM_S: case HRM_L:         // alt
             case HRM_X:                     // LT(EXT)
-            case HRM_Z: case HRM_SLSH:      // LT(TMUX)
 #ifdef POINTING_DEVICE_ENABLE
             case HRM_B:                     // NAVIGATOR_AIM
             case HRM_G:                     // DRAG_SCROLL
@@ -618,44 +620,44 @@ static void generate_directional_string(uint16_t keycode, char* buf) {
     buf[2] = '\0';
 }
 
-#define PREFIX_DELAY 50
+#define TAP_LONG_DELAY 50
 static const struct keystring_t keystrings[] = {
     [UPDIR - KEYSTR_MIN]     = {"../", TAP_CODE_DELAY},
     [USRNAME - KEYSTR_MIN]   = {"wenlongy", TAP_CODE_DELAY},
 
-    [TMUX_A - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
-    [TMUX_C - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
-    [TMUX_X - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_X), TAP_CODE_DELAY},
-    [TMUX_V - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_V), TAP_CODE_DELAY},
-    [TMUX_G - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_G), TAP_CODE_DELAY},
-    [TMUX_P - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_P), TAP_CODE_DELAY},
-    [TMUX_Q - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Q), TAP_CODE_DELAY},
-    [TMUX_SLSH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_SLSH), TAP_CODE_DELAY},
-    [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
-    [TMUX_W - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_W), TAP_CODE_DELAY},
-    [TMUX_N - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_N), TAP_CODE_DELAY},
-    [TMUX_S - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
-    [TMUX_F - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_F), TAP_CODE_DELAY},
-    [TMUX_Z - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},
+    [TMUX_A - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LCTL(SS_TAP(X_A)), TAP_CODE_DELAY},
+    [TMUX_C - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LCTL(SS_TAP(X_C)), TAP_CODE_DELAY},
+    [TMUX_X - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_X), TAP_CODE_DELAY},
+    [TMUX_V - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_V), TAP_CODE_DELAY},
+    [TMUX_G - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_G), TAP_CODE_DELAY},
+    [TMUX_P - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_P), TAP_CODE_DELAY},
+    [TMUX_Q - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_Q), TAP_CODE_DELAY},
+    [TMUX_SLSH - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_SLSH), TAP_CODE_DELAY},
+    [TMUX_QUES - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LSFT(SS_TAP(X_SLSH)), TAP_CODE_DELAY},
+    [TMUX_W - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_W), TAP_CODE_DELAY},
+    [TMUX_N - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_N), TAP_CODE_DELAY},
+    [TMUX_S - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_S), TAP_CODE_DELAY},
+    [TMUX_F - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_F), TAP_CODE_DELAY},
+    [TMUX_Z - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_Z), TAP_CODE_DELAY},
 
-    [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_LBRC), TAP_CODE_DELAY},
-    [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_RBRC), TAP_CODE_DELAY},
+    [TMUX_LBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_LBRC), TAP_CODE_DELAY},
+    [TMUX_RBRC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_RBRC), TAP_CODE_DELAY},
 
-    [TMUX_H - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_H), TAP_CODE_DELAY},
-    [TMUX_K - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_K), TAP_CODE_DELAY},
-    [TMUX_J - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_J), TAP_CODE_DELAY},
-    [TMUX_L - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_L), TAP_CODE_DELAY},
+    [TMUX_H - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_H), TAP_CODE_DELAY},
+    [TMUX_K - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_K), TAP_CODE_DELAY},
+    [TMUX_J - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_J), TAP_CODE_DELAY},
+    [TMUX_L - KEYSTR_MIN]    = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_L), TAP_CODE_DELAY},
 
-    [TMUX_LCBR - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LSFT(SS_TAP(X_LBRC)), TAP_CODE_DELAY},
-    [TMUX_RCBR - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LSFT(SS_TAP(X_RBRC)), TAP_CODE_DELAY},
+    [TMUX_LCBR - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LSFT(SS_TAP(X_LBRC)), TAP_CODE_DELAY},
+    [TMUX_RCBR - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LSFT(SS_TAP(X_RBRC)), TAP_CODE_DELAY},
 
-    [TMUX_SPC - KEYSTR_MIN]  = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_SPC), TAP_CODE_DELAY},
-    [TMUX_BSPC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_TAP(X_BSPC), TAP_CODE_DELAY},
+    [TMUX_SPC - KEYSTR_MIN]  = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_SPC), TAP_CODE_DELAY},
+    [TMUX_BSPC - KEYSTR_MIN] = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_TAP(X_BSPC), TAP_CODE_DELAY},
 
-    [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
-    [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
-    [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_UP)), TAP_CODE_DELAY},
-    [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(PREFIX_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
+    [TMUX_ML - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LALT(SS_TAP(X_LEFT)), TAP_CODE_DELAY},
+    [TMUX_MD - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LALT(SS_TAP(X_DOWN)), TAP_CODE_DELAY},
+    [TMUX_MU - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LALT(SS_TAP(X_UP)), TAP_CODE_DELAY},
+    [TMUX_MR - KEYSTR_MIN]   = {SS_LCTL(SS_TAP(X_A)) SS_DELAY(TAP_LONG_DELAY) SS_LALT(SS_TAP(X_RIGHT)), TAP_CODE_DELAY},
 };
 
 #ifndef NO_DEBUG
@@ -832,8 +834,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (record->event.pressed) {
           if (!swapp_mod) {
               swapp_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
-              register_mods(swapp_mod);
+              clear_mods();
               wait_ms(TAP_CODE_DELAY);
+              register_mods(swapp_mod);
+              wait_ms(TAP_LONG_DELAY);
           }
           tap_code16((keycode == APPNEXT ? KC_TAB : S(KC_TAB)));
         }
@@ -841,15 +845,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     /* switch IME */
     case SWIME:
-        const int8_t hold_mod = (isMacOS ? MOD_BIT_LCTRL : MOD_BIT_LGUI);
         if (record->event.pressed) {
 #ifdef CAPS_WORD_ENABLE
             caps_word_off();
 #endif /* CAPS_WORD_ENABLE */
-            register_mods(hold_mod);
-            tap_code16(KC_SPC);
-        } else
-            unregister_mods(hold_mod);
+            clear_mods();
+            if (isMacOS) {
+                /* send global key */
+                host_consumer_send(AC_NEXT_KEYBOARD_LAYOUT_SELECT);
+                wait_ms(TAP_CODE_DELAY);
+                host_consumer_send(0);
+            } else {
+                register_mods(MOD_BIT_LGUI);
+                wait_ms(TAP_LONG_DELAY);
+                tap_code16_delay(KC_SPC, TAP_CODE_DELAY);
+                unregister_mods(MOD_BIT_LGUI);
+            }
+        }
         return false;
 
     /*
@@ -862,11 +874,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             uint8_t hold_mod = (isMacOS ? MOD_BIT_LGUI : MOD_BIT_LALT);
             uint16_t tap_key = (isMacOS ? KC_Q : KC_F4);
             if (record->event.pressed) {
+                clear_mods();
                 register_mods(hold_mod);
-                wait_ms(TAP_CODE_DELAY);
-                tap_code16(tap_key);
-            } else
+                wait_ms(TAP_LONG_DELAY);
+                tap_code16_delay(tap_key, TAP_CODE_DELAY);
                 unregister_mods(hold_mod);
+            }
         }
         return false;
 
